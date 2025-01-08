@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import spz.dae24.common.enums.SensorType;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -23,6 +25,9 @@ public class Product implements Serializable{
 
     @Enumerated(EnumType.STRING)
     private SensorType requiredSensors;
+
+    @OneToMany(mappedBy = "product")
+    private final List<ProductsVolume> productsVolumes = new ArrayList<>();
 
     public Product(){
 
@@ -47,5 +52,22 @@ public class Product implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
+
+
+    public SensorType getRequiredSensors() {
+        return requiredSensors;
+    }
+
+    public void setRequiredSensors(SensorType requiredSensors) {
+        this.requiredSensors = requiredSensors;
+    }
+
+    public boolean addProductsVolumes(ProductsVolume productsVolume) {
+        return productsVolumes.add(productsVolume);
+    }
+    public boolean removeProductsVolumes(ProductsVolume productsVolume) {
+        return productsVolumes.remove(productsVolume);
+    }
+
 }
 
