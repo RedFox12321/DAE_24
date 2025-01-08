@@ -17,7 +17,7 @@ public class Product implements Serializable{
     @Id
     private int code;
 
-    private String name;
+    private final String name;
 
 
     public Product(int code, String name){

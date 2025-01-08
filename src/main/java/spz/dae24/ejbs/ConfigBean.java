@@ -20,10 +20,13 @@ public class ConfigBean {
     private SensorBean sensorBean;
     @EJB
     private SensorHistoryBean sensorHistoryBean;
+    @EJB
+    private ProductBean productBean;
 
     @PostConstruct
     public void populateDB() {
         LOGGER.info("Initiating database seeding");
+        populateProducts();
         populateSensorsAndHistory();
         LOGGER.info("Database seeding complete");
     }
@@ -67,6 +70,36 @@ public class ConfigBean {
                 }
             } catch (Exception e) {
                 LOGGER.warning("While creating sensors: " + e.getMessage());
+            }
+        }
+    }
+
+    public void populateProducts(){
+        int numberOfProducts = 12;
+
+        List<String> productNames = List.of(
+                "Arroz",
+                "Feijão dos altos mares",
+                "Massa perfeita",
+                "Leite da Majéstica Força Ginyu",
+                "Café da manhã do Sanji",
+                "Iogurte da Prozis",
+                "Farinha de Trigo",
+                "Ovos da Hornet do Cavaleiro Vazio",
+                "Manteiga da Perfeição",
+                "Queijo do Soldado Invernal",
+                "Presunto da 2B",
+                "Carne Bovina"
+        );
+
+        for (int i = 1; i <= numberOfProducts; i++) {
+            String productName = productNames.get(i - 1);
+            int code = 100 + i;
+
+            try {
+                productBean.create(code, productName);
+            } catch (Exception e) {
+                LOGGER.warning("While creating products: " + e.getMessage());
             }
         }
     }

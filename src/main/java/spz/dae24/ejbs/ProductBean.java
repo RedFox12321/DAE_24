@@ -1,5 +1,7 @@
 package spz.dae24.ejbs;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.EntityManager;
 import spz.dae24.entities.Product;
@@ -15,8 +17,22 @@ public class ProductBean {
     }
 
     public Product find(int code) {
-        Product x = em.find(Product.class, code);
+        var product = em.find(Product.class, code);
 
-        return x;
+        if (product == null)
+            throw new EntityNotFoundException("Product with code " + code + " not found");
+
+        return product;
+    }
+
+    public void create(int code, String name) throws EntityExistsException {
+        if (exists(code))
+            throw new EntityExistsException("Product with code " + code + " already exists");
+
+        em.persist(new Product(code, name));
+    }
+
+    public boolean exists(int code) {
+        return em.find(Product.class, code) != null;
     }
 }
