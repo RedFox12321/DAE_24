@@ -97,7 +97,7 @@ public class ConfigBean {
             int code = 100 + i;
 
             try {
-                productBean.create(code, productName);
+                productBean.create(code, productName, null);
             } catch (Exception e) {
                 LOGGER.warning("While creating products: " + e.getMessage());
             }

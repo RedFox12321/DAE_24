@@ -5,6 +5,7 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.EntityManager;
+import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Product;
 
 import java.util.List;
@@ -28,11 +29,11 @@ public class ProductBean {
         return product;
     }
 
-    public void create(int code, String name) throws EntityExistsException {
+    public void create(int code, String name, String requiredSensor) throws EntityExistsException {
         if (exists(code))
             throw new EntityExistsException("Product with code " + code + " already exists");
 
-        em.persist(new Product(code, name));
+        em.persist(new Product(code, name, requiredSensor == null ? null : SensorType.valueOf(requiredSensor.toUpperCase())));
     }
 
     public boolean exists(int code) {

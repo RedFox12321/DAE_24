@@ -1,6 +1,8 @@
 package spz.dae24.entities;
 
 import jakarta.persistence.*;
+import spz.dae24.common.enums.SensorType;
+
 import java.io.Serializable;
 
 
@@ -19,10 +21,16 @@ public class Product implements Serializable{
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private SensorType requiredSensors;
 
-    public Product(int code, String name){
+    public Product(){
+
+    }
+    public Product(int code, String name, SensorType requiredSensors){
         this.code = code;
         this.name = name;
+        this.requiredSensors = requiredSensors;
     }
 
     public int getCode(){
