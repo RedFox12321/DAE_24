@@ -8,7 +8,7 @@ import java.io.Serializable;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT new product(p.code, p.name) FROM Product p ORDER BY p.code"
+                query = "SELECT p FROM Product p ORDER BY p.code"
         )
 })
 
@@ -17,7 +17,7 @@ public class Product implements Serializable{
     @Id
     private int code;
 
-    private final String name;
+    private String name;
 
 
     public Product(int code, String name){
@@ -29,9 +29,15 @@ public class Product implements Serializable{
         return code;
     }
 
+    public void setCode(int code) {
+        this.code = code;
+    }
     public String getName(){
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
 }
 

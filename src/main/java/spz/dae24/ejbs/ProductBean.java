@@ -1,5 +1,6 @@
 package spz.dae24.ejbs;
 
+import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
@@ -7,6 +8,8 @@ import jakarta.persistence.EntityManager;
 import spz.dae24.entities.Product;
 
 import java.util.List;
+
+@Stateless
 public class ProductBean {
 
     @PersistenceContext

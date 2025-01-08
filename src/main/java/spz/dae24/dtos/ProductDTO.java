@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 public class ProductDTO {
 
-    private final int code;
-    private final String name;
+    private int code;
+    private String name;
 
     public ProductDTO(int code, String name){
         this.code = code;
@@ -18,13 +18,16 @@ public class ProductDTO {
         return code;
     }
 
+    public void setCode(int code) {
+        this.code = code;
+    }
     public String getName() {
         return name;
     }
 
-    // public void setName(int code) {
-    //     this.name = name;
-    // }
+    public void setName(String name) {
+         this.name = name;
+     }
 
     public static ProductDTO from(Product product) {
         return new ProductDTO(
