@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+
 public class Volume {
     @Id
     private int code;
@@ -22,15 +23,14 @@ public class Volume {
     private Status status;
     //@NotNull
     //@OneToMany
-    private Package package;
+    private Package _package;
 
     //@NotNull
     //@ManyToOne
-    private List<VolumeProduct> volumeProducts;
+    private List<VolumeProduct> volumeProducts = new ArrayList<>();
 
-    //@NotNull
-    //@ManyToOne
-    //private List<Sensor> sensors;
+    @OneToMany(mappedBy = "volume")
+    private final List<Sensor> sensors = new ArrayList<>();
 
     public Volume() {
     }
@@ -39,22 +39,43 @@ public class Volume {
         this.code = code;
         this.number = number;
         this.status = status;
-        this.volumeProducts = new ArrayList<>();
-        this.sensors = new ArrayList<>();
     }
 
     public int getCode() {
         return code;
     }
+    public void setCode(int code) {
+        this.code = code;
+    }
+
     public int getNumber() {
         return number;
     }
+    public void setNumber(@NotNull int number) {
+        this.number = number;
+    }
+
     public Status getStatus() {
         return status;
     }
-    public Package getPackage() {
-        return package;
+    public void setStatus(@NotNull Status status) {
+        this.status = status;
     }
 
-    public
+    public Package getPackage() {
+        return _package;
+    }
+    public void set_package(Package _package) {
+        this._package = _package;
+    }
+
+    public List<Sensor> getSensors() {
+        return sensors;
+    }
+    public boolean addSensor(Sensor sensor) {
+        return sensors.add(sensor);
+    }
+    public boolean removeSensor(Sensor sensor) {
+        return sensors.remove(sensor);
+    }
 }

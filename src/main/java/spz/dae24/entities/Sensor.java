@@ -1,6 +1,7 @@
 package spz.dae24.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import spz.dae24.common.enums.SensorType;
 
 import java.io.Serializable;
@@ -21,9 +22,11 @@ public class Sensor implements Serializable {
     private boolean active;
     @Enumerated(EnumType.STRING)
     private SensorType type;
+    @NotNull
+    @ManyToOne
+    private Volume volume;
     @OneToMany(mappedBy = "sensor")
     private final List<SensorHistory> history = new ArrayList<>();
-
 
     public Sensor() {}
 
@@ -52,6 +55,13 @@ public class Sensor implements Serializable {
     }
     public void setType(SensorType type) {
         this.type = type;
+    }
+
+    public Volume getVolume() {
+        return volume;
+    }
+    public void setVolume(Volume volume) {
+        this.volume = volume;
     }
 
     public List<SensorHistory> getHistory() {
