@@ -30,13 +30,15 @@ public class ProductsVolumeBean {
         return productsVolume;
     }
 
-    public void create(long id, Product product, int quantity) throws EntityExistsException {
-        if (exists(id))
-            throw new EntityExistsException("ProductsVolume with id " + id + " already exists");
+    public void create(Product product, int quantity) throws EntityExistsException {
 
         Product productManaged = em.merge(product);
+
+        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity);
+
+        productManaged.addProductsVolumes(productsVolume);
         //Falta adicionar o volume
-        em.persist(new ProductsVolume(id, productManaged, quantity));
+        em.persist(productsVolume);
     }
 
     public boolean exists(long id) {

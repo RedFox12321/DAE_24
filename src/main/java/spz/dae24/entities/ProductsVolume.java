@@ -29,8 +29,7 @@ public class ProductsVolume {
         }
 
         //Falta adicionar o volume
-        public ProductsVolume(long id, Product product, int quantity) {
-                this.id = id;
+        public ProductsVolume(Product product, int quantity) {
                 this.product = product;
                 this.quantity = quantity;
         }

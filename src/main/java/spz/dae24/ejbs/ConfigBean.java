@@ -114,11 +114,11 @@ public class ConfigBean {
 
             for (Product product : products) {
                 //Made up id
-                long id = 8000 + product.getCode();
+//                long id = 8000 + product.getCode();
                 int units = ThreadLocalRandom.current().nextInt(0,201);
 
                 //TODO add volume
-                productsVolumeBean.create(id, product, units);
+                productsVolumeBean.create(product, units);
             }
         } catch (Exception e) {
             LOGGER.warning("Error while creating product volumes: " + e.getMessage());
