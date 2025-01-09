@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 public class Volume {
     @Id
-    private int code;
+    private long code;
 
     @NotNull
     private int number;
@@ -25,8 +25,8 @@ public class Volume {
     @ManyToOne
     private Package _package;
 
-    @OneToMany
-    private List<ProductsVolume> volumeProducts = new ArrayList<>();
+    @OneToMany(mappedBy = "volume")
+    private final List<ProductsVolume> volumeProducts = new ArrayList<>();
 
     @OneToMany(mappedBy = "volume")
     private final List<Sensor> sensors = new ArrayList<>();
@@ -34,16 +34,16 @@ public class Volume {
     public Volume() {
     }
 
-    public Volume(int code, int number, Status status) {
+    public Volume(long code, int number, Status status) {
         this.code = code;
         this.number = number;
         this.status = status;
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
-    public void setCode(int code) {
+    public void setCode(long code) {
         this.code = code;
     }
 

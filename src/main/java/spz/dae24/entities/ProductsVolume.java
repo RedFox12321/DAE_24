@@ -20,18 +20,18 @@ public class ProductsVolume {
         @NotNull
         private Product product;
 
-//        @ManyToOne
-//        @NotNull
-//        private Volume volume;
+        @ManyToOne
+        @NotNull
+        private Volume volume;
 
 
         public ProductsVolume() {
         }
 
-        //Falta adicionar o volume
-        public ProductsVolume(Product product, int quantity) {
+        public ProductsVolume(Product product, int quantity, Volume volume) {
                 this.product = product;
                 this.quantity = quantity;
+                this.volume = volume;
         }
 
         private int quantity;
@@ -58,5 +58,13 @@ public class ProductsVolume {
 
         public void setQuantity(int quantity) {
                 this.quantity = quantity;
+        }
+
+        public Volume getVolume() {
+                return volume;
+        }
+
+        public void setVolume(Volume volume) {
+                this.volume = volume;
         }
 }

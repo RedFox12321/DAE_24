@@ -16,14 +16,14 @@ import java.util.List;
 })
 public class Package {
     @Id
-    private int code;
+    private long code;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @NotNull
     @ManyToOne
-    private User client;
+    private Client client;
 
     @NotNull
     @OneToMany(mappedBy = "_package")
@@ -32,15 +32,15 @@ public class Package {
     public Package() {
     }
 
-    public Package(int code, Status status) {
+    public Package(long code, Status status) {
         this.code = code;
         this.status = status;
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
-    public void setCode(int code) {
+    public void setCode(long code) {
         this.code = code;
     }
     public Status getStatus() {
@@ -52,7 +52,7 @@ public class Package {
     public User getClient() {
         return client;
     }
-    public void setClient(User client) {
+    public void setClient(Client client) {
         this.client = client;
     }
     public List<Volume> getVolumes() {

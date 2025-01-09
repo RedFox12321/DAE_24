@@ -7,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.ProductsVolume;
+import spz.dae24.entities.Volume;
 
 import java.util.List;
 
@@ -30,11 +31,11 @@ public class ProductsVolumeBean {
         return productsVolume;
     }
 
-    public void create(Product product, int quantity) throws EntityExistsException {
+    public void create(Product product, int quantity, Volume volume) throws EntityExistsException {
 
         Product productManaged = em.merge(product);
 
-        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity);
+        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity, volume);
 
         productManaged.addProductsVolumes(productsVolume);
         //Falta adicionar o volume

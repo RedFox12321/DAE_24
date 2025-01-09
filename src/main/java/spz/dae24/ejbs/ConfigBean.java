@@ -30,14 +30,12 @@ public class ConfigBean {
     public void populateDB() {
         LOGGER.info("Initiating database seeding");
         populateProducts();
-        populateSensorsAndHistory();
-        populateProductsVolume();
         LOGGER.info("Database seeding complete");
     }
 
     // temporary creation of sensors for testing purposes
     // after volumes are added remake this function to only add history to pre-made sensors
-    public void populateSensorsAndHistory() {
+    /*public void populateSensorsAndHistory() {
         int numberOfSensors = 13;
         int minimumValueRegisters = 10;
         Random random = ThreadLocalRandom.current();
@@ -76,7 +74,7 @@ public class ConfigBean {
                 LOGGER.warning("While creating sensors: " + e.getMessage());
             }
         }
-    }
+    }*/
 
     public void populateProducts(){
         int numberOfProducts = 12;
@@ -110,18 +108,7 @@ public class ConfigBean {
 
     public void populateProductsVolume(){
         try {
-            List<Product> products = productBean.findAll();
-
-            for (Product product : products) {
-                //Made up id
-//                long id = 8000 + product.getCode();
-                int units = ThreadLocalRandom.current().nextInt(0,201);
-
-                //TODO add volume
-                productsVolumeBean.create(product, units);
-            }
         } catch (Exception e) {
-            LOGGER.warning("Error while creating product volumes: " + e.getMessage());
         }
 
     }

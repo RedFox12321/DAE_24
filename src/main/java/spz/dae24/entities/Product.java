@@ -12,7 +12,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT p FROM Product p ORDER BY p.code"
+                query = "SELECT new Product(p.code, p.name, p.requiredSensors) FROM Product p ORDER BY p.code"
         )
 })
 

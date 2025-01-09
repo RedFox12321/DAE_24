@@ -4,9 +4,10 @@ import spz.dae24.entities.Volume;
 import spz.dae24.entities.Package;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VolumeDTO {
-    private int code;
+    private long code;
     private int number;
     private String status;
     private Package _package;
@@ -15,7 +16,7 @@ public class VolumeDTO {
     public VolumeDTO() {
     }
 
-    public VolumeDTO(int code, int number, String status, Package _package, List<ProductsVolumeDTO> volumeProducts) {
+    public VolumeDTO(long code, int number, String status, Package _package, List<ProductsVolumeDTO> volumeProducts) {
         this.code = code;
         this.number = number;
         this.status = status;
@@ -23,10 +24,10 @@ public class VolumeDTO {
         this.volumeProducts = volumeProducts;
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
-    public void setCode(int code) {
+    public void setCode(long code) {
         this.code = code;
     }
 
@@ -66,5 +67,9 @@ public class VolumeDTO {
                 volume.getPackage(),
                 ProductsVolumeDTO.from(volume.getVolumeProducts())
         );
+    }
+
+    public static List<VolumeDTO> from(List<Volume> volumes) {
+        return volumes.stream().map(VolumeDTO::from).collect(Collectors.toList());
     }
 }

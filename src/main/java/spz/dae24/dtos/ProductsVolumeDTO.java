@@ -12,11 +12,10 @@ public class ProductsVolumeDTO {
     private int volumeCode;
     private int quantity;
 
-    //Adicionar int volumeCode
     public ProductsVolumeDTO(long id, int productCode, int quantity){
         this.id = id;
         this.productCode = productCode;
-//        this.volumeCode = volumeCode;
+        this.volumeCode = volumeCode;
         this.quantity = quantity;
     }
 
@@ -36,13 +35,13 @@ public class ProductsVolumeDTO {
         this.productCode = productCode;
     }
 
-    // public int getVolumeCode() {
-    //     return volumeCode;
-    // }
+    public int getVolumeCode() {
+         return volumeCode;
+    }
 
-    // public void setVolumeCode(int volumeCode) {
-    //     this.volumeCode = volumeCode;
-    // }
+    public void setVolumeCode(int volumeCode) {
+         this.volumeCode = volumeCode;
+    }
 
     public int getQuantity() {
         return quantity;
