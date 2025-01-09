@@ -6,27 +6,26 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import spz.dae24.common.enums.Status;
-import spz.dae24.entities.Package;
-import spz.dae24.entities.VolumeProduct;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
 public class Volume {
     @Id
     private int code;
+
     @NotNull
     private int number;
+
     @NotNull
     private Status status;
-    //@NotNull
-    //@OneToMany
+
+    @NotNull
+    @ManyToOne
     private Package _package;
 
-    //@NotNull
-    //@ManyToOne
+    @OneToMany
     private List<VolumeProduct> volumeProducts = new ArrayList<>();
 
     @OneToMany(mappedBy = "volume")
@@ -78,4 +77,8 @@ public class Volume {
     public boolean removeSensor(Sensor sensor) {
         return sensors.remove(sensor);
     }
+
+    public List<VolumeProduct> getVolumeProducts() {return volumeProducts;}
+    public boolean addVolumeProduct(VolumeProduct volumeProduct) {return volumeProducts.add(volumeProduct);}
+    public boolean removeVolumeProduct(VolumeProduct volumeProduct) {return volumeProducts.remove(volumeProduct);}
 }
