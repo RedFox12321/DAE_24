@@ -1,6 +1,6 @@
 FROM quay.io/wildfly/wildfly:27.0.0.Final-jdk17
 
-ARG WILDFLY_ADMIN_PASSWORD=123
+ARG WILDFLY_ADMIN_PASSWORD=wildsecret
 ARG POSTGRES_DRIVER_VERSION=42.5.4
 
 ENV WILDFLY_HOME=/opt/jboss/wildfly
