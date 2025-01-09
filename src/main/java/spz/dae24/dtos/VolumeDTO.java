@@ -10,12 +10,12 @@ public class VolumeDTO {
     private int number;
     private String status;
     private Package _package;
-    private List<VolumeProductDTO> volumeProducts;
+    private List<ProductsVolumeDTO> volumeProducts;
 
     public VolumeDTO() {
     }
 
-    public VolumeDTO(int code, int number, String status, Package _package, List<VolumeProductDTO> volumeProducts) {
+    public VolumeDTO(int code, int number, String status, Package _package, List<ProductsVolumeDTO> volumeProducts) {
         this.code = code;
         this.number = number;
         this.status = status;
@@ -51,10 +51,10 @@ public class VolumeDTO {
         this._package = _package;
     }
 
-    public List<VolumeProductDTO> getVolumeProducts() {
+    public List<ProductsVolumeDTO> getVolumeProducts() {
         return volumeProducts;
     }
-    public void setVolumeProducts(List<VolumeProductDTO> volumeProducts) {
+    public void setVolumeProducts(List<ProductsVolumeDTO> volumeProducts) {
         this.volumeProducts = volumeProducts;
     }
 
@@ -64,7 +64,7 @@ public class VolumeDTO {
                 volume.getNumber(),
                 volume.getStatus().name(),
                 volume.getPackage(),
-                VolumeProductDTO.from(volume.getVolumeProducts())
+                ProductsVolumeDTO.from(volume.getVolumeProducts())
         );
     }
 }

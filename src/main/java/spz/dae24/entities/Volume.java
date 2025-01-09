@@ -26,7 +26,7 @@ public class Volume {
     private Package _package;
 
     @OneToMany
-    private List<VolumeProduct> volumeProducts = new ArrayList<>();
+    private List<ProductsVolume> volumeProducts = new ArrayList<>();
 
     @OneToMany(mappedBy = "volume")
     private final List<Sensor> sensors = new ArrayList<>();
@@ -78,7 +78,7 @@ public class Volume {
         return sensors.remove(sensor);
     }
 
-    public List<VolumeProduct> getVolumeProducts() {return volumeProducts;}
-    public boolean addVolumeProduct(VolumeProduct volumeProduct) {return volumeProducts.add(volumeProduct);}
-    public boolean removeVolumeProduct(VolumeProduct volumeProduct) {return volumeProducts.remove(volumeProduct);}
+    public List<ProductsVolume> getVolumeProducts() {return volumeProducts;}
+    public boolean addVolumeProduct(ProductsVolume volumeProduct) {return volumeProducts.add(volumeProduct);}
+    public boolean removeVolumeProduct(ProductsVolume volumeProduct) {return volumeProducts.remove(volumeProduct);}
 }

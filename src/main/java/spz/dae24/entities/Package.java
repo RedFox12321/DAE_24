@@ -26,7 +26,7 @@ public class Package {
     private User client;
 
     @NotNull
-    @OneToMany(mappedBy = "package")
+    @OneToMany(mappedBy = "_package")
     private final List<Volume> volumes = new ArrayList<>();
 
     public Package() {
