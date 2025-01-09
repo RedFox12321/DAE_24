@@ -1,9 +1,6 @@
 package spz.dae24.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import spz.dae24.common.enums.Status;
 
@@ -11,6 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllVolumes",
+                query = "SELECT new Volume(v.code, v.number, v.status) FROM Volume v ORDER BY v.code"
+        )
+})
 public class Volume {
     @Id
     private long code;
