@@ -5,6 +5,7 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import spz.dae24.common.enums.SensorType;
+import spz.dae24.entities.Product;
 
 import java.util.List;
 import java.util.Random;
@@ -20,11 +21,17 @@ public class ConfigBean {
     private SensorBean sensorBean;
     @EJB
     private SensorHistoryBean sensorHistoryBean;
+    @EJB
+    private ProductBean productBean;
+   @EJB
+    private ProductsVolumeBean productsVolumeBean;
 
     @PostConstruct
     public void populateDB() {
         LOGGER.info("Initiating database seeding");
+        populateProducts();
         populateSensorsAndHistory();
+        populateProductsVolume();
         LOGGER.info("Database seeding complete");
     }
 
@@ -70,4 +77,53 @@ public class ConfigBean {
             }
         }
     }
+
+    public void populateProducts(){
+        int numberOfProducts = 12;
+
+        List<String> productNames = List.of(
+                "Arroz",
+                "Feijão dos altos mares",
+                "Massa perfeita",
+                "Leite da Majéstica Força Ginyu",
+                "Café da manhã do Sanji",
+                "Iogurte da Prozis",
+                "Farinha de Trigo",
+                "Ovos da Hornet do Cavaleiro Vazio",
+                "Manteiga da Perfeição",
+                "Queijo do Soldado Invernal",
+                "Presunto da 2B",
+                "Carne Bovina"
+        );
+
+        for (int i = 1; i <= numberOfProducts; i++) {
+            String productName = productNames.get(i - 1);
+            int code = 100 + i;
+
+            try {
+                productBean.create(code, productName, null);
+            } catch (Exception e) {
+                LOGGER.warning("While creating products: " + e.getMessage());
+            }
+        }
+    }
+
+    public void populateProductsVolume(){
+        try {
+            List<Product> products = productBean.findAll();
+
+            for (Product product : products) {
+                //Made up id
+//                long id = 8000 + product.getCode();
+                int units = ThreadLocalRandom.current().nextInt(0,201);
+
+                //TODO add volume
+                productsVolumeBean.create(product, units);
+            }
+        } catch (Exception e) {
+            LOGGER.warning("Error while creating product volumes: " + e.getMessage());
+        }
+
+    }
+
 }
