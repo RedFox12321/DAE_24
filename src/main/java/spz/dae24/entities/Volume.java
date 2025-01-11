@@ -2,6 +2,7 @@ package spz.dae24.entities;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
 
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllVolumes",
-                query = "SELECT new Volume(v.code, v.number, v.status) FROM Volume v ORDER BY v.code"
+                query = "SELECT new Volume(v.code, v.number, v.status, v.packageType) FROM Volume v ORDER BY v.code"
         )
 })
 public class Volume {
@@ -24,7 +25,9 @@ public class Volume {
     @NotNull
     private Status status;
 
-    @NotNull
+    @Enumerated(EnumType.STRING)
+    private PackageType packageType;
+
     @ManyToOne
     private Package _package;
 
@@ -37,10 +40,11 @@ public class Volume {
     public Volume() {
     }
 
-    public Volume(long code, int number, Status status) {
+    public Volume(long code, int number, Status status, PackageType packageType) {
         this.code = code;
         this.number = number;
         this.status = status;
+        this.packageType = packageType;
     }
 
     public long getCode() {
@@ -67,8 +71,15 @@ public class Volume {
     public Package getPackage() {
         return _package;
     }
-    public void set_package(Package _package) {
+    public void setPackage(Package _package) {
         this._package = _package;
+    }
+
+    public PackageType getPackageType() {
+        return packageType;
+    }
+    public void setPackageType(PackageType packageType) {
+        this.packageType = packageType;
     }
 
     public List<Sensor> getSensors() {

@@ -25,7 +25,6 @@ public class Package {
     @ManyToOne
     private Client client;
 
-    @NotNull
     @OneToMany(mappedBy = "_package")
     private final List<Volume> volumes = new ArrayList<>();
 
