@@ -34,11 +34,13 @@ public class ProductsVolumeBean {
     public void create(Product product, int quantity, Volume volume) throws EntityExistsException {
 
         Product productManaged = em.merge(product);
+        Volume volumeManaged = em.merge(volume);
 
-        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity, volume);
+        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity, volumeManaged);
 
         productManaged.addProductsVolumes(productsVolume);
-        //Falta adicionar o volume
+        volumeManaged.addVolumeProduct(productsVolume);
+
         em.persist(productsVolume);
     }
 

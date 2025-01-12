@@ -12,11 +12,12 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllVolumes",
-                query = "SELECT new Volume(v.code, v.number, v.status, v.packageType) FROM Volume v ORDER BY v.code"
+                query = "SELECT new Volume(v.number, v.status, v.packageType) FROM Volume v ORDER BY v.code"
         )
 })
 public class Volume {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long code;
 
     @NotNull
@@ -40,8 +41,7 @@ public class Volume {
     public Volume() {
     }
 
-    public Volume(long code, int number, Status status, PackageType packageType) {
-        this.code = code;
+    public Volume(int number, Status status, PackageType packageType) {
         this.number = number;
         this.status = status;
         this.packageType = packageType;

@@ -16,33 +16,28 @@ public class PackageBean {
     @PersistenceContext
     private EntityManager em;
 
+    //@EJB
+    //private ClientBean clientBean;
+
     public List<Package> findAll() {return em.createNamedQuery("getAllPackages", Package.class).getResultList();}
 
     public List<Package> findByStatus(String status) {
-        List<Package> packages = em.createNamedQuery("getAllPackages", Package.class).getResultList();
+        List<Package> packages = findAll();
 
-        for (Package p : packages) {
-            if(!p.getStatus().equals(Status.valueOf(status.toUpperCase()))){
-                packages.remove(p);
-            }
-        }
+        packages.removeIf(p -> !p.getStatus().equals(Status.valueOf(status.toUpperCase())));
 
         return packages;
     }
 
     public List<Package> findByClient(int clientId) throws EntityNotFoundException {
-        List<Package> packages = em.createNamedQuery("getAllPackages", Package.class).getResultList();
+        List<Package> packages = findAll();
 
         var client = em.find(Client.class, clientId);
 
         if(client == null)
             throw new EntityNotFoundException("Client with id " + clientId + " not found");
 
-        for (Package p : packages) {
-            if(!p.getClient().equals(client)){
-                packages.remove(p);
-            }
-        }
+        packages.removeIf(p -> !p.getClient().equals(client));
 
         return packages;
     }
@@ -58,7 +53,18 @@ public class PackageBean {
         return _package;
     }
 
-    public void create(){
+    public void create(int clientId){
+        // TODO tirar isto quando ja tivermos clients a funcionar
+        //if(!clientBean.exists(clientId)) throw new ...
+        var client = new Client(clientId, "joca.fernandes", "", "");
 
+        Package pkg = new Package(Status.ACTIVE);
+        pkg.setClient(client);
+
+        em.persist(pkg);
+    }
+
+    public boolean exists(long code){
+        return em.find(Package.class, code) != null;
     }
 }

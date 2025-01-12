@@ -11,11 +11,12 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPackages",
-                query = "SELECT new Package(p.code, p.status) FROM Package p"
+                query = "SELECT new Package(p.status) FROM Package p"
         )
 })
 public class Package {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long code;
 
     @Enumerated(EnumType.STRING)
@@ -31,8 +32,7 @@ public class Package {
     public Package() {
     }
 
-    public Package(long code, Status status) {
-        this.code = code;
+    public Package(Status status) {
         this.status = status;
     }
 

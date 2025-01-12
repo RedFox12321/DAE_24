@@ -16,14 +16,13 @@ public class ProductsVolume {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private long id;
+
         @ManyToOne
         @NotNull
         private Product product;
 
         @ManyToOne
-        @NotNull
         private Volume volume;
-
 
         public ProductsVolume() {
         }

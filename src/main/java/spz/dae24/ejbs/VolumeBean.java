@@ -11,6 +11,7 @@ import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.dtos.SensorDTO;
+import spz.dae24.entities.Package;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.ProductsVolume;
 import spz.dae24.entities.Sensor;
@@ -29,6 +30,9 @@ public class VolumeBean {
     @EJB
     private SensorBean sensorBean;
 
+    @EJB
+    private PackageBean packageBean;
+
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
     public Volume find(long code) throws EntityNotFoundException {
@@ -42,20 +46,16 @@ public class VolumeBean {
         return volume;
     }
 
-    public void create(long code, int number, String status, List<ProductsVolumeDTO> productsVolumes, List<SensorDTO> sensors, String packageType) throws EntityExistsException, EntityNotFoundException {
-        if(exists(code))
-            throw new EntityExistsException("Volume with code " + code + " already exists");
+    public void create(String packageType, long packageCode, List<SensorDTO> sensors) throws EntityNotFoundException {
+        if(!packageBean.exists(packageCode))
+            throw new EntityNotFoundException("Package with code " + packageCode + " not found");
 
-        Volume volume = new Volume(code, number, Status.valueOf(status.toUpperCase()), PackageType.valueOf(packageType.toUpperCase()));
+        Package pack = packageBean.find(packageCode);
 
-        for(ProductsVolumeDTO pvDTO : productsVolumes){
-            if(!productsVolumeBean.exists(pvDTO.getId()))
-                throw new EntityNotFoundException("Product volume with id " + pvDTO.getId() + " not found");
+        Volume volume = new Volume(pack.getVolumes().size() + 1, Status.CANCELLED, PackageType.valueOf(packageType.toUpperCase()));
 
-            ProductsVolume pv = productsVolumeBean.find(pvDTO.getId());
-            pv.setVolume(volume);
-            volume.getVolumeProducts().add(pv);
-        }
+        volume.setPackage(pack);
+        pack.addVolume(volume);
 
         for(SensorDTO sDTO : sensors){
             if(!sensorBean.exists(sDTO.getId()))
