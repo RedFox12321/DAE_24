@@ -35,16 +35,29 @@ public class ConfigBean {
     private VolumeBean volumeBean;
     @EJB
     private PackageBean packageBean;
+    @EJB
+    private ClientBean clientBean;
 
     @PostConstruct
     public void populateDB() {
         LOGGER.info("Initiating database seeding");
+        populateClients();
         populateProducts();
         populateProductsVolume();
         populatePackages();
         populateVolumes();
 
         LOGGER.info("Database seeding complete");
+    }
+
+    public void populateClients() {
+        try{
+            clientBean.create(1, "joca", "Joao", "joao@mail.pt");
+            clientBean.create(2, "jocaa", "Joao", "joao2@mail.pt");
+            clientBean.create(3, "xxx", "Joao", "joao3@mail.pt");
+        } catch (Exception e) {
+           LOGGER.warning("While creating clients: " + e.getMessage());
+        }
     }
 
     public void populateProducts(){
@@ -77,9 +90,9 @@ public class ConfigBean {
 
     public void populatePackages(){
         try{
-            packageBean.create(10);
-            packageBean.create(20);
-            packageBean.create(30);
+            packageBean.create(clientBean.find(1));
+            packageBean.create(clientBean.find(1));
+            packageBean.create(clientBean.find(2));
         }
         catch (Exception e){
             LOGGER.warning("While creating packages: " + e.getMessage());
@@ -88,8 +101,8 @@ public class ConfigBean {
 
     public void populateVolumes(){
         try {
-            volumeBean.create(PackageType.BOX.name(), 1, null);
-            volumeBean.create(PackageType.FREEZER.name(), 2, null);
+            volumeBean.create(PackageType.BOX, packageBean.find(1), null);
+            volumeBean.create(PackageType.FREEZER, packageBean.find(2), null);
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());
         }

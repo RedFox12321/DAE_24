@@ -16,7 +16,7 @@ public class ClientBean {
     @PersistenceContext
     private EntityManager em;
 
-    public Client find(long id) throws EntityNotFoundException {
+    public Client find(int id) throws EntityNotFoundException {
         var client = em.find(Client.class, id);
         if (client == null)
             throw new EntityNotFoundException("Client with id " + id + " not found");
@@ -35,7 +35,7 @@ public class ClientBean {
         em.persist(new Client(id, username, name, email));
     }
 
-    public boolean exists(long id) {
+    public boolean exists(int id) {
         return em.find(Client.class, id) != null;
     }
 }

@@ -1,5 +1,6 @@
 package spz.dae24.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,8 +17,8 @@ public class PackageBean {
     @PersistenceContext
     private EntityManager em;
 
-    //@EJB
-    //private ClientBean clientBean;
+    @EJB
+    private ClientBean clientBean;
 
     public List<Package> findAll() {return em.createNamedQuery("getAllPackages", Package.class).getResultList();}
 
@@ -53,13 +54,13 @@ public class PackageBean {
         return _package;
     }
 
-    public void create(int clientId){
-        // TODO tirar isto quando ja tivermos clients a funcionar
-        //if(!clientBean.exists(clientId)) throw new ...
-        var client = new Client(clientId, "joca.fernandes", "", "");
+    public void create(Client client){
+        Client clientManaged = em.merge(client);
 
         Package pkg = new Package(Status.ACTIVE);
-        pkg.setClient(client);
+        pkg.setClient(clientManaged);
+
+        clientManaged.addPackage(pkg);
 
         em.persist(pkg);
     }

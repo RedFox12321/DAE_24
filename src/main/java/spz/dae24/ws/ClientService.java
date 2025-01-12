@@ -25,7 +25,7 @@ public class ClientService {
 
     @GET
     @Path("{id}")
-    public Response getClient(@PathParam("id") long id) {
+    public Response getClient(@PathParam("id") int id) {
         var client = clientBean.find(id);
         var clientDTO = ClientDTO.from(client);
 
