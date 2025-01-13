@@ -19,10 +19,10 @@ public class ClientBean {
 
     private final Hasher hasher = new Hasher();
 
-    public Client find(long id) throws EntityNotFoundException {
-        var client = em.find(Client.class, id);
+    public Client find(String username) throws EntityNotFoundException {
+        var client = em.find(Client.class, username);
         if (client == null)
-            throw new EntityNotFoundException("Client with id " + id + " not found");
+            throw new EntityNotFoundException("Client with username " + username + " not found");
 
         return client;
     }
@@ -31,14 +31,14 @@ public class ClientBean {
         return em.createNamedQuery("getAllClients", Client.class).getResultList();
     }
 
-    public void create(long id, String username, String name, String email, String password) throws EntityExistsException {
-        if (exists(id))
-            throw new EntityExistsException("Client with id " + id + " already exists");
+    public void create(String username, String name, String email, String password) throws EntityExistsException {
+        if (exists(username))
+            throw new EntityExistsException("Client with username " + username + " already exists");
 
-        em.persist(new Client(id, username, name, email, hasher.hash(password)));
+        em.persist(new Client(username, name, email, hasher.hash(password)));
     }
 
-    public boolean exists(long id) {
-        return em.find(Client.class, id) != null;
+    public boolean exists(String username) {
+        return em.find(Client.class, username) != null;
     }
 }

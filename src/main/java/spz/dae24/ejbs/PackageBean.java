@@ -57,14 +57,14 @@ public class PackageBean {
         return _package;
     }
 
-    public void create(long code, long clientId) throws EntityNotFoundException, EntityExistsException {
+    public void create(long code, String clientUsername) throws EntityNotFoundException, EntityExistsException {
         if (exists(code))
             throw new EntityExistsException("Package with code " + code + " already exists");
 
-        Client client = em.find(Client.class, clientId);
+        Client client = em.find(Client.class, clientUsername);
 
         if(client == null)
-            throw new EntityNotFoundException("Client with id " + clientId + " not found");
+            throw new EntityNotFoundException("Client with username " + clientUsername + " not found");
 
         Package pkg = new Package(code, Status.ACTIVE, client);
 

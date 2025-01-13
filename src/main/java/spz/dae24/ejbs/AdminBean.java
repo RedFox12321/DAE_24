@@ -16,22 +16,22 @@ public class AdminBean {
 
     private final Hasher hasher = new Hasher();
 
-    public Admin find(long id) throws EntityNotFoundException {
-        var admin = em.find(Admin.class, id);
+    public Admin find(String username) throws EntityNotFoundException {
+        var admin = em.find(Admin.class, username);
         if (admin == null)
-            throw new EntityNotFoundException("Admin with id " + id + " not found");
+            throw new EntityNotFoundException("Admin with username " + username + " not found");
 
         return admin;
     }
 
-    public void create(long id, String username, String name, String email, String password) throws EntityExistsException {
-        if (exists(id))
-            throw new EntityExistsException("Admin with id " + id + " already exists");
+    public void create(String username, String name, String email, String password) throws EntityExistsException {
+        if (exists(username))
+            throw new EntityExistsException("Admin with username " + username + " already exists");
 
-        em.persist(new Admin(id, username, name, email, hasher.hash(password)));
+        em.persist(new Admin(username, name, email, hasher.hash(password)));
     }
 
-    public boolean exists(long id) {
-        return em.find(Admin.class, id) != null;
+    public boolean exists(String username) {
+        return em.find(Admin.class, username) != null;
     }
 }

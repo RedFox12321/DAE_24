@@ -1,5 +1,6 @@
 package spz.dae24.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,17 +22,18 @@ public class ClientService {
 
     @GET
     @Path("")
+    @RolesAllowed("admin")
     public List<ClientDTO> getAllClients() {
         return ClientDTO.from(clientBean.findAll());
     }
 
     @GET
-    @Path("{id}")
-    public Response getClient(@PathParam("id") long id) {
-        var client = clientBean.find(id);
+    @Path("{username}")
+    @RolesAllowed("admin")
+    public Response getClient(@PathParam("username") String username) {
+        var client = clientBean.find(username);
         var clientDTO = ClientDTO.from(client);
 
         return Response.ok(clientDTO).build();
     }
-
 }

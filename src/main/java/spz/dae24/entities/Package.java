@@ -15,6 +15,7 @@ import java.util.Locale;
                 query = "SELECT new Package(p.code, p.status, p.client) FROM Package p"
         )
 })
+@Table(name = "packages")
 public class Package {
     @Id
     private long code;

@@ -16,6 +16,7 @@ import java.util.List;
                 query = "SELECT new Sensor(s.id, s.active, s.type) FROM Sensor s ORDER BY s.type"
         )
 })
+@Table(name = "sensors")
 public class Sensor implements Serializable {
     @Id
     private long id;

@@ -1,6 +1,5 @@
 package spz.dae24.ejbs;
 
-import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
@@ -9,10 +8,7 @@ import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
-import spz.dae24.dtos.SensorDTO;
-import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.entities.Package;
-import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
 
 import java.util.List;
@@ -33,7 +29,7 @@ public class VolumeBean {
         return volume;
     }
 
-    public Volume findWithSensorsAndProductVolumes(long code) throws EntityNotFoundException {
+    public Volume findWithSensorsAndProductsVolumes(long code) throws EntityNotFoundException {
         Volume volume = find(code);
 
         Hibernate.initialize(volume.getProductsVolumes());

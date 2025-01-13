@@ -15,6 +15,7 @@ import java.util.List;
                 query = "SELECT new Volume(v.code, v.number, v.status, v.packageType, v._package) FROM Volume v ORDER BY v.code"
         )
 })
+@Table(name = "volumes")
 public class Volume {
     @Id
     private long code;
@@ -26,6 +27,7 @@ public class Volume {
     private Status status;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "package_type")
     private PackageType packageType;
 
     @ManyToOne

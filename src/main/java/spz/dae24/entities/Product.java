@@ -15,7 +15,7 @@ import java.util.List;
                 query = "SELECT new Product(p.code, p.name, p.requiredSensors) FROM Product p ORDER BY p.code"
         )
 })
-
+@Table(name = "products")
 public class Product implements Serializable{
     
     @Id
@@ -25,6 +25,7 @@ public class Product implements Serializable{
 
     @ElementCollection
     @Enumerated(EnumType.STRING)
+    @Column(name = "required_sensors")
     private List<SensorType> requiredSensors;
 
     @OneToMany(mappedBy = "product")

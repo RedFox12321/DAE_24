@@ -35,7 +35,7 @@ public class ConfigBean {
     private AdminBean adminBean;
 
     // create test objects
-    private int currentPackageCode = 1;
+    private List<String> clientUsernames = new ArrayList<>();
     private int currentVolumeCode = 1;
     private int currentSensorCode = 1;
 
@@ -93,7 +93,7 @@ public class ConfigBean {
         Random random = ThreadLocalRandom.current();
         for (int i = 1; i < 4; i++) {
             try{
-                packageBean.create(i, random.nextInt(6, 10));
+                packageBean.create(i, clientUsernames.get(random.nextInt(clientUsernames.size())));
                 populateWithVolumes(i);
                 packageBean.completePackage(i);
             }
@@ -231,11 +231,11 @@ public class ConfigBean {
     public void populateClients() {
 
         List<String[]> clients = List.of(
-                new String[]{"jmanuel", "João Manuel Silva", "c1@ipleiria.pt"},
-                new String[]{"moliveira", "Maria Oliveira", "c2@ipleiria.pt"},
-                new String[]{"alpereira", "António Luís Pereira", "c3@ipleiria.pt"},
-                new String[]{"jfernandes", "José Fernandes", "c4@ipleiria.pt"},
-                new String[]{"abcosta", "Ana Beatriz Costa", "c5@ipleiria.pt"},
+                new String[]{"clt1", "João Manuel Silva", "c1@ipleiria.pt"},
+                new String[]{"clt2", "Maria Oliveira", "c2@ipleiria.pt"},
+                new String[]{"clt3", "António Luís Pereira", "c3@ipleiria.pt"},
+                new String[]{"clt4", "José Fernandes", "c4@ipleiria.pt"},
+                new String[]{"clt5", "Ana Beatriz Costa", "c5@ipleiria.pt"},
                 new String[]{"pamartins", "Pedro Afonso Martins", "pedro.martins@example.com"},
                 new String[]{"cssousa", "Catarina Sofia Sousa", "catarina.sousa@example.com"},
                 new String[]{"lgoncalves", "Luís Gonçalves", "luis.goncalves@example.com"},
@@ -247,20 +247,20 @@ public class ConfigBean {
         );
 
         List<String[]> admins = List.of(
-                new String[]{"jmanuel", "João Manuel Almeida", "a1@ipleiria.pt"},
-                new String[]{"mcosta", "Maria Costa", "a2@ipleiria.pt"},
+                new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
+                new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
                 new String[]{"apereira", "António Luís Pereira", "antonio.pereira@example.com"},
                 new String[]{"rsmendes", "Rita Sofia Mendes", "rita.mendes@example.com"},
                 new String[]{"mrocha", "Manuel Rocha", "manuel.rocha@example.com"}
         );
 
         try {
-            long i = 1;
             for (String[] admin : admins) {
-                adminBean.create(i++, admin[0], admin[1], admin[2], "123");
+                adminBean.create(admin[0], admin[1], admin[2], "123");
             }
             for (String[] client : clients) {
-                clientBean.create(i++, client[0], client[1], client[2], "123");
+                clientBean.create(client[0], client[1], client[2], "123");
+                clientUsernames.add(client[0]);
             }
         } catch (Exception e) {
             LOGGER.warning("While creating clients: " + e.getMessage());

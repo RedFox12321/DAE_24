@@ -1,6 +1,8 @@
 package spz.dae24.dtos;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import spz.dae24.entities.Package;
 
 public class PackageDTO {
@@ -54,5 +56,9 @@ public class PackageDTO {
                 VolumeDTO.from(_package.getVolumes()),
                 _package.getClient().getUsername()
         );
+    }
+
+    public static List<PackageDTO> from(List<Package> packages) {
+        return packages.stream().map(PackageDTO::from).collect(Collectors.toList());
     }
 }

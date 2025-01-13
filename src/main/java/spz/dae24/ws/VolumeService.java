@@ -1,22 +1,24 @@
 package spz.dae24.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.ejbs.VolumeBean;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
 @Path("volumes")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class VolumeService {
     @EJB
     private VolumeBean volumeBean;
@@ -26,6 +28,7 @@ public class VolumeService {
 
     @GET
     @Path("")
+    @RolesAllowed("admin")
     public List<VolumeDTO> getVolumes() {
         return VolumeDTO.from(volumeBean.findAll());
     }
@@ -41,7 +44,7 @@ public class VolumeService {
     }
 
     @POST
-    @Path("/")
+    @Path("")
     @Consumes({MediaType.APPLICATION_JSON})
     public Response createVolume(VolumeDTO volumeDTO) {
         volumeBean.create(
@@ -63,7 +66,7 @@ public class VolumeService {
 
         volumeBean.updateStatus(code, volumeDTO.getStatus());
 
-        var volume = volumeBean.find(code);
+        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
         return Response.ok(VolumeDTO.from(volume)).build();
     }
 }
