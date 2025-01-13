@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Sensor;
+import spz.dae24.entities.Volume;
 
 import java.util.List;
 
@@ -34,11 +35,15 @@ public class SensorBean {
         return em.createNamedQuery("getAllSensors", Sensor.class).getResultList();
     }
 
-    public void create(long id, String type) throws EntityExistsException {
+    public void create(long id, String type, long volumeCode) throws EntityExistsException {
         if (exists(id))
             throw new EntityExistsException("Sensor with id " + id + " already exists");
 
-        em.persist(new Sensor(id, true, SensorType.valueOf(type.toUpperCase())));
+        var volume = em.find(Volume.class, volumeCode);
+        if (volume == null)
+            throw new EntityNotFoundException("Volume with id " + volumeCode + " not found");
+
+        em.persist(new Sensor(id, true, SensorType.valueOf(type.toUpperCase()), volume));
     }
 
     public void disable(long id) throws EntityNotFoundException {
