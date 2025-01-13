@@ -1,7 +1,6 @@
 package spz.dae24.ejbs;
 
 import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
@@ -31,21 +30,20 @@ public class ProductsVolumeBean {
         return productsVolume;
     }
 
-    public void create(Product product, int quantity, Volume volume) throws EntityExistsException {
+    public void create(int productCode, int quantity, long volumeCode) throws EntityNotFoundException {
+        Product product = em.find(Product.class, productCode);
+        if (product == null)
+            throw new EntityNotFoundException("Product with code " + productCode + " not found");
 
-        Product productManaged = em.merge(product);
-        Volume volumeManaged = em.merge(volume);
+        Volume volume = em.find(Volume.class, volumeCode);
+        if (volume == null)
+            throw new EntityNotFoundException("Volume with code " + volumeCode + " not found");
 
-        ProductsVolume productsVolume = new ProductsVolume(productManaged, quantity, volumeManaged);
-
-        productManaged.addProductsVolumes(productsVolume);
-        volumeManaged.addVolumeProduct(productsVolume);
+        ProductsVolume productsVolume = new ProductsVolume(product, quantity, volume);
 
         em.persist(productsVolume);
-    }
 
-    public boolean exists(long id) {
-        return em.find(ProductsVolume.class, id) != null;
+        product.addProductsVolumes(productsVolume);
+        volume.addProductsVolume(productsVolume);
     }
-
 }

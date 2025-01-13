@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 @DiscriminatorColumn(name = "Type", discriminatorType = DiscriminatorType.STRING)
 public class User {
     @Id
-    private int id;
+    private long id;
 
     @NotBlank
     private String username;
@@ -28,7 +28,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String username, String name, String email, String password) {
+    public User(long id, String username, String name, String email, String password) {
         this.id = id;
         this.username = username;
         this.name = name;
@@ -36,10 +36,10 @@ public class User {
         this.password = password;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

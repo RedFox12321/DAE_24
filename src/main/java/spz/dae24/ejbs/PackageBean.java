@@ -2,6 +2,7 @@ package spz.dae24.ejbs;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
@@ -30,17 +31,13 @@ public class PackageBean {
         return packages;
     }
 
-    public List<Package> findByClient(int clientId) throws EntityNotFoundException {
-        List<Package> packages = findAll();
-
+    public List<Package> findByClient(long clientId) throws EntityNotFoundException {
         var client = em.find(Client.class, clientId);
 
         if(client == null)
             throw new EntityNotFoundException("Client with id " + clientId + " not found");
 
-        packages.removeIf(p -> !p.getClient().equals(client));
-
-        return packages;
+        return client.getPackages();
     }
 
     public Package find(long code) throws EntityNotFoundException {
@@ -49,26 +46,48 @@ public class PackageBean {
         if(_package == null)
             throw new EntityNotFoundException("Package with code " + code + " not found");
 
+        return _package;
+    }
+
+    public Package findWithVolumes(long code) throws EntityNotFoundException {
+        var _package = find(code);
+
         Hibernate.initialize(_package.getVolumes());
 
         return _package;
     }
 
-    public void create(int clientId) throws EntityNotFoundException {
-        if(!clientBean.exists(clientId))
-            throw new EntityNotFoundException("Client with id " + clientId + " not found");
+    public void create(long code, long clientId) throws EntityNotFoundException, EntityExistsException {
+        if (exists(code))
+            throw new EntityExistsException("Package with code " + code + " already exists");
 
         Client client = em.find(Client.class, clientId);
 
-        Package pkg = new Package(Status.ACTIVE);
-        pkg.setClient(client);
+        if(client == null)
+            throw new EntityNotFoundException("Client with id " + clientId + " not found");
 
-        client.addPackage(pkg);
+        Package pkg = new Package(code, Status.ACTIVE, client);
 
         em.persist(pkg);
+
+        client.addPackage(pkg);
     }
 
-    public boolean exists(long code){
+    public void completePackage(long code) throws EntityNotFoundException {
+        Package pkg = em.find(Package.class, code);
+        pkg.setStatus(Status.DELIVERED);
+
+        em.merge(pkg);
+    }
+
+    public void cancelPackage(long code) throws EntityNotFoundException {
+        Package pkg = em.find(Package.class, code);
+        pkg.setStatus(Status.CANCELLED);
+
+        em.merge(pkg);
+    }
+
+    public boolean exists(long code) {
         return em.find(Package.class, code) != null;
     }
 }

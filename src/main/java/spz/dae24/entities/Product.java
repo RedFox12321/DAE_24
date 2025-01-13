@@ -23,8 +23,9 @@ public class Product implements Serializable{
 
     private String name;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private SensorType requiredSensors;
+    private List<SensorType> requiredSensors;
 
     @OneToMany(mappedBy = "product")
     private final List<ProductsVolume> productsVolumes = new ArrayList<>();
@@ -32,7 +33,7 @@ public class Product implements Serializable{
     public Product(){
 
     }
-    public Product(int code, String name, SensorType requiredSensors){
+    public Product(int code, String name, List<SensorType> requiredSensors){
         this.code = code;
         this.name = name;
         this.requiredSensors = requiredSensors;
@@ -54,11 +55,11 @@ public class Product implements Serializable{
     }
 
 
-    public SensorType getRequiredSensors() {
+    public List<SensorType> getRequiredSensors() {
         return requiredSensors;
     }
 
-    public void setRequiredSensors(SensorType requiredSensors) {
+    public void setRequiredSensors(List<SensorType> requiredSensors) {
         this.requiredSensors = requiredSensors;
     }
 

@@ -19,14 +19,13 @@ public class Client extends User {
 
     public Client() {}
 
-    public Client(int id, String username, String name, String email, String password) {
+    public Client(long id, String username, String name, String email, String password) {
         super(id, username, name, email,password);
     }
 
     public List<Package> getPackages() {
         return packages;
     }
-
     public boolean addPackage(Package pack) {
         return packages.add(pack);
     }

@@ -24,7 +24,7 @@ public class AdminBean {
         return admin;
     }
 
-    public void create(int id, String username, String name, String email, String password) throws EntityExistsException {
+    public void create(long id, String username, String name, String email, String password) throws EntityExistsException {
         if (exists(id))
             throw new EntityExistsException("Admin with id " + id + " already exists");
 

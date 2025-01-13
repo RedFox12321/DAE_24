@@ -9,11 +9,9 @@ import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
-import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.dtos.SensorDTO;
+import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.entities.Package;
-import spz.dae24.entities.Product;
-import spz.dae24.entities.ProductsVolume;
 import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
 
@@ -24,15 +22,6 @@ public class VolumeBean {
     @PersistenceContext
     private EntityManager em;
 
-    @EJB
-    private ProductsVolumeBean productsVolumeBean;
-
-    @EJB
-    private SensorBean sensorBean;
-
-    @EJB
-    private PackageBean packageBean;
-
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
     public Volume find(long code) throws EntityNotFoundException {
@@ -41,38 +30,37 @@ public class VolumeBean {
         if (volume == null)
             throw new EntityNotFoundException("Volume with code " + code + " not found");
 
-        Hibernate.initialize(volume.getVolumeProducts());
+        return volume;
+    }
+
+    public Volume findWithSensorsAndProductVolumes(long code) throws EntityNotFoundException {
+        Volume volume = find(code);
+
+        Hibernate.initialize(volume.getProductsVolumes());
+        Hibernate.initialize(volume.getSensors());
 
         return volume;
     }
 
-    public void create(PackageType packageType, long packageCode, List<SensorDTO> sensors) throws EntityNotFoundException {
-        if(!packageBean.exists(packageCode))
+    public void create(long code, String packageType, long packageCode) throws EntityNotFoundException, EntityExistsException {
+        if (exists(code))
+            throw new EntityExistsException("Volume with code " + code + " already exists");
+
+        Package pkg = em.find(Package.class, packageCode);
+        if(pkg == null)
             throw new EntityNotFoundException("Package with code " + packageCode + " not found");
 
-        Package pkg = packageBean.find(packageCode);
+        Volume volume = new Volume(code, pkg.getVolumeCount() + 1, Status.ACTIVE, PackageType.valueOf(packageType.toUpperCase()), pkg);
 
-        Volume volume = new Volume(pkg.getVolumes().size() + 1, Status.CANCELLED,packageType);
-
-        volume.setPackage(pkg);
-        pkg.addVolume(volume);
-
-        for(SensorDTO sDTO : sensors){
-            if(!sensorBean.exists(sDTO.getId()))
-                throw new EntityNotFoundException("Sensor with id " + sDTO.getId() + " not found");
-
-            Sensor s = sensorBean.find(sDTO.getId());
-            s.setVolume(volume);
-            volume.getSensors().add(s);
-        }
         em.persist(volume);
+        pkg.addVolume(volume);
     }
 
     public void updateStatus(long code, String status) throws EntityNotFoundException {
-        var v = find(code);
+        var volume = find(code);
 
-        v.setStatus(Status.valueOf(status.toUpperCase()));
-        em.merge(v);
+        volume.setStatus(Status.valueOf(status.toUpperCase()));
+        em.merge(volume);
     }
 
     public boolean exists(long code) {return em.find(Volume.class, code) != null;}
