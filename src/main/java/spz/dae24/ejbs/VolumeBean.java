@@ -46,13 +46,16 @@ public class VolumeBean {
         return volume;
     }
 
-    public void create(PackageType packageType, Package _package, List<SensorDTO> sensors) throws EntityNotFoundException {
-        Package packageManaged = em.merge(_package);
+    public void create(PackageType packageType, long packageCode, List<SensorDTO> sensors) throws EntityNotFoundException {
+        if(!packageBean.exists(packageCode))
+            throw new EntityNotFoundException("Package with code " + packageCode + " not found");
 
-        Volume volume = new Volume(packageManaged.getVolumes().size() + 1, Status.CANCELLED,packageType);
+        Package pkg = packageBean.find(packageCode);
 
-        volume.setPackage(packageManaged);
-        packageManaged.addVolume(volume);
+        Volume volume = new Volume(pkg.getVolumes().size() + 1, Status.CANCELLED,packageType);
+
+        volume.setPackage(pkg);
+        pkg.addVolume(volume);
 
         for(SensorDTO sDTO : sensors){
             if(!sensorBean.exists(sDTO.getId()))

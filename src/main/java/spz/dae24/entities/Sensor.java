@@ -20,11 +20,13 @@ public class Sensor implements Serializable {
     @Id
     private long id;
     private boolean active;
+
     @Enumerated(EnumType.STRING)
     private SensorType type;
-    @NotNull
+
     @ManyToOne
     private Volume volume;
+
     @OneToMany(mappedBy = "sensor")
     private final List<SensorHistory> history = new ArrayList<>();
 

@@ -45,8 +45,8 @@ public class VolumeService {
     @Consumes({MediaType.APPLICATION_JSON})
     public Response createVolume(VolumeDTO volumeDTO) {
         volumeBean.create(
-                PackageType.valueOf(volumeDTO.getPackageType().toLowerCase()),
-                packageBean.find(volumeDTO.getPackageCode()),
+                PackageType.valueOf(volumeDTO.getPackageType().toUpperCase()),
+                volumeDTO.getPackageCode(),
                 volumeDTO.getSensors()
         );
 
