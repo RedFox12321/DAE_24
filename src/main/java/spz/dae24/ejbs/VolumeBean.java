@@ -1,12 +1,20 @@
 package spz.dae24.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
+import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
+import spz.dae24.dtos.ProductsVolumeDTO;
+import spz.dae24.dtos.SensorDTO;
+import spz.dae24.entities.Package;
+import spz.dae24.entities.Product;
+import spz.dae24.entities.ProductsVolume;
+import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
 
 import java.util.List;
@@ -15,6 +23,15 @@ import java.util.List;
 public class VolumeBean {
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private ProductsVolumeBean productsVolumeBean;
+
+    @EJB
+    private SensorBean sensorBean;
+
+    @EJB
+    private PackageBean packageBean;
 
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
@@ -29,11 +46,23 @@ public class VolumeBean {
         return volume;
     }
 
-    public void create(long code, int number, String status) throws EntityExistsException{
-        if(exists(code))
-            throw new EntityExistsException("Volume with code " + code + " already exists");
+    public void create(PackageType packageType, Package _package, List<SensorDTO> sensors) throws EntityNotFoundException {
+        Package packageManaged = em.merge(_package);
 
-        em.persist(new Volume(code, number, Status.valueOf(status.toUpperCase())));
+        Volume volume = new Volume(packageManaged.getVolumes().size() + 1, Status.CANCELLED,packageType);
+
+        volume.setPackage(packageManaged);
+        packageManaged.addVolume(volume);
+
+        for(SensorDTO sDTO : sensors){
+            if(!sensorBean.exists(sDTO.getId()))
+                throw new EntityNotFoundException("Sensor with id " + sDTO.getId() + " not found");
+
+            Sensor s = sensorBean.find(sDTO.getId());
+            s.setVolume(volume);
+            volume.getSensors().add(s);
+        }
+        em.persist(volume);
     }
 
     public void updateStatus(long code, String status) throws EntityNotFoundException {

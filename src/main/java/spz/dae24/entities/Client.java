@@ -1,9 +1,6 @@
 package spz.dae24.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +12,7 @@ import java.util.List;
                 query = "SELECT new Client(c.id,c.username,c.name,c.email,c.password) FROM Client c"
         )
 })
+@DiscriminatorValue("Client")
 public class Client extends User {
     @OneToMany(mappedBy = "client")
     private final List<Package> packages = new ArrayList<>();

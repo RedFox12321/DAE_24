@@ -1,10 +1,13 @@
 package spz.dae24.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Table(name = "users")
+@DiscriminatorColumn(name = "Type", discriminatorType = DiscriminatorType.STRING)
 public class User {
     @Id
     private int id;
@@ -16,6 +19,7 @@ public class User {
     private String name;
 
     @NotBlank
+    @Email
     private String email;
 
     @NotBlank
@@ -68,3 +72,4 @@ public class User {
         this.password = password;
     }
 }
+

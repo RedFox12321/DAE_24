@@ -19,7 +19,7 @@ public class ClientBean {
 
     private final Hasher hasher = new Hasher();
 
-    public Client find(long id) throws EntityNotFoundException {
+    public Client find(int id) throws EntityNotFoundException {
         var client = em.find(Client.class, id);
         if (client == null)
             throw new EntityNotFoundException("Client with id " + id + " not found");
@@ -38,7 +38,7 @@ public class ClientBean {
         em.persist(new Client(id, username, name, email, hasher.hash(password)));
     }
 
-    public boolean exists(long id) {
+    public boolean exists(int id) {
         return em.find(Client.class, id) != null;
     }
 }
