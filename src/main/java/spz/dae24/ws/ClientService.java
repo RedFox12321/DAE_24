@@ -6,6 +6,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ClientDTO;
 import spz.dae24.ejbs.ClientBean;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Path("clients")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class ClientService {
     @EJB
     private ClientBean clientBean;

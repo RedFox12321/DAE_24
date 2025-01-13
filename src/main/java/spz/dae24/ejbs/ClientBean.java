@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import spz.dae24.entities.Client;
+import spz.dae24.security.Hasher;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public class ClientBean {
 
     @PersistenceContext
     private EntityManager em;
+
+    private final Hasher hasher = new Hasher();
 
     public Client find(long id) throws EntityNotFoundException {
         var client = em.find(Client.class, id);
@@ -28,11 +31,11 @@ public class ClientBean {
         return em.createNamedQuery("getAllClients", Client.class).getResultList();
     }
 
-    public void create(int id, String username, String name, String email) throws EntityExistsException {
+    public void create(int id, String username, String name, String email, String password) throws EntityExistsException {
         if (exists(id))
             throw new EntityExistsException("Client with id " + id + " already exists");
 
-        em.persist(new Client(id, username, name, email));
+        em.persist(new Client(id, username, name, email, hasher.hash(password)));
     }
 
     public boolean exists(long id) {

@@ -18,14 +18,18 @@ public class User {
     @NotBlank
     private String email;
 
+    @NotBlank
+    private String password;
+
     public User() {
     }
 
-    public User(int id, String username, String name, String email) {
+    public User(int id, String username, String name, String email, String password) {
         this.id = id;
         this.username = username;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     public int getId() {
@@ -54,5 +58,13 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public @NotBlank String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotBlank String password) {
+        this.password = password;
     }
 }
