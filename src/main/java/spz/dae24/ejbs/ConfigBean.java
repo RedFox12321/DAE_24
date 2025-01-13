@@ -7,9 +7,11 @@ import jakarta.ejb.Startup;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.dtos.ProductsVolumeDTO;
+import spz.dae24.dtos.SensorDTO;
 import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.ProductsVolume;
+import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
 
 import java.util.ArrayList;
@@ -43,9 +45,10 @@ public class ConfigBean {
         LOGGER.info("Initiating database seeding");
         populateClients();
         populateProducts();
-        populateProductsVolume();
         populatePackages();
+        populateSensors();
         populateVolumes();
+        populateProductsVolume();
 
         LOGGER.info("Database seeding complete");
     }
@@ -99,10 +102,26 @@ public class ConfigBean {
         }
     }
 
+    public void populateSensors(){
+        try {
+            sensorBean.create(1, SensorType.GPS.name());
+            sensorBean.create(2, SensorType.TEMPERATURE.name());
+            sensorBean.create(3, SensorType.ACCELERATION.name());
+            sensorBean.create(4, SensorType.GPS.name());
+            sensorBean.create(5, SensorType.ATMOSPHERIC_PRESSURE.name());
+        } catch (Exception e) {
+           LOGGER.warning("While creating sensors: " + e.getMessage());
+        }
+    }
+
     public void populateVolumes(){
         try {
-            volumeBean.create(PackageType.BOX, packageBean.find(1), null);
-            volumeBean.create(PackageType.FREEZER, packageBean.find(2), null);
+            List<Sensor> sensors = new ArrayList<>();
+            sensors.add(sensorBean.find(1));
+            sensors.add(sensorBean.find(2));
+            sensors.add(sensorBean.find(3));
+            volumeBean.create(PackageType.BOX, 1, SensorDTO.from(sensors));
+            volumeBean.create(PackageType.FREEZER, 2, SensorDTO.from(sensors));
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());
         }

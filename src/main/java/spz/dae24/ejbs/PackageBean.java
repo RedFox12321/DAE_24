@@ -54,13 +54,16 @@ public class PackageBean {
         return _package;
     }
 
-    public void create(Client client){
-        Client clientManaged = em.merge(client);
+    public void create(int clientId) throws EntityNotFoundException {
+        if(!clientBean.exists(clientId))
+            throw new EntityNotFoundException("Client with id " + clientId + " not found");
+
+        Client client = em.find(Client.class, clientId);
 
         Package pkg = new Package(Status.ACTIVE);
-        pkg.setClient(clientManaged);
+        pkg.setClient(client);
 
-        clientManaged.addPackage(pkg);
+        client.addPackage(pkg);
 
         em.persist(pkg);
     }
