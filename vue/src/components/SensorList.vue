@@ -1,141 +1,111 @@
-<script>
-import { ref, onMounted, computed } from "vue";
+<script setup>
+import { ref } from "vue";
+import { useSensorStore } from "@/stores/sensorStore";
+import List from "./Utils/List.vue";
 
-export default {
-  name: "SensorList",
-  setup() {
-    const sensors = ref([]);
-    const loading = ref(true);
-    const error = ref(null);
-    const filter = ref("all"); // 'all' or 'active'
-    const showModal = ref(false); // Controls the popup visibility
-    const newSensorType = ref(""); // Selected sensor type in the popup
+const sensorStore = useSensorStore();
 
-    // Fetch sensors
-    onMounted(async () => {
-      try {
-        const response = await fetch("http://localhost:8080/dae24/api/sensors");
-        if (!response.ok) throw new Error("Failed to fetch sensors");
-        sensors.value = await response.json();
-      } catch (err) {
-        error.value = err.message;
-      } finally {
-        loading.value = false;
-      }
-    });
+const newSensor = ref({
+  id: "",
+  type: "",
+  interval: 2000,
+});
 
-    // Filtered sensors (computed based on the filter value)
-    const filteredSensors = computed(() => {
-      return filter.value === "active"
-        ? sensors.value.filter((sensor) => sensor.active)
-        : sensors.value;
-    });
+const addSensor = () => {
+  if (!newSensor.value.id || !newSensor.value.type) {
+    alert("Please fill in all fields!");
+    return;
+  }
 
-    // Open the create sensor modal
-    const openCreateSensorModal = () => {
-      showModal.value = true;
-    };
+  sensorStore.addSensor(newSensor.value);
 
-    // Create new sensor action
-    const createSensor = () => {
-      if (!newSensorType.value) {
-        alert("Please select a sensor type.");
-        return;
-      }
-      alert(`Create new sensor of type: ${newSensorType.value} (connect to API)`);
-      showModal.value = false; // Close the modal
-    };
+  newSensor.value = {
+    id: "",
+    type: "",
+    interval: 2000,
+  };
+};
 
-    // Delete sensor
-    const deleteSensor = (id) => {
-      alert(`Delete sensor with ID: ${id} (connect this to API call)`);
-    };
-
-    return {
-      sensors,
-      loading,
-      error,
-      filter,
-      filteredSensors,
-      showModal,
-      openCreateSensorModal,
-      createSensor,
-      deleteSensor,
-      newSensorType,
-    };
-  },
+const removeSensor = (index) => {
+  sensorStore.removeSensor(index);
 };
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-900 text-gray-200 p-6">
     <div class="max-w-4xl mx-auto">
-      <!-- Page Header -->
-      <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold">Sensor List</h1>
+      <h1 class="text-2xl font-bold mb-6">Sensor Manager</h1>
 
-        <!-- Filter Dropdown -->
-        <select
-          v-model="filter"
-          class="bg-gray-800 text-gray-200 px-4 py-2 rounded shadow"
-        >
-          <option value="all">All Sensors</option>
-          <option value="active">Active Sensors</option>
-        </select>
-
-        <!-- Create New Sensor Button -->
-        <button
-          @click="openCreateSensorModal"
-          class="flex items-center bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded shadow"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 mr-2"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-              clip-rule="evenodd"
+      <div class="bg-gray-800 rounded-lg shadow p-6 mb-6">
+        <h2 class="text-lg font-bold mb-4">Create New Sensor</h2>
+        <div class="grid grid-cols-3 gap-4 mb-4">
+          <div>
+            <label for="sensorId" class="block mb-2">Sensor ID:</label>
+            <input
+              id="sensorId"
+              v-model="newSensor.id"
+              type="text"
+              class="bg-gray-700 text-gray-200 w-full p-2 rounded"
+              placeholder="Enter sensor ID"
             />
-          </svg>
-          Create New Sensor
+          </div>
+
+          <div>
+            <label for="sensorType" class="block mb-2">Sensor Type:</label>
+            <select
+              id="sensorType"
+              v-model="newSensor.type"
+              class="bg-gray-700 text-gray-200 w-full p-2 rounded"
+            >
+              <option value="">Select Sensor Type</option>
+              <option value="Acceleration">Acceleration</option>
+              <option value="Atmospheric pressure">Atmospheric Pressure</option>
+              <option value="Geographical Location">Geographical Location</option>
+              <option value="Temperature">Temperature</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="sensorInterval" class="block mb-2">Update Interval (ms):</label>
+            <input
+              id="sensorInterval"
+              v-model="newSensor.interval"
+              type="number"
+              min="500"
+              class="bg-gray-700 text-gray-200 w-full p-2 rounded"
+              placeholder="Enter interval"
+            />
+          </div>
+        </div>
+
+        <button
+          @click="addSensor"
+          class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded shadow"
+        >
+          Add Sensor
         </button>
       </div>
 
-      <!-- Loading State -->
-      <div v-if="loading" class="text-center">
-        <span class="text-lg">Loading sensors...</span>
-      </div>
-
-      <!-- Error State -->
-      <div v-if="error" class="text-center text-red-500">
-        <span>Error: {{ error }}</span>
-      </div>
-
-      <!-- Sensors List -->
-      <div v-if="!loading && !error">
-        <ul class="space-y-4">
-          <li
-            v-for="sensor in filteredSensors"
-            :key="sensor.id"
-            class="bg-gray-800 rounded-lg shadow p-4 flex justify-between items-center"
-          >
-            <!-- Sensor Info -->
+      <List :items="sensorStore.sensors">
+        <template #default="{ item, index }">
+          <div class="flex justify-between items-center w-full">
             <div>
-              <h2 class="text-lg font-semibold">ID: {{ sensor.id }}</h2>
-              <p class="text-sm text-gray-400">{{ sensor.type }}</p>
-              <span
-                :class="sensor.active ? 'text-green-400' : 'text-red-400'"
-              >
-                {{ sensor.active ? 'active' : 'disabled' }}
-              </span>
+              <h3 class="text-lg font-semibold">ID: {{ item.id }}</h3>
+              <p class="text-sm text-gray-400">Type: {{ item.type }}</p>
+              <p class="text-sm text-gray-400">
+                Value:
+                <span v-if="item.type === 'Geographical Location'">
+                  Latitude: {{ item.value.lat }}, Longitude: {{ item.value.lon }}
+                </span>
+                <span v-else>
+                  {{ item.value }}
+                </span>
+              </p>
+              <p class="text-sm text-gray-400">Update Interval: {{ item.interval }} ms</p>
             </div>
 
-            <!-- Delete Button -->
             <button
-              @click="deleteSensor(sensor.id)"
+              @click="removeSensor(index)"
               class="flex items-center bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded shadow"
             >
               <svg
@@ -152,53 +122,22 @@ export default {
               </svg>
               Delete
             </button>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Create Sensor Modal -->
-    <div
-      v-if="showModal"
-      class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
-    >
-      <div class="bg-gray-800 text-gray-200 p-6 rounded shadow-lg w-96">
-        <h2 class="text-lg font-bold mb-4">Create New Sensor</h2>
-        <label for="sensorType" class="block mb-2">Sensor Type:</label>
-        <select
-          id="sensorType"
-          v-model="newSensorType"
-          class="bg-gray-700 text-gray-200 w-full p-2 rounded mb-4"
-        >
-          <option value="">Select Sensor Type</option>
-          <option value="Acceleration">Acceleration</option>
-          <option value="Atmospheric pressure">
-            Atmospheric Pressure
-          </option>
-          <option value="Geographical Location">
-            Geographical Location
-          </option>
-          <option value="Temperature">Temperature</option>
-        </select>
-        <div class="flex justify-end">
-          <button
-            @click="showModal = false"
-            class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded mr-2"
-          >
-            Cancel
-          </button>
-          <button
-            @click="createSensor"
-            class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded"
-          >
-            Create
-          </button>
-        </div>
-      </div>
+          </div>
+        </template>
+      </List>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Optional styles for modal transitions or finer details */
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: #1e293b; /* Dark background color */
+  }
+
+  .min-h-screen {
+    min-height: 100vh; /* Ensure the container takes full viewport height */
+  }
 </style>
