@@ -12,12 +12,12 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllVolumes",
-                query = "SELECT new Volume(v.number, v.status, v.packageType) FROM Volume v ORDER BY v.code"
+                query = "SELECT new Volume(v.code, v.number, v.status, v.packageType, v._package) FROM Volume v ORDER BY v.code"
         )
 })
+@Table(name = "volumes")
 public class Volume {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long code;
 
     @NotNull
@@ -27,24 +27,26 @@ public class Volume {
     private Status status;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "package_type")
     private PackageType packageType;
 
     @ManyToOne
     private Package _package;
 
     @OneToMany(mappedBy = "volume")
-    private final List<ProductsVolume> volumeProducts = new ArrayList<>();
+    private final List<ProductsVolume> productsVolumes = new ArrayList<>();
 
     @OneToMany(mappedBy = "volume")
     private final List<Sensor> sensors = new ArrayList<>();
 
-    public Volume() {
-    }
+    public Volume() {}
 
-    public Volume(int number, Status status, PackageType packageType) {
+    public Volume(long code, int number, Status status, PackageType packageType, Package _package) {
+        this.code = code;
         this.number = number;
         this.status = status;
         this.packageType = packageType;
+        this._package = _package;
     }
 
     public long getCode() {
@@ -92,7 +94,7 @@ public class Volume {
         return sensors.remove(sensor);
     }
 
-    public List<ProductsVolume> getVolumeProducts() {return volumeProducts;}
-    public boolean addVolumeProduct(ProductsVolume volumeProduct) {return volumeProducts.add(volumeProduct);}
-    public boolean removeVolumeProduct(ProductsVolume volumeProduct) {return volumeProducts.remove(volumeProduct);}
+    public List<ProductsVolume> getProductsVolumes() {return productsVolumes;}
+    public boolean addProductsVolume(ProductsVolume volumeProduct) {return productsVolumes.add(volumeProduct);}
+    public boolean removeProductsVolume(ProductsVolume volumeProduct) {return productsVolumes.remove(volumeProduct);}
 }

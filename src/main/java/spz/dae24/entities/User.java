@@ -6,12 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@Table(name = "users")
+@Table(
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"username", "email"})
+        }
+)
 @DiscriminatorColumn(name = "Type", discriminatorType = DiscriminatorType.STRING)
 public class User {
     @Id
-    private int id;
-
     @NotBlank
     private String username;
 
@@ -22,21 +25,16 @@ public class User {
     @Email
     private String email;
 
-    public User() {
-    }
+    @NotBlank
+    private String password;
 
-    public User(int id, String username, String name, String email) {
-        this.id = id;
+    public User() {}
+
+    public User(String username, String name, String email, String password) {
         this.username = username;
         this.name = name;
         this.email = email;
-    }
-
-    public int getId() {
-        return id;
-    }
-    public void setId(int id) {
-        this.id = id;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -58,6 +56,14 @@ public class User {
     }
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public @NotBlank String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotBlank String password) {
+        this.password = password;
     }
 }
 

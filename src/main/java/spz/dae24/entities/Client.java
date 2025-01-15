@@ -9,7 +9,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllClients",
-                query = "SELECT new Client(c.id,c.username,c.name,c.email) FROM Client c"
+                query = "SELECT new Client(c.username,c.name,c.email,c.password) FROM Client c"
         )
 })
 @DiscriminatorValue("Client")
@@ -19,14 +19,13 @@ public class Client extends User {
 
     public Client() {}
 
-    public Client(int id, String username, String name, String email) {
-        super(id, username, name, email);
+    public Client(String username, String name, String email, String password) {
+        super(username, name, email,password);
     }
 
     public List<Package> getPackages() {
         return packages;
     }
-
     public boolean addPackage(Package pack) {
         return packages.add(pack);
     }

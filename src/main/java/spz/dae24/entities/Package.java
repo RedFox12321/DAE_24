@@ -6,17 +6,18 @@ import spz.dae24.common.enums.Status;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Entity
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPackages",
-                query = "SELECT new Package(p.status) FROM Package p"
+                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p"
         )
 })
+@Table(name = "packages")
 public class Package {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long code;
 
     @Enumerated(EnumType.STRING)
@@ -29,11 +30,12 @@ public class Package {
     @OneToMany(mappedBy = "_package")
     private final List<Volume> volumes = new ArrayList<>();
 
-    public Package() {
-    }
+    public Package() {}
 
-    public Package(Status status) {
+    public Package(long code, Status status, Client client) {
+        this.code = code;
         this.status = status;
+        this.client = client;
     }
 
     public long getCode() {
@@ -59,4 +61,8 @@ public class Package {
     }
     public boolean addVolume(Volume volume) {return volumes.add(volume);}
     public boolean removeVolume(Volume volume) {return volumes.remove(volume);}
+
+    public int getVolumeCount() {
+        return volumes.size();
+    }
 }

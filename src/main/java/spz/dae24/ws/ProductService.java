@@ -7,13 +7,13 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ProductDTO;
 // import spz.dae24.dtos.ProductHistoryDTO;
 import spz.dae24.ejbs.ProductBean;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
 
 @Path("products")
 @Produces({MediaType.APPLICATION_JSON})
-@Consumes({MediaType.APPLICATION_JSON})
 public class ProductService {
     @EJB
     private ProductBean productBean;

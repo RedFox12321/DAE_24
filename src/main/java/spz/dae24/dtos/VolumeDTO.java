@@ -1,10 +1,7 @@
 package spz.dae24.dtos;
 
-import spz.dae24.common.enums.PackageType;
 import spz.dae24.entities.Volume;
-import spz.dae24.entities.Package;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,7 +82,7 @@ public class VolumeDTO {
                 volume.getNumber(),
                 volume.getStatus().name(),
                 volume.getPackage().getCode(),
-                ProductsVolumeDTO.from(volume.getVolumeProducts()),
+                ProductsVolumeDTO.from(volume.getProductsVolumes()),
                 SensorDTO.from(volume.getSensors()),
                 volume.getPackageType().name()
         );

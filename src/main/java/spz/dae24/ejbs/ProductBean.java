@@ -7,8 +7,11 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.EntityManager;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Product;
+import spz.dae24.exceptions.SensorTypeNotExistException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class ProductBean {
@@ -29,11 +32,30 @@ public class ProductBean {
         return product;
     }
 
-    public void create(int code, String name, String requiredSensor) throws EntityExistsException {
+    public void create(int code, String name, List<String> requiredSensors) throws EntityExistsException, SensorTypeNotExistException {
         if (exists(code))
             throw new EntityExistsException("Product with code " + code + " already exists");
 
-        em.persist(new Product(code, name, requiredSensor == null ? null : SensorType.valueOf(requiredSensor.toUpperCase())));
+        List<SensorType> sensorTypes = new ArrayList<>();
+        for (String sensor : requiredSensors) {
+            try {
+                sensorTypes.add(SensorType.valueOf(sensor.toUpperCase()));
+            } catch (Exception e){
+                StringBuilder msg = new StringBuilder("Sensor type " + sensor + " not found. Possible values: ");
+
+                SensorType[] values = SensorType.values();
+                int i = 1;
+                for (SensorType sensorType : values) {
+                    msg.append(sensorType.name());
+                    if (i < values.length)
+                        msg.append(", ");
+                }
+
+                throw new SensorTypeNotExistException(msg.toString());
+            }
+        }
+
+        em.persist(new Product(code, name, sensorTypes));
     }
 
     public boolean exists(int code) {

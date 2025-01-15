@@ -1,13 +1,14 @@
 package spz.dae24.ws;
 
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.SensorHistoryDTO;
-import spz.dae24.ejbs.SensorBean;
 import spz.dae24.ejbs.SensorHistoryBean;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
@@ -20,12 +21,16 @@ public class SensorHistoryService {
 
     @GET
     @Path("")
+    @Authenticated
+    @RolesAllowed("Admin")
     public List<SensorHistoryDTO> getAllSensors() {
         return SensorHistoryDTO.from(sensorHistoryBean.findAll());
     }
 
     @GET
     @Path("{id}")
+    @Authenticated
+    @RolesAllowed({"Admin", "Client"})
     public Response getSensorHistory(@PathParam("id") long id) {
         var sensorHistory = sensorHistoryBean.find(id);
 

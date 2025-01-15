@@ -1,16 +1,12 @@
 package spz.dae24.dtos;
 
-import jakarta.validation.constraints.NotBlank;
 import spz.dae24.entities.Client;
 import spz.dae24.entities.Package;
-import spz.dae24.entities.Sensor;
-import spz.dae24.entities.Volume;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientDTO {
-    private int id;
     private String username;
     private String name;
     private String email;
@@ -18,20 +14,11 @@ public class ClientDTO {
 
     public ClientDTO() {}
 
-    public ClientDTO(List<Package> packages, String email, String name, String username, int id) {
+    public ClientDTO(List<Package> packages, String email, String name, String username) {
         this.packages = packages;
         this.email = email;
         this.name = name;
         this.username = username;
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getUsername() {
@@ -71,8 +58,8 @@ public class ClientDTO {
                 client.getPackages(),
                 client.getEmail(),
                 client.getName(),
-                client.getUsername(),
-                client.getId());
+                client.getUsername()
+        );
     }
 
     public static List<ClientDTO> from(List<Client> clients) {

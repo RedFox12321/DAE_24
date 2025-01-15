@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
                 query = "SELECT pv FROM ProductsVolume pv ORDER BY pv.id"
         )
 })
+@Table(name = "products_volumes")
 public class ProductsVolume {
 
         @Id
