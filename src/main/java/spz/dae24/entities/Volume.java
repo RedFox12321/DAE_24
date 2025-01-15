@@ -1,50 +1,58 @@
 package spz.dae24.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
-import spz.dae24.entities.Package;
-import spz.dae24.entities.VolumeProduct;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-
+@NamedQueries({
+        @NamedQuery(
+                name = "getAllVolumes",
+                query = "SELECT new Volume(v.code, v.number, v.status, v.packageType, v._package) FROM Volume v ORDER BY v.code"
+        )
+})
+@Table(name = "volumes")
 public class Volume {
     @Id
-    private int code;
+    private long code;
+
     @NotNull
     private int number;
+
     @NotNull
     private Status status;
-    //@NotNull
-    //@OneToMany
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "package_type")
+    private PackageType packageType;
+
+    @ManyToOne
     private Package _package;
 
-    //@NotNull
-    //@ManyToOne
-    private List<VolumeProduct> volumeProducts = new ArrayList<>();
+    @OneToMany(mappedBy = "volume")
+    private final List<ProductsVolume> productsVolumes = new ArrayList<>();
 
     @OneToMany(mappedBy = "volume")
     private final List<Sensor> sensors = new ArrayList<>();
 
-    public Volume() {
-    }
+    public Volume() {}
 
-    public Volume(int code, int number, Status status) {
+    public Volume(long code, int number, Status status, PackageType packageType, Package _package) {
         this.code = code;
         this.number = number;
         this.status = status;
+        this.packageType = packageType;
+        this._package = _package;
     }
 
-    public int getCode() {
+    public long getCode() {
         return code;
     }
-    public void setCode(int code) {
+    public void setCode(long code) {
         this.code = code;
     }
 
@@ -65,8 +73,15 @@ public class Volume {
     public Package getPackage() {
         return _package;
     }
-    public void set_package(Package _package) {
+    public void setPackage(Package _package) {
         this._package = _package;
+    }
+
+    public PackageType getPackageType() {
+        return packageType;
+    }
+    public void setPackageType(PackageType packageType) {
+        this.packageType = packageType;
     }
 
     public List<Sensor> getSensors() {
@@ -78,4 +93,8 @@ public class Volume {
     public boolean removeSensor(Sensor sensor) {
         return sensors.remove(sensor);
     }
+
+    public List<ProductsVolume> getProductsVolumes() {return productsVolumes;}
+    public boolean addProductsVolume(ProductsVolume volumeProduct) {return productsVolumes.add(volumeProduct);}
+    public boolean removeProductsVolume(ProductsVolume volumeProduct) {return productsVolumes.remove(volumeProduct);}
 }

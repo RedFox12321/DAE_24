@@ -16,24 +16,28 @@ import java.util.List;
                 query = "SELECT new Sensor(s.id, s.active, s.type) FROM Sensor s ORDER BY s.type"
         )
 })
+@Table(name = "sensors")
 public class Sensor implements Serializable {
     @Id
     private long id;
     private boolean active;
+
     @Enumerated(EnumType.STRING)
     private SensorType type;
-    @NotNull
+
     @ManyToOne
     private Volume volume;
+
     @OneToMany(mappedBy = "sensor")
     private final List<SensorHistory> history = new ArrayList<>();
 
     public Sensor() {}
 
-    public Sensor(long id, boolean active, SensorType type) {
+    public Sensor(long id, boolean active, SensorType type, Volume volume) {
         this.id = id;
         this.active = active;
         this.type = type;
+        this.volume = volume;
     }
 
     public long getId() {
