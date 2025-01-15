@@ -14,7 +14,7 @@ import spz.dae24.entities.Client;
 
 import java.util.List;
 
-@Path("sensors")
+@Path("packages")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
 public class PackageService {
@@ -63,4 +63,27 @@ public class PackageService {
 
         return Response.ok(PackageDTO.from(_package)).build();
     }
+
+/*
+    @POST
+    @Path("")
+    @RolesAllowed("Logistic")
+    public Response createPackage(PackageDTO packageDTO) {
+        if (packageDTO == null)
+            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        var volumes = packageDTO.getVolumes();
+        if (volumes.isEmpty())
+            return Response.status(422, "Package needs at least 1 volume.").build();
+
+        for (var volume : volumes) {
+            var productsVolumes = volume.getVolumeProducts();
+            if (productsVolumes.isEmpty())
+                return Response.status(422, "One of the volumes does not have products.").build();
+        }
+
+        var _package = packageBean.findWithVolumes(code);
+        return Response.ok(PackageDTO.from(_package)).build();
+    }
+*/
 }
