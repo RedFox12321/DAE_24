@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import PackageMaker from '@/components/PackageMaker.vue'
+import PackagesView from '@/views/PackagesView.vue'
 import SensorList from '@/components/SensorList.vue'
 
 const router = createRouter({
@@ -22,7 +22,7 @@ const router = createRouter({
     {
       path: '/packaging',
       name: 'packaging',
-      component: PackageMaker
+      component: PackagesView
     },
     {
       path: '/sensors',
