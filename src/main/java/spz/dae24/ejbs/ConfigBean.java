@@ -32,6 +32,8 @@ public class ConfigBean {
     @EJB
     private ClientBean clientBean;
     @EJB
+    private LogisticBean logisticBean;
+    @EJB
     private AdminBean adminBean;
 
     // create test objects
@@ -246,6 +248,15 @@ public class ConfigBean {
                 new String[]{"iccarvalho", "Inês Catarina Carvalho", "ines.carvalho@example.com"}
         );
 
+        List<String[]> logistics = List.of(
+                new String[]{"logi1", "Carlos Silva", "logi1@ipleiria.pt"},
+                new String[]{"logi2", "Ana Beatriz", "logi2@ipleiria.pt"},
+                new String[]{"logi3", "Pedro Oliveira", "logi3@ipleiria.pt"},
+                new String[]{"jfernandes", "Joana Fernandes", "joana.fernandes@example.com"},
+                new String[]{"msantos", "Miguel Santos", "miguel.santos@example.com"},
+                new String[]{"afonseca", "Amélia Fonseca", "amelia.fonseca@example.com"}
+        );
+
         List<String[]> admins = List.of(
                 new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
                 new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
@@ -257,6 +268,9 @@ public class ConfigBean {
         try {
             for (String[] admin : admins) {
                 adminBean.create(admin[0], admin[1], admin[2], "123");
+            }
+            for (String[] logi : logistics) {
+                logisticBean.create(logi[0], logi[1], logi[2], "123");
             }
             for (String[] client : clients) {
                 clientBean.create(client[0], client[1], client[2], "123");

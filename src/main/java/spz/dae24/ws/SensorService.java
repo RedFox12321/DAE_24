@@ -1,5 +1,6 @@
 package spz.dae24.ws;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -22,12 +23,14 @@ public class SensorService {
 
     @GET
     @Path("")
+    @RolesAllowed("Admin")
     public List<SensorDTO> getAllSensors() {
         return SensorDTO.from(sensorBean.findAll());
     }
 
     @GET
     @Path("{id}")
+    @RolesAllowed({"Admin", "Client"})
     public Response getSensor(@PathParam("id") long id) {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorDTO.from(sensor);
@@ -36,6 +39,8 @@ public class SensorService {
         return Response.ok(sensorDTO).build();
     }
 
+/*
+    //NOT NEEDED?
     @PATCH
     @Path("{id}")
     public Response disableSensor(@PathParam("id") long id) {
@@ -44,4 +49,5 @@ public class SensorService {
 
         return Response.ok(SensorDTO.from(sensor)).build();
     }
+*/
 }
