@@ -17,7 +17,7 @@ import java.util.List;
         )
 })
 @Table(name = "sensors")
-public class Sensor implements Serializable {
+public class Sensor extends Versionable implements Serializable {
     @Id
     private long id;
     private boolean active;

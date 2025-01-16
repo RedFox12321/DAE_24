@@ -28,13 +28,14 @@ public class VolumeService {
 
     @GET
     @Path("")
-    @RolesAllowed("admin")
+    @RolesAllowed("Admin")
     public List<VolumeDTO> getVolumes() {
         return VolumeDTO.from(volumeBean.findAll());
     }
 
     @GET
     @Path("{code}")
+    @RolesAllowed("Admin")
     public Response getVolume(@PathParam("code") long code) {
        var volume = volumeBean.find(code);
        var volumeDTO = VolumeDTO.from(volume);
@@ -45,6 +46,7 @@ public class VolumeService {
 
     @POST
     @Path("")
+    @RolesAllowed("Admin")
     @Consumes({MediaType.APPLICATION_JSON})
     public Response createVolume(VolumeDTO volumeDTO) {
         volumeBean.create(
@@ -60,6 +62,7 @@ public class VolumeService {
 
     @PATCH
     @Path("{code}")
+    @RolesAllowed("Admin")
     public Response updateStatusVolume(@PathParam("code") long code, VolumeDTO volumeDTO) throws EntityNotFoundException {
         if (volumeDTO.getStatus().equals(Status.ACTIVE.name()))
             return Response.status(400, "Volumes cannot be activated.").build();
