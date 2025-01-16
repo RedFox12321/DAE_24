@@ -18,7 +18,7 @@ import java.util.List;
 @Path("packages")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-// @Authenticated
+@Authenticated
 public class PackageService {
     @EJB
     private PackageBean packageBean;
@@ -70,6 +70,7 @@ public class PackageService {
 
     @PATCH
     @Path("{code}")
+    @RolesAllowed({"Admin", "Client"})
     public Response cancelPackage(@PathParam("code") long code) {
         packageBean.cancelPackage(code);
 
@@ -78,7 +79,7 @@ public class PackageService {
     }
     @GET
     @Path("status/{statusType}")
-    // @RolesAllowed("Admin")
+    @RolesAllowed("Admin")
     public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) {
         return PackageDTO.from(packageBean.findByStatus(statusType));
     }
