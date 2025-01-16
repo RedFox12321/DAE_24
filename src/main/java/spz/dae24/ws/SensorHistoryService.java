@@ -15,13 +15,13 @@ import java.util.List;
 @Path("sensor-history")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class SensorHistoryService {
     @EJB
     private SensorHistoryBean sensorHistoryBean;
 
     @GET
     @Path("")
-    @Authenticated
     @RolesAllowed("Admin")
     public List<SensorHistoryDTO> getAllSensors() {
         return SensorHistoryDTO.from(sensorHistoryBean.findAll());
@@ -29,7 +29,6 @@ public class SensorHistoryService {
 
     @GET
     @Path("{id}")
-    @Authenticated
     @RolesAllowed({"Admin", "Client"})
     public Response getSensorHistory(@PathParam("id") long id) {
         var sensorHistory = sensorHistoryBean.find(id);

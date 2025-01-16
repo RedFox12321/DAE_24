@@ -13,7 +13,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSensors",
-                query = "SELECT new Sensor(s.id, s.active, s.type) FROM Sensor s ORDER BY s.type"
+                query = "SELECT new Sensor(s.id, s.active, s.type, s.volume) FROM Sensor s ORDER BY s.type"
         )
 })
 @Table(name = "sensors")

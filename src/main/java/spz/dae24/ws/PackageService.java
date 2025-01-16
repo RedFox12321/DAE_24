@@ -11,12 +11,14 @@ import spz.dae24.dtos.PackageDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.entities.Client;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
 @Path("packages")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class PackageService {
     @EJB
     private PackageBean packageBean;
@@ -28,6 +30,7 @@ public class PackageService {
 
     @GET
     @Path("")
+    @RolesAllowed("Admin")
     public List<PackageDTO> getPackages() {
         return PackageDTO.from(packageBean.findAll());
     }
