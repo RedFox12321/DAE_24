@@ -32,6 +32,14 @@ public class SensorBean {
         return sensor;
     }
 
+    public Sensor findWithHistoryAndVolume(long id) throws EntityNotFoundException {
+        var sensor = find(id);
+        Hibernate.initialize(sensor.getHistory());
+        Hibernate.initialize(sensor.getVolume());
+
+        return sensor;
+    }
+
     public List<Sensor> findAll() {
         return em.createNamedQuery("getAllSensors", Sensor.class).getResultList();
     }

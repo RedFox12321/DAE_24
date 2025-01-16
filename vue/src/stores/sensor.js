@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
+import axios from "axios";
 
 export const useSensorStore = defineStore('sensor', () => {
   const sensors = ref(JSON.parse(localStorage.getItem('sensors')) || []);
@@ -33,6 +34,7 @@ export const useSensorStore = defineStore('sensor', () => {
 
     sensor.timer = setInterval(() => {
       updateSensorValueGradually(sensor);
+      sendSensorData(sensor.id);
     }, sensor.interval);
 
     sensors.value.push(sensor);
@@ -59,9 +61,35 @@ export const useSensorStore = defineStore('sensor', () => {
     localStorage.setItem('sensors', JSON.stringify(sensors.value));
   };
 
+  const sendSensorData = async (sensorId) => {
+    const sensor = sensors.value.find((s) => s.id === sensorId);
+    if (!sensor) {
+      console.error("Sensor not found!");
+      return;
+    }
+
+    const payload = {
+      sensorId: sensor.id,
+      value: sensor.value,
+      // type: sensor.type,
+      // timestamp: new Date().toISOString(),
+    };
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/dae24/api/sensor-history",
+        payload
+      );
+      console.log("Data sent successfully:", response.data);
+    } catch (error) {
+      console.error("Error sending sensor data:", error);
+    }
+  };
+
   return {
     sensors,
     addSensor,
     removeSensor,
+    sendSensorData
   };
 });
