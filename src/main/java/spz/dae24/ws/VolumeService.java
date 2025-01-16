@@ -62,12 +62,8 @@ public class VolumeService {
 
     @PATCH
     @Path("{code}")
-    @RolesAllowed("Admin")
-    public Response updateStatusVolume(@PathParam("code") long code, VolumeDTO volumeDTO) throws EntityNotFoundException {
-        if (volumeDTO.getStatus().equals(Status.ACTIVE.name()))
-            return Response.status(400, "Volumes cannot be activated.").build();
-
-        volumeBean.updateStatus(code, volumeDTO.getStatus());
+    public Response deliverVolume(@PathParam("code") long code) throws EntityNotFoundException {
+        volumeBean.deliver(code);
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
         return Response.ok(VolumeDTO.from(volume)).build();

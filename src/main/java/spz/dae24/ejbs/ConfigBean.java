@@ -205,7 +205,7 @@ public class ConfigBean {
                 productCodes = populateProductsVolume(currentVolumeCode);
                 populateWithSensors(currentVolumeCode, type, productCodes);
 
-                volumeBean.updateStatus(currentVolumeCode++, Status.DELIVERED.name());
+                volumeBean.deliver(currentVolumeCode++);
             }
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());

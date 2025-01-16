@@ -2,6 +2,8 @@ package spz.dae24.ejbs;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -13,6 +15,7 @@ import org.hibernate.Hibernate;
 import spz.dae24.common.enums.Status;
 import spz.dae24.entities.Client;
 import spz.dae24.entities.Package;
+import spz.dae24.entities.Volume;
 
 import java.util.List;
 
@@ -23,6 +26,8 @@ public class PackageBean {
 
     @EJB
     private ClientBean clientBean;
+    @EJB
+    private VolumeBean volumeBean;
 
     public List<Package> findAll() {
         return em.createNamedQuery("getAllPackages", Package.class).getResultList();
@@ -87,15 +92,21 @@ public class PackageBean {
     }
 
     public void completePackage(long code) throws EntityNotFoundException {
-        Package pkg = em.find(Package.class, code);
+        Package pkg = find(code);
         pkg.setStatus(Status.DELIVERED);
 
         em.merge(pkg);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void cancelPackage(long code) throws EntityNotFoundException {
-        Package pkg = em.find(Package.class, code);
+        Package pkg = find(code);
+
         pkg.setStatus(Status.CANCELLED);
+        for(Volume volume : pkg.getVolumes()) {
+            if(!volume.getStatus().equals(Status.DELIVERED))
+                volumeBean.cancel(volume.getCode());
+        }
 
         em.merge(pkg);
     }

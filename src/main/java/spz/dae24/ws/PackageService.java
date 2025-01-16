@@ -68,6 +68,14 @@ public class PackageService {
         return Response.ok(PackageDTO.from(_package)).build();
     }
 
+    @PATCH
+    @Path("{code}")
+    public Response cancelPackage(@PathParam("code") long code) {
+        packageBean.cancelPackage(code);
+
+        var pck = packageBean.findWithVolumes(code);
+        return Response.ok(PackageDTO.from(pck)).build();
+    }
     @GET
     @Path("status/{statusType}")
     // @RolesAllowed("Admin")

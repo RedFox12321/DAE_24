@@ -16,13 +16,18 @@
               </RouterLink>
             </li>
             <li>
-              <RouterLink to="/packaging" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Packaging
+              <RouterLink to="/logistics" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
+                Logistics
               </RouterLink>
             </li>
             <li>
               <RouterLink to="/sensors" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
                 Sensors
+              </RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/packages" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
+                Packages
               </RouterLink>
             </li>
           </ul>
