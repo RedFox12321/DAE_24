@@ -10,16 +10,16 @@ public class SensorDTO {
     private long id;
     private boolean active;
     private String type;
-    private Volume volume;
+    private long volumeCode;
     private List<SensorHistoryDTO> history;
 
     public SensorDTO() {}
 
-    public SensorDTO(long id, boolean active, String type, Volume volume, List<SensorHistoryDTO> history) {
+    public SensorDTO(long id, boolean active, String type, long volumeCode, List<SensorHistoryDTO> history) {
         this.id = id;
         this.active = active;
         this.type = type;
-        this.volume = volume;
+        this.volumeCode = volumeCode;
         this.history = history;
     }
 
@@ -44,11 +44,11 @@ public class SensorDTO {
         this.type = type;
     }
 
-    public Volume getVolume() {
-        return volume;
+    public long getVolumeCode() {
+        return volumeCode;
     }
-    public void setVolume(Volume volume) {
-        this.volume = volume;
+    public void setVolumeCode(long volumeCode) {
+        this.volumeCode = volumeCode;
     }
 
     public List<SensorHistoryDTO> getHistory() {
@@ -63,7 +63,7 @@ public class SensorDTO {
                 sensor.getId(),
                 sensor.isActive(),
                 sensor.getType().getName(),
-                sensor.getVolume(),
+                sensor.getVolume().getCode(),
                 SensorHistoryDTO.from(sensor.getHistory())
         );
     }
