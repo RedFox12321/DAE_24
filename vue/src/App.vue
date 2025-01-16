@@ -1,6 +1,7 @@
 <script setup>
-
-
+  import {useAuthStore} from './stores/auth.js'
+  import {ref} from 'vue'
+  const storeAuth = useAuthStore();
 </script>
 
 <template>
@@ -20,6 +21,14 @@
               </RouterLink>
             </li>
           </ul>
+          <div>
+              <RouterLink v-if="!storeAuth.isLoggedIn" to="/login" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
+                Login
+              </RouterLink>
+              <span v-else class="text-gray-500">
+                User {{storeAuth.username}}
+              </span>
+          </div>
         </nav>
       </div>
     </header>

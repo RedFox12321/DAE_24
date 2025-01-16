@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import PackagesView from '@/views/PackagesView.vue'
 import SensorList from '@/components/SensorList.vue'
+import LoginPage from '@/components/LoginPage.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,11 @@ const router = createRouter({
       path: '/sensors',
       name: 'sensors',
       component: SensorList
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage
     }
   ],
 })
