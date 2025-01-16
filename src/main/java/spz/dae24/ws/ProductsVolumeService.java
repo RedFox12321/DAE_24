@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.ejbs.ProductsVolumeBean;
 import spz.dae24.security.Authenticated;
+import jakarta.annotation.security.RolesAllowed;
 
 import java.util.List;
 
@@ -21,12 +22,14 @@ public class ProductsVolumeService {
 
     @GET
     @Path("")
+    @RolesAllowed("Admin")
     public List<ProductsVolumeDTO> getAllProductsVolume() {
         return ProductsVolumeDTO.from(productsVolumeBean.findAll());
     }
 
     @GET
     @Path("{id}")
+    @RolesAllowed("Admin")
     public Response getProductsVolume(@PathParam("id") long id) {
         var productsVolume = productsVolumeBean.find(id);
 

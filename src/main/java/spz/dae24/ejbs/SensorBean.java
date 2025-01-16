@@ -6,7 +6,7 @@ import org.hibernate.Hibernate;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
-import spz.dae24.exceptions.SensorTypeNotExistException;
+import spz.dae24.exceptions.TypeNotExistException;
 
 import java.util.List;
 
@@ -28,6 +28,14 @@ public class SensorBean {
     public Sensor findWithHistory(long id) throws EntityNotFoundException {
         var sensor = find(id);
         Hibernate.initialize(sensor.getHistory());
+
+        return sensor;
+    }
+
+    public Sensor findWithHistoryAndVolume(long id) throws EntityNotFoundException {
+        var sensor = find(id);
+        Hibernate.initialize(sensor.getHistory());
+        Hibernate.initialize(sensor.getVolume());
 
         return sensor;
     }
@@ -58,7 +66,7 @@ public class SensorBean {
                     msg.append(", ");
             }
 
-            throw new SensorTypeNotExistException(msg.toString());
+            throw new TypeNotExistException(msg.toString());
         }
 
         em.persist(new Sensor(id, true, sensorType, volume));

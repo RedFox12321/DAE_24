@@ -22,14 +22,14 @@ public class ClientService {
 
     @GET
     @Path("")
-    @RolesAllowed("admin")
+    @RolesAllowed("Admin")
     public List<ClientDTO> getAllClients() {
         return ClientDTO.from(clientBean.findAll());
     }
 
     @GET
     @Path("{username}")
-    @RolesAllowed("admin")
+    @RolesAllowed("Admin")
     public Response getClient(@PathParam("username") String username) {
         var client = clientBean.find(username);
         var clientDTO = ClientDTO.from(client);

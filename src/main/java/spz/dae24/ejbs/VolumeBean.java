@@ -1,6 +1,9 @@
 package spz.dae24.ejbs;
 
+import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -9,6 +12,7 @@ import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
 import spz.dae24.entities.Package;
+import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
 
 import java.util.List;
@@ -17,6 +21,9 @@ import java.util.List;
 public class VolumeBean {
     @PersistenceContext
     private EntityManager em;
+
+    @EJB
+    private SensorBean sensorBean;
 
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
@@ -52,10 +59,27 @@ public class VolumeBean {
         pkg.addVolume(volume);
     }
 
-    public void updateStatus(long code, String status) throws EntityNotFoundException {
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void deliver(long code) throws EntityNotFoundException {
         var volume = find(code);
 
-        volume.setStatus(Status.valueOf(status.toUpperCase()));
+        volume.setStatus(Status.DELIVERED);
+        for(Sensor s : volume.getSensors()){
+            sensorBean.disable(s.getId());
+        }
+
+        em.merge(volume);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void cancel(long code) throws EntityNotFoundException {
+        var volume = find(code);
+
+        volume.setStatus(Status.CANCELLED);
+        for(Sensor s : volume.getSensors()){
+            sensorBean.disable(s.getId());
+        }
+
         em.merge(volume);
     }
 

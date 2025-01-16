@@ -1,27 +1,35 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref({})
-    const token = ref()
+    const token = ref('')
+  const username = ref('')
 
     const login = async (credentials) => {
         try {
-            const token = await axios.post('login', {
+            const tokenResponse = await axios.post('auth/login', {
                 username: credentials.username,
                 password: credentials.password
             })
-        token.value = token.data
+            token.value = tokenResponse.data
+            axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
+          username.value = credentials.username
+          return true
 
         } catch (e) {
-
+          return false
         }
     }
 
+  const isLoggedIn = computed(() => {
+    return token.value != ''
+  })
+
     return {
-        user,
-        login
+      login,
+      username,
+      isLoggedIn
     }
 })

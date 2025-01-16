@@ -19,8 +19,10 @@ import spz.dae24.security.TokenIssuer;
 public class AuthService {
     @Inject
     private TokenIssuer issuer;
+
     @EJB
     private UserBean userBean;
+
     @POST
     @Path("/login")
     public Response authenticate(@Valid AuthDTO auth) {

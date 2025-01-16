@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.Status;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
         )
 })
 @Table(name = "volumes")
-public class Volume {
+public class Volume extends Versionable implements Serializable {
     @Id
     private long code;
 

@@ -32,6 +32,8 @@ public class ConfigBean {
     @EJB
     private ClientBean clientBean;
     @EJB
+    private LogisticBean logisticBean;
+    @EJB
     private AdminBean adminBean;
 
     // create test objects
@@ -54,19 +56,19 @@ public class ConfigBean {
 
     public void populateProducts(){
         List<String> productNames = List.of(
-                "Arroz",
-                "Feijão dos altos mares",
-                "Massa perfeita",
-                "Leite da Majéstica Força Ginyu",
-                "Café da manhã do Sanji",
-                "Iogurte da Prozis",
-                "Farinha de Trigo",
-                "Ovos da Hornet do Cavaleiro Vazio",
-                "Manteiga da Perfeição",
-                "Queijo do Soldado Invernal",
-                "Presunto da 2B",
-                "Carne Bovina",
-                "Televisão BSUS 16:9"
+            "Arroz",
+            "Feijão dos altos mares",
+            "Massa perfeita",
+            "Leite da Majéstica Força Ginyu",
+            "Café da manhã do Sanji",
+            "Iogurte da Prozis",
+            "Farinha de Trigo",
+            "Ovos da Hornet do Cavaleiro Vazio",
+            "Manteiga da Perfeição",
+            "Queijo do Soldado Invernal",
+            "Presunto da 2B",
+            "Carne Bovina",
+            "Televisão BSUS 16:9"
         );
 
         int code = 100;
@@ -187,7 +189,7 @@ public class ConfigBean {
                 }
             }
         } catch (Exception e) {
-           LOGGER.warning("While creating sensors: " + e.getMessage());
+            LOGGER.warning("While creating sensors: " + e.getMessage());
         }
     }
 
@@ -203,7 +205,7 @@ public class ConfigBean {
                 productCodes = populateProductsVolume(currentVolumeCode);
                 populateWithSensors(currentVolumeCode, type, productCodes);
 
-                volumeBean.updateStatus(currentVolumeCode++, Status.DELIVERED.name());
+                volumeBean.deliver(currentVolumeCode++);
             }
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());
@@ -231,32 +233,44 @@ public class ConfigBean {
     public void populateClients() {
 
         List<String[]> clients = List.of(
-                new String[]{"clt1", "João Manuel Silva", "c1@ipleiria.pt"},
-                new String[]{"clt2", "Maria Oliveira", "c2@ipleiria.pt"},
-                new String[]{"clt3", "António Luís Pereira", "c3@ipleiria.pt"},
-                new String[]{"clt4", "José Fernandes", "c4@ipleiria.pt"},
-                new String[]{"clt5", "Ana Beatriz Costa", "c5@ipleiria.pt"},
-                new String[]{"pamartins", "Pedro Afonso Martins", "pedro.martins@example.com"},
-                new String[]{"cssousa", "Catarina Sofia Sousa", "catarina.sousa@example.com"},
-                new String[]{"lgoncalves", "Luís Gonçalves", "luis.goncalves@example.com"},
-                new String[]{"rmendes", "Rita Maria Mendes", "rita.mendes@example.com"},
-                new String[]{"mjrocha", "Manuel Joaquim Rocha", "manuel.rocha@example.com"},
-                new String[]{"salves", "Sofia Alves", "sofia.alves@example.com"},
-                new String[]{"bmsantos", "Bruno Miguel Santos", "bruno.santos@example.com"},
-                new String[]{"iccarvalho", "Inês Catarina Carvalho", "ines.carvalho@example.com"}
+            new String[]{"clt1", "João Manuel Silva", "c1@ipleiria.pt"},
+            new String[]{"clt2", "Maria Oliveira", "c2@ipleiria.pt"},
+            new String[]{"clt3", "António Luís Pereira", "c3@ipleiria.pt"},
+            new String[]{"clt4", "José Fernandes", "c4@ipleiria.pt"},
+            new String[]{"clt5", "Ana Beatriz Costa", "c5@ipleiria.pt"},
+            new String[]{"pamartins", "Pedro Afonso Martins", "pedro.martins@example.com"},
+            new String[]{"cssousa", "Catarina Sofia Sousa", "catarina.sousa@example.com"},
+            new String[]{"lgoncalves", "Luís Gonçalves", "luis.goncalves@example.com"},
+            new String[]{"rmendes", "Rita Maria Mendes", "rita.mendes@example.com"},
+            new String[]{"mjrocha", "Manuel Joaquim Rocha", "manuel.rocha@example.com"},
+            new String[]{"salves", "Sofia Alves", "sofia.alves@example.com"},
+            new String[]{"bmsantos", "Bruno Miguel Santos", "bruno.santos@example.com"},
+            new String[]{"iccarvalho", "Inês Catarina Carvalho", "ines.carvalho@example.com"}
+        );
+
+        List<String[]> logistics = List.of(
+            new String[]{"logi1", "Carlos Silva", "logi1@ipleiria.pt"},
+            new String[]{"logi2", "Ana Beatriz", "logi2@ipleiria.pt"},
+            new String[]{"logi3", "Pedro Oliveira", "logi3@ipleiria.pt"},
+            new String[]{"jfernandes", "Joana Fernandes", "joana.fernandes@example.com"},
+            new String[]{"msantos", "Miguel Santos", "miguel.santos@example.com"},
+            new String[]{"afonseca", "Amélia Fonseca", "amelia.fonseca@example.com"}
         );
 
         List<String[]> admins = List.of(
-                new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
-                new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
-                new String[]{"apereira", "António Luís Pereira", "antonio.pereira@example.com"},
-                new String[]{"rsmendes", "Rita Sofia Mendes", "rita.mendes@example.com"},
-                new String[]{"mrocha", "Manuel Rocha", "manuel.rocha@example.com"}
+            new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
+            new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
+            new String[]{"apereira", "António Luís Pereira", "antonio.pereira@example.com"},
+            new String[]{"rsmendes", "Rita Sofia Mendes", "rita.mendes@example.com"},
+            new String[]{"mrocha", "Manuel Rocha", "manuel.rocha@example.com"}
         );
 
         try {
             for (String[] admin : admins) {
                 adminBean.create(admin[0], admin[1], admin[2], "123");
+            }
+            for (String[] logi : logistics) {
+                logisticBean.create(logi[0], logi[1], logi[2], "123");
             }
             for (String[] client : clients) {
                 clientBean.create(client[0], client[1], client[2], "123");

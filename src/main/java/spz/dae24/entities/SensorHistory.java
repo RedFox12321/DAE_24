@@ -14,7 +14,7 @@ import java.io.Serializable;
                 query = "SELECT sh FROM SensorHistory sh ORDER BY sh.id, sh.timestamp"
         )
 )
-public class SensorHistory implements Serializable {
+public class SensorHistory extends Versionable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

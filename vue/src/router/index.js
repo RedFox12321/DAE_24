@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import PackageMaker from '@/components/PackageMaker.vue'
+import LogisticsView from '@/views/LogisticsView.vue'
+import SensorList from '@/components/SensorList.vue'
+import LoginPage from '@/components/LoginPage.vue'
+import PackageList from '@/components/PackageList.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,9 +22,24 @@ const router = createRouter({
       component: () => import('../views/AboutView.vue'),
     },
     {
-      path: '/packaging',
-      name: 'packaging',
-      component: PackageMaker
+      path: '/logistics',
+      name: 'logistics',
+      component: LogisticsView
+    },
+    {
+      path: '/sensors',
+      name: 'sensors',
+      component: SensorList
+    },
+    {
+      path: '/packages',
+      name: 'packages',
+      component: PackageList
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginPage
     }
   ],
 })
