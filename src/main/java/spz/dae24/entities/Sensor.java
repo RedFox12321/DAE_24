@@ -34,12 +34,6 @@ public class Sensor implements Serializable {
 
     public Sensor() {}
 
-    public Sensor(long id, boolean active, SensorType type) {
-        this.id = id;
-        this.active = active;
-        this.type = type;
-    }
-
     public Sensor(long id, boolean active, SensorType type, Volume volume) {
         this.id = id;
         this.active = active;
