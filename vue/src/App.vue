@@ -28,6 +28,11 @@ const filteredLinks = computed(() => {
                 {{ link.label }}
               </RouterLink>
             </li>
+            <li>
+              <RouterLink to="/customerSupport" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
+                Customer Support
+              </RouterLink>
+            </li>
           </ul>
           <div>
               <RouterLink v-if="!storeAuth.isLoggedIn" to="/login" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">

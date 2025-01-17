@@ -1,9 +1,12 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue"
+import {useAuthStore} from './stores/auth.js'
 
 export const usePackageStore = defineStore('packages', () => {
+  const authStore = useAuthStore()
   const packages = ref([])
+  const activePackages = ref([])
 
     const getPackages = async () => {
         try {
@@ -14,6 +17,18 @@ export const usePackageStore = defineStore('packages', () => {
             return false
         }
     }
+
+  const getMyActivePackages = async () => {
+    try {
+      const result = await axios.get('packages/my/'+ authStore.username)
+      activePackages.value = result.data
+      activePackages.value = activePackages.value.filter(pkg => pkg.status == "ACTIVE")
+      return activePackages
+    } catch (e) {
+      return false
+    }
+  };
+
 
   const cancelPackage = async (code) => {
     try {
@@ -26,7 +41,9 @@ export const usePackageStore = defineStore('packages', () => {
 
     return {
       packages,
-        getPackages,
+      activePackages,
+      getPackages,
+      getMyActivePackages,
       cancelPackage
     }
 })

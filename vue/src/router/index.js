@@ -4,6 +4,7 @@ import LogisticsView from '@/views/LogisticsView.vue'
 import SensorList from '@/components/SensorList.vue'
 import LoginPage from '@/components/LoginPage.vue'
 import PackageList from '@/components/PackageList.vue'
+import CustomerSupportView from "@/views/CustomerSupportView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +41,11 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: LoginPage
+    },
+    {
+      path: '/customerSupport',
+      name: 'customer support',
+      component: CustomerSupportView,
     }
   ],
 })
