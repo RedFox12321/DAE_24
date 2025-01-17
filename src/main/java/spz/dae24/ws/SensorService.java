@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.SensorDTO;
+import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.dtos.SensorHistoryDTO;
 import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.ejbs.SensorBean;
