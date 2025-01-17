@@ -1,24 +1,32 @@
 <script setup>
   import { ref } from "vue";
 import { usePackageStore } from "@/stores/packages.js";
+import { useVolumeStore } from "@/stores/volumes.js";
 import { useRoute } from "vue-router"
 import List from "./Utils/List.vue";
 
 const code = useRoute().params.code;
 const packageStore = usePackageStore();
-packageStore.getPackage(code);
+const volumeStore = useVolumeStore();
+
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-900 text-gray-200 p-6">
+  <div class="min-h-screen text-gray-200 p-6">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Package {{code}}</h1>
+      <h1 class="text-2xl font-bold">Package #{{code}}</h1>
+      <p class="text-m">Ordered By: {{
+        packageStore.curPackage.clientUsername }}</p>
+      <p class="text-m mb-6">Status: {{
+        packageStore.curPackage.status }}</p>
       <h1 class="text-xl font-bold mb-6">Volumes</h1>
       <List :items="packageStore.curPackage.volumes">
       <template #default="{ item, index }">
         <div class="flex justify-between items-center w-full">
           <div>
-            <h3 class="text-lg font-semibold">Code: {{ item.code }}</h3>
+            <RouterLink :to="{name : 'volume', params : {code: code}}">
+              <h3 class="text-lg font-semibold">Volume #{{ item.code }}</h3>
+            </RouterLink>
             <p class="text-sm text-gray-400">Number: {{ item.number }}</p>
             <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
             <p class="text-sm text-gray-400">Package Type: {{ item.packageType }}</p>
