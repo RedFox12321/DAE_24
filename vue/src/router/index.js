@@ -6,6 +6,7 @@ import LoginPage from '@/components/LoginPage.vue'
 import PackageList from '@/components/PackageList.vue'
 import PackageDisplay from '@/components/PackageDisplay.vue'
 import VolumeDisplay from '@/components/VolumeDisplay.vue'
+import SensorDisplay from '@/components/SensorDisplay.vue'
 import CustomerSupportView from "@/views/CustomerSupportView.vue";
 import { useAuthStore } from '@/stores/auth'
 
@@ -49,6 +50,11 @@ const router = createRouter({
       path: '/volume/:code',
       name: 'volume',
       component: VolumeDisplay
+    },
+    {
+      path: '/sensor/:id',
+      name: 'sensor',
+      component: SensorDisplay
     },
     {
       path: '/login',

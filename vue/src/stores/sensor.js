@@ -4,6 +4,7 @@ import axios from "axios";
 
 export const useSensorStore = defineStore('sensor', () => {
   const sensors = ref(JSON.parse(localStorage.getItem('sensors')) || []);
+  const curSensor = ref({})
 
   const generateSensorValue = (type) => {
     switch (type) {
@@ -86,10 +87,22 @@ export const useSensorStore = defineStore('sensor', () => {
     }
   };
 
+    const getSensor = async (id) => {
+        try {
+            const result = await axios.get('sensors/' + id)
+          curSensor.value = result.data
+            return curSensor.value
+        } catch (e) {
+            return false
+        }
+    }
+
   return {
     sensors,
     addSensor,
     removeSensor,
-    sendSensorData
+    sendSensorData,
+    getSensor,
+    curSensor
   };
 });
