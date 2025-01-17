@@ -32,6 +32,7 @@ public class Volume extends Versionable implements Serializable {
     private PackageType packageType;
 
     @ManyToOne
+    @NotNull
     private Package _package;
 
     @OneToMany(mappedBy = "volume")
