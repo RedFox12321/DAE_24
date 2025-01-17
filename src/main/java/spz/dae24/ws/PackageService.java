@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import spz.dae24.dtos.PackageDTO;
+import spz.dae24.dtos.PackageWithVolumesDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.entities.Client;
@@ -41,7 +42,7 @@ public class PackageService {
     public Response getPackagesByClient(@PathParam("username") String username) {
         var client = clientBean.findWithPackages(username);
 
-        return Response.ok(PackageDTO.from(client.getPackages())).build();
+        return Response.ok(PackageWithVolumesDTO.from(client.getPackages())).build();
     }
 
     @GET
@@ -56,7 +57,7 @@ public class PackageService {
 
         var client = clientBean.findWithPackages(username);
 
-        return Response.ok(PackageDTO.from(client.getPackages())).build();
+        return Response.ok(PackageWithVolumesDTO.from(client.getPackages())).build();
     }
 
     @GET
@@ -65,7 +66,7 @@ public class PackageService {
     public Response getPackage(@PathParam("code") long code) {
         var _package = packageBean.findWithVolumes(code);
 
-        return Response.ok(PackageDTO.from(_package)).build();
+        return Response.ok(PackageWithVolumesDTO.from(_package)).build();
     }
 
     @PATCH
@@ -75,7 +76,7 @@ public class PackageService {
         packageBean.cancelPackage(code);
 
         var pck = packageBean.findWithVolumes(code);
-        return Response.ok(PackageDTO.from(pck)).build();
+        return Response.ok(PackageWithVolumesDTO.from(pck)).build();
     }
     @GET
     @Path("status/{statusType}")

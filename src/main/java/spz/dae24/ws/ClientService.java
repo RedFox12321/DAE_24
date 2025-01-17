@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ClientDTO;
+import spz.dae24.dtos.ClientWithPackagesDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.security.Authenticated;
 
@@ -32,8 +33,8 @@ public class ClientService {
     @RolesAllowed({"Admin", "Logistic"})
     public Response getClient(@PathParam("username") String username) {
         var client = clientBean.find(username);
-        var clientDTO = ClientDTO.from(client);
+        var clientWithPackagesDTO = ClientWithPackagesDTO.from(client);
 
-        return Response.ok(clientDTO).build();
+        return Response.ok(clientWithPackagesDTO).build();
     }
 }

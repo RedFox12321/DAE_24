@@ -16,10 +16,10 @@ const volumeStore = useVolumeStore();
     <div class="max-w-4xl mx-auto">
       <h1 class="text-2xl font-bold">Package #{{code}}</h1>
       <p class="text-m">Ordered By: {{
-        packageStore.curPackage.clientUsername }}</p>
+        packageStore.curPackage.volumes }}</p>
       <p class="text-m mb-6">Status: {{
         packageStore.curPackage.status }}</p>
-      <div v-if="packageStore.curPackage.volumes.length !== 0 &&
+      <div v-if="packageStore.curPackage.volumes !== 0 &&
         packageStore.curPackage.volume !== null ">
         <h1 class="text-xl font-bold mb-6">Volumes</h1>
         <List :items="packageStore.curPackage.volumes">
