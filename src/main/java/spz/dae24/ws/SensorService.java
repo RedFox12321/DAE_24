@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.SensorDTO;
 import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.dtos.SensorHistoryDTO;
+import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.ejbs.SensorBean;
 import spz.dae24.security.Authenticated;
 import jakarta.ws.rs.core.SecurityContext;
@@ -37,6 +38,7 @@ public class SensorService {
     public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorWithHistoryDTO.from(sensor);
+        sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));
 
         if (securityContext.isUserInRole("Admin")) {
             sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));

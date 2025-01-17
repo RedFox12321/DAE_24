@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.dtos.VolumeDTO;
-import spz.dae24.dtos.VolumeWithProductVolumesDTO;
+import spz.dae24.dtos.VolumeWithSensorsAndProductVolumesDTO;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.ejbs.VolumeBean;
 import spz.dae24.security.Authenticated;
@@ -39,7 +39,7 @@ public class VolumeService {
     @RolesAllowed("Admin")
     public Response getVolume(@PathParam("code") long code) {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
-       var volumeDTO = VolumeWithProductVolumesDTO.from(volume);
+       var volumeDTO = VolumeWithSensorsAndProductVolumesDTO.from(volume);
        volumeDTO.setProductsVolume(ProductsVolumeDTO.from(volume.getProductsVolumes()));
 
        return Response.ok(volumeDTO).build();
@@ -58,7 +58,7 @@ public class VolumeService {
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(volumeDTO.getCode());
 
-        return Response.ok(VolumeDTO.from(volume)).build();
+        return Response.ok(VolumeWithSensorsAndProductVolumesDTO.from(volume)).build();
     }
 
     @PATCH
@@ -67,6 +67,6 @@ public class VolumeService {
         volumeBean.deliver(code);
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
-        return Response.ok(VolumeDTO.from(volume)).build();
+        return Response.ok(VolumeWithSensorsAndProductVolumesDTO.from(volume)).build();
     }
 }
