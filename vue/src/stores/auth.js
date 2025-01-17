@@ -20,16 +20,27 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = tokenResponse.data
       axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
       username.value = credentials.username
-      
+
       return true
     } catch (e) {
       errorStore.setErrorMessage(
-        e.response.status,
-        e.response.statusText,
+        //e.response.status,
+        0,
+        //e.response.statusText,
+        e,
         " Could not login with credentials"
-      )      
+      )
       return false
     }
+  }
+
+  const logout = () => {
+    token.value = ''
+    username.value = ''
+
+    axios.defaults.headers.common.Authorization = ''
+
+    errorStore.resetErrorMessage()
   }
 
   const isLoggedIn = computed(() => {
@@ -38,6 +49,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   return {
     login,
+    logout,
     username,
     isLoggedIn
   }

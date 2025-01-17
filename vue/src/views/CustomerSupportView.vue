@@ -28,7 +28,6 @@ const cancelPackage = (code) => {
               <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
             </div>
             <button
-              v-if="item.status == 'ACTIVE'"
               @click="cancelPackage(item.code)"
               class="flex items-center bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded shadow"
             >
