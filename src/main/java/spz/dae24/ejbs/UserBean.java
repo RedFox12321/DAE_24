@@ -23,5 +23,15 @@ public class UserBean {
         var user = findOrFail(username);
         return user != null && user.getPassword().equals(hasher.hash(password));
     }
+
+    public String findUserType(String username) {
+        String sql = "SELECT type FROM users WHERE username=:username";
+        String userType = (String) em.createNativeQuery(sql)
+        .setParameter("username", username)
+        .getSingleResult();
+
+        return userType;
+    } 
 }
+
 

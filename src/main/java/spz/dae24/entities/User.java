@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Entity
+
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Table(
         name = "users",
