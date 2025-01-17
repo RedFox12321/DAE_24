@@ -19,21 +19,26 @@ const volumeStore = useVolumeStore();
         packageStore.curPackage.clientUsername }}</p>
       <p class="text-m mb-6">Status: {{
         packageStore.curPackage.status }}</p>
-      <h1 class="text-xl font-bold mb-6">Volumes</h1>
-      <List :items="packageStore.curPackage.volumes">
-      <template #default="{ item, index }">
-        <div class="flex justify-between items-center w-full">
-          <div>
-            <RouterLink :to="{name : 'volume', params : {code: code}}">
-              <h3 class="text-lg font-semibold">Volume #{{ item.code }}</h3>
-            </RouterLink>
-            <p class="text-sm text-gray-400">Number: {{ item.number }}</p>
-            <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
-            <p class="text-sm text-gray-400">Package Type: {{ item.packageType }}</p>
+      <div v-if="packageStore.curPackage.volumes.length !== 0 &&
+        packageStore.curPackage.volume !== null ">
+        <h1 class="text-xl font-bold mb-6">Volumes</h1>
+        <List :items="packageStore.curPackage.volumes">
+        <template #default="{ item, index }">
+          <div class="flex justify-between items-center w-full">
+            <div>
+              <RouterLink :to="{name : 'volume', params : {code: code}}">
+                <h3 class="text-lg font-semibold">Volume #{{ item.code }}</h3>
+              </RouterLink>
+              <p class="text-sm text-gray-400">Number: {{ item.number }}</p>
+              <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
+              <p class="text-sm text-gray-400">Package Type: {{ item.packageType }}</p>
+            </div>
           </div>
-        </div>
-      </template>
-      </List>
+        </template>
+        </List>
+      </div>
+      <h1 v-else class="text-xl font-bold mb-6">This package has no volumes that you
+        can see...</h1>
     </div>
   </div>
 </template>
