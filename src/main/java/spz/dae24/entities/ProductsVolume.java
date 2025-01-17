@@ -1,9 +1,9 @@
 package spz.dae24.entities;
 
-import java.io.Serializable;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+
+import java.io.Serializable;
 
 
 @Entity

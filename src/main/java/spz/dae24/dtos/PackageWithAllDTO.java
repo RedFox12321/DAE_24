@@ -7,19 +7,19 @@ import spz.dae24.entities.Package;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PackageWithVolumesDTO {
+public class PackageWithAllDTO {
     @Min(1)
     private long code;
     @NotBlank
     private String status;
     @NotBlank
     private String clientUsername;
-    private List<VolumeDTO> volumes;
+    private List<VolumeWithSensorsAndProductVolumesDTO> volumes;
 
-    public PackageWithVolumesDTO() {
+    public PackageWithAllDTO() {
     }
 
-    public PackageWithVolumesDTO(long code, String status, List<VolumeDTO> volumes, String clientUsername) {
+    public PackageWithAllDTO(long code, String status, List<VolumeWithSensorsAndProductVolumesDTO> volumes, String clientUsername) {
         this.code = code;
         this.status = status;
         this.volumes = volumes;
@@ -40,10 +40,10 @@ public class PackageWithVolumesDTO {
         this.status = status;
     }
 
-    public List<VolumeDTO> getVolumes() {
+    public List<VolumeWithSensorsAndProductVolumesDTO> getVolumes() {
         return volumes;
     }
-    public void setVolumes(List<VolumeDTO> volumes) {
+    public void setVolumes(List<VolumeWithSensorsAndProductVolumesDTO> volumes) {
         this.volumes = volumes;
     }
 
@@ -54,16 +54,16 @@ public class PackageWithVolumesDTO {
         this.clientUsername = clientUsername;
     }
 
-    public static PackageWithVolumesDTO from(Package _package) {
-        return new PackageWithVolumesDTO(
+    public static PackageWithAllDTO from(Package _package) {
+        return new PackageWithAllDTO(
                 _package.getCode(),
                 _package.getStatus().name(),
-                VolumeDTO.from(_package.getVolumes()),
+                VolumeWithSensorsAndProductVolumesDTO.from(_package.getVolumes()),
                 _package.getClient().getUsername()
         );
     }
 
-    public static List<PackageWithVolumesDTO> from(List<Package> packages) {
-        return packages.stream().map(PackageWithVolumesDTO::from).collect(Collectors.toList());
+    public static List<PackageWithAllDTO> from(List<Package> packages) {
+        return packages.stream().map(PackageWithAllDTO::from).collect(Collectors.toList());
     }
 }

@@ -3,6 +3,7 @@ package spz.dae24.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+
 import java.io.Serializable;
 
 @Entity

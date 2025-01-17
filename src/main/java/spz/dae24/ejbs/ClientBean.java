@@ -1,19 +1,15 @@
 package spz.dae24.ejbs;
 
 import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import org.hibernate.Hibernate;
 import spz.dae24.entities.Client;
-import spz.dae24.entities.Package;
-import spz.dae24.entities.Volume;
-import spz.dae24.entities.Sensor;
+import spz.dae24.exceptions.EntityExistsException;
+import spz.dae24.exceptions.EntityNotFoundException;
 import spz.dae24.security.Hasher;
 
 import java.util.List;
-
-import org.hibernate.Hibernate;
 
 @Stateless
 public class ClientBean {
@@ -34,8 +30,8 @@ public class ClientBean {
     public Client findWithPackages(String username) throws EntityNotFoundException {
         var client = find(username);
 
-        Hibernate.initialize(client.getPackages());
-        
+       Hibernate.initialize(client.getPackages());
+
         return client;
     }
 
@@ -45,7 +41,7 @@ public class ClientBean {
 
     public void create(String username, String name, String email, String password) throws EntityExistsException {
         if (exists(username))
-        throw new EntityExistsException("Client with username " + username + " already exists");
+            throw new EntityExistsException("Client with username " + username + " already exists");
 
         em.persist(new Client(username, name, email, hasher.hash(password)));
     }

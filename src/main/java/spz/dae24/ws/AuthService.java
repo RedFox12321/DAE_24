@@ -2,12 +2,12 @@ package spz.dae24.ws;
 
 import jakarta.ejb.EJB;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.core.SecurityContext;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 import spz.dae24.dtos.AuthDTO;
 import spz.dae24.dtos.UserDTO;
 import spz.dae24.ejbs.UserBean;

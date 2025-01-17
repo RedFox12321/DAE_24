@@ -14,6 +14,7 @@ import java.util.List;
 })
 @DiscriminatorValue("Client")
 public class Client extends User {
+
     @OneToMany(mappedBy = "client")
     private final List<Package> packages = new ArrayList<>();
 

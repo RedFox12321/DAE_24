@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ClientDTO;
 import spz.dae24.dtos.ClientWithPackagesDTO;
 import spz.dae24.ejbs.ClientBean;
+import spz.dae24.exceptions.EntityNotFoundException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -28,13 +29,12 @@ public class ClientService {
         return ClientDTO.from(clientBean.findAll());
     }
 
-    @GET
+   @GET
     @Path("{username}")
     @RolesAllowed({"Admin", "Logistic"})
-    public Response getClient(@PathParam("username") String username) {
-        var client = clientBean.find(username);
-        var clientWithPackagesDTO = ClientWithPackagesDTO.from(client);
+    public Response getClient(@PathParam("username") String username) throws EntityNotFoundException {
+        var client = clientBean.findWithPackages(username);
 
-        return Response.ok(clientWithPackagesDTO).build();
+        return Response.ok(ClientWithPackagesDTO.from(client)).build();
     }
 }

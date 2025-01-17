@@ -1,12 +1,16 @@
 package spz.dae24.dtos;
 
 import spz.dae24.entities.Product;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductDTO {
     private int code;
     private String name;
+
+    public ProductDTO() {
+    }
 
     public ProductDTO(int code, String name){
         this.code = code;

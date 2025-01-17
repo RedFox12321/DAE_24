@@ -29,9 +29,9 @@ const resetClients = async () => {
 
 const sendPackageOrder = async () => {
     console.log(orderPackageStore.orderPackage)
-    const result = orderPackageStore.createOrderPackage()
+    const result = await orderPackageStore.createOrderPackage()
     if(result){
-        orderPackageStore.resetOrderPackage()
+        //orderPackageStore.resetOrderPackage()
         toast.info("Order/Package created successfully.")
     }
 }
@@ -70,35 +70,17 @@ onActivated(() => {
             <span class="font-light text-red-400 text-sm">Warning: Current volume number might not be the same as the
                 final volume number.</span>
         </div>
+        <div class="mb-4 max-w-lg">
+            <button @click.prevent="orderPackageStore.addVolume()"
+                class="w-full p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Add a volume
+            </button>
+        </div>
         <div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full h-full">
             <div v-for="(volume, index) in orderPackageStore.orderPackage.volumes" :key="index"
                 class="flex flex-col space-y-5 items-center p-6 w-full h-full">
                 <VolumeItem v-model="orderPackageStore.orderPackage.volumes[index]" :index="index" />
             </div>
         </div>
-        <div class="mb-4 max-w-lg">
-            <button @click.prevent="orderPackageStore.addVolume()"
-                class="w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                Add a volume
-            </button>
-        </div>
     </div>
-    <div class="flex flex-col items-center">
-      <h2 class="text-xl text-gray-200">Order/Package volumes:</h2>
-      <span class="font-light text-red-400 text-sm">Warning: Current volume number might not be the same as the
-        final volume number.</span>
-    </div>
-    <div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 w-full h-full">
-      <div v-for="(volume, index) in orderPackageStore.orderPackage.volumes" :key="index"
-        class="flex flex-col space-y-5 items-center p-6 w-full h-full">
-        <VolumeItem v-model="orderPackageStore.orderPackage.volumes[index]" :index="index" />
-      </div>
-    </div>
-    <div class="mb-4 max-w-lg">
-      <button @click.prevent="orderPackageStore.addVolume()"
-        class="w-full py-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        Add a volume
-      </button>
-    </div>
-  </div>
 </template>

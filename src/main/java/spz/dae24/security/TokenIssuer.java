@@ -1,9 +1,8 @@
 package spz.dae24.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Default;
+
 import javax.crypto.spec.SecretKeySpec;
 import java.security.Key;
 import java.time.LocalDateTime;

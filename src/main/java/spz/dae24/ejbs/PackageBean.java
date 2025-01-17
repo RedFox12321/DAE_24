@@ -4,27 +4,19 @@ import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.ws.rs.core.Response;
-import spz.dae24.common.enums.SensorType;
-import spz.dae24.dtos.PackageDTO;
-import spz.dae24.entities.*;
-import spz.dae24.entities.Package;
-import spz.dae24.exceptions.QuantityLowerThanOneException;
-import spz.dae24.exceptions.SensorInFaultException;
-import spz.dae24.exceptions.TypeNotExistException;
-
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.Status;
-import spz.dae24.exceptions.mappers.QuantityLowerThanOneExceptionMapper;
-import spz.dae24.exceptions.mappers.SensorInFaultExceptionMapper;
+import spz.dae24.dtos.PackageWithAllDTO;
+import spz.dae24.entities.Client;
+import spz.dae24.entities.Package;
+import spz.dae24.entities.Volume;
+import spz.dae24.exceptions.EntityExistsException;
+import spz.dae24.exceptions.EntityNotFoundException;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @Stateless
 public class PackageBean {
@@ -40,14 +32,9 @@ public class PackageBean {
         return em.createNamedQuery("getAllPackages", Package.class).getResultList();
     }
 
-    public List<Package> findByStatus(String status) throws TypeNotExistException {
-        Status statusType = null;
-        try {
-            statusType = Status.valueOf(status.toUpperCase());
-        }
-        catch(Exception e){
-            throw new TypeNotExistException("Status does not exist");
-        }
+    public List<Package> findByStatus(String status) throws IllegalArgumentException {
+        Status statusType = Status.valueOf(status.toUpperCase());
+
         TypedQuery<Package> query = (TypedQuery<Package>) em.createNamedQuery("getPackagesByStatus", Package.class);
         query.setParameter("status", statusType);
 
@@ -98,15 +85,12 @@ public class PackageBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void makePackageOrder(PackageDTO packageDTO) throws QuantityLowerThanOneException, EntityNotFoundException, EntityExistsException, SensorInFaultException {
-        if (clientBean.exists(packageDTO.getClientUsername()))
-            throw new EntityNotFoundException("Client with username " + packageDTO.getClientUsername() + " does not exist.");
-
+    public void makePackageOrder(PackageWithAllDTO packageDTO) throws IllegalArgumentException, EntityNotFoundException, EntityExistsException {
         create(packageDTO.getCode(), packageDTO.getClientUsername());
 
         var volumesDTO = packageDTO.getVolumes();
         if (volumesDTO.isEmpty())
-            throw new QuantityLowerThanOneException("Package needs at least 1 volume.");
+            throw new IllegalArgumentException("Package needs at least 1 volume.");
 
         for (var volumeDTO : volumesDTO) {
             volumeBean.addVolumeToPackageOrder(volumeDTO, packageDTO.getCode());

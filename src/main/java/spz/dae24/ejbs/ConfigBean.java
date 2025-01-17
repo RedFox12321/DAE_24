@@ -6,9 +6,10 @@ import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.SensorType;
-import spz.dae24.common.enums.Status;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 

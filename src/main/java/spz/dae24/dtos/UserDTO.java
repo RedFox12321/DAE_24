@@ -1,7 +1,6 @@
 package spz.dae24.dtos;
 
 import spz.dae24.entities.User;
-import spz.dae24.entities.Package;
 
 import java.util.List;
 import java.util.stream.Collectors;

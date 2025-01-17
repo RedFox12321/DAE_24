@@ -8,13 +8,14 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 import spz.dae24.dtos.PackageDTO;
+import spz.dae24.dtos.PackageWithAllDTO;
 import spz.dae24.dtos.PackageWithVolumesDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.ejbs.ProductBean;
 import spz.dae24.ejbs.VolumeBean;
-import spz.dae24.entities.Client;
-import spz.dae24.exceptions.TypeNotExistException;
+import spz.dae24.exceptions.EntityExistsException;
+import spz.dae24.exceptions.EntityNotFoundException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -46,7 +47,7 @@ public class PackageService {
     @GET
     @Path("client/{username}")
     @RolesAllowed("Admin")
-    public Response getPackagesByClient(@PathParam("username") String username) {
+    public Response getPackagesByClient(@PathParam("username") String username) throws EntityNotFoundException {
         var client = clientBean.findWithPackages(username);
 
         return Response.ok(PackageWithVolumesDTO.from(client.getPackages())).build();
@@ -55,7 +56,7 @@ public class PackageService {
     @GET
     @Path("my/{username}")
     @RolesAllowed("Client")
-    public Response getMyPackages(@PathParam("username") String username) {
+    public Response getMyPackages(@PathParam("username") String username) throws EntityNotFoundException {
         var principal = securityContext.getUserPrincipal();
 
         if(!principal.getName().equals(username)) {
@@ -70,7 +71,7 @@ public class PackageService {
     @GET
     @Path("{code}")
     @RolesAllowed({"Client", "Admin"})
-    public Response getPackage(@PathParam("code") long code) {
+    public Response getPackage(@PathParam("code") long code) throws EntityNotFoundException {
         var _package = packageBean.findWithVolumes(code);
 
         return Response.ok(PackageWithVolumesDTO.from(_package)).build();
@@ -79,7 +80,7 @@ public class PackageService {
     @PATCH
     @Path("{code}")
     @RolesAllowed({"Admin", "Client"})
-    public Response cancelPackage(@PathParam("code") long code) {
+    public Response cancelPackage(@PathParam("code") long code) throws EntityNotFoundException, EntityExistsException {
         packageBean.cancelPackage(code);
 
         var pck = packageBean.findWithVolumes(code);
@@ -88,14 +89,14 @@ public class PackageService {
     @GET
     @Path("status/{statusType}")
     @RolesAllowed("Admin")
-    public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) throws TypeNotExistException {
+    public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) throws IllegalArgumentException {
         return PackageDTO.from(packageBean.findByStatus(statusType));
     }
 
     @POST
     @Path("")
     @RolesAllowed("Logistic")
-    public Response createPackage(PackageDTO packageDTO) {
+    public Response createPackage(PackageWithAllDTO packageDTO) throws IllegalArgumentException, EntityNotFoundException, EntityExistsException {
         packageBean.makePackageOrder(packageDTO);
 
         var pck = packageBean.findWithVolumes(packageDTO.getCode());

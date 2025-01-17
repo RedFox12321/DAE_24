@@ -1,11 +1,11 @@
 package spz.dae24.ejbs;
 
 import jakarta.ejb.Stateless;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import spz.dae24.entities.Logistic;
+import spz.dae24.exceptions.EntityExistsException;
+import spz.dae24.exceptions.EntityNotFoundException;
 import spz.dae24.security.Hasher;
 
 @Stateless

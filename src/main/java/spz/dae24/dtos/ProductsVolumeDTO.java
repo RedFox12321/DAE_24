@@ -15,10 +15,19 @@ public class ProductsVolumeDTO {
     @Min(1)
     private int quantity;
 
+    public ProductsVolumeDTO() {
+    }
+
     public ProductsVolumeDTO(long id, int productCode, long volumeCode, int quantity){
         this.id = id;
         this.productCode = productCode;
         this.volumeCode = volumeCode;
+        this.quantity = quantity;
+    }
+
+    public ProductsVolumeDTO(long id, int productCode, int quantity){
+        this.id = id;
+        this.productCode = productCode;
         this.quantity = quantity;
     }
 

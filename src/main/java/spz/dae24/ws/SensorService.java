@@ -3,16 +3,16 @@ package spz.dae24.ws;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import spz.dae24.dtos.SensorDTO;
-import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.dtos.SensorHistoryDTO;
 import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.ejbs.SensorBean;
+import spz.dae24.exceptions.EntityNotFoundException;
 import spz.dae24.security.Authenticated;
-import jakarta.ws.rs.core.SecurityContext;
-import jakarta.ws.rs.core.Context;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class SensorService {
     @GET
     @Path("{id}")
     @RolesAllowed({"Admin", "Client"})
-    public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) {
+    public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) throws EntityNotFoundException {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorWithHistoryDTO.from(sensor);
         sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));

@@ -44,17 +44,23 @@ const router = createRouter({
     {
       path: '/package/:code',
       name: 'package',
-      component: PackageDisplay
+      component: PackageDisplay,
+      props: true
+
     },
     {
       path: '/volume/:code',
       name: 'volume',
-      component: VolumeDisplay
+      component: VolumeDisplay,
+      props: true
+
     },
     {
       path: '/sensor/:id',
       name: 'sensor',
-      component: SensorDisplay
+      component: SensorDisplay,
+      props: true
+
     },
     {
       path: '/login',

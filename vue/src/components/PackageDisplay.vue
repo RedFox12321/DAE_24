@@ -16,7 +16,7 @@ const volumeStore = useVolumeStore();
     <div class="max-w-4xl mx-auto">
       <h1 class="text-2xl font-bold">Package #{{code}}</h1>
       <p class="text-m">Ordered By: {{
-        packageStore.curPackage.volumes }}</p>
+        packageStore.curPackage.clientUsername }}</p>
       <p class="text-m mb-6">Status: {{
         packageStore.curPackage.status }}</p>
       <div v-if="packageStore.curPackage.volumes !== 0 &&

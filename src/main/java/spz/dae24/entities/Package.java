@@ -7,7 +7,6 @@ import spz.dae24.common.enums.Status;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 @Entity
 @NamedQueries({

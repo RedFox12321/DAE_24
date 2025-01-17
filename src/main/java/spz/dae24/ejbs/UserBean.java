@@ -26,11 +26,10 @@ public class UserBean {
 
     public String findUserType(String username) {
         String sql = "SELECT type FROM users WHERE username=:username";
-        String userType = (String) em.createNativeQuery(sql)
+
+        return (String) em.createNativeQuery(sql)
         .setParameter("username", username)
         .getSingleResult();
-
-        return userType;
     } 
 }
 
