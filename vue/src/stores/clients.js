@@ -4,30 +4,30 @@ import { ref } from "vue";
 import { useErrorStore } from "./error";
 
 
-export const useProductsStore = defineStore('products', () => {
+export const useClientStore = defineStore('clients', () =>{
     const errorStore = useErrorStore()
     
-    
-    const products = ref([])
-
-    const getProducts = async () => {
+    const clients = ref([])
+    const error = ref()
+    const getClients = async () => {
         try {
             errorStore.resetErrorMessage()
-            const result = await axios.get('products')
-            products.value = result.data
-            return products
+            const result = await axios.get('clients')
+            clients.value = result.data
+            return clients
         } catch (e) {
             errorStore.setErrorMessage(
                 e.response.status,
                 e.response.statusText,
-                " Could not fetch products"
+                " Could not fetch clients"
             )
             return false
         }
     }
 
     return {
-        products,
-        getProducts
+        clients,
+        getClients,
+        error
     }
 })

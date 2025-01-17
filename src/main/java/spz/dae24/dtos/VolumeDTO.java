@@ -11,18 +11,17 @@ public class VolumeDTO {
     private String status;
     private long packageCode;
     private String packageType;
-    private List<ProductsVolumeDTO> volumeProducts;
+    private List<ProductsVolumeDTO> productsVolume;
     private List<SensorDTO> sensors;
 
-    public VolumeDTO() {
-    }
+    public VolumeDTO() {}
 
-    public VolumeDTO(long code, int number, String status, long packageCode, List<ProductsVolumeDTO> volumeProducts, List<SensorDTO> sensors, String packageType) {
+    public VolumeDTO(long code, int number, String status, long packageCode, List<ProductsVolumeDTO> productsVolume, List<SensorDTO> sensors, String packageType) {
         this.code = code;
         this.number = number;
         this.status = status;
         this.packageCode = packageCode;
-        this.volumeProducts = volumeProducts;
+        this.productsVolume = productsVolume;
         this.sensors = sensors;
         this.packageType = packageType;
     }
@@ -55,11 +54,11 @@ public class VolumeDTO {
         this.packageCode = packageCode;
     }
 
-    public List<ProductsVolumeDTO> getVolumeProducts() {
-        return volumeProducts;
+    public List<ProductsVolumeDTO> getProductsVolume() {
+        return productsVolume;
     }
-    public void setVolumeProducts(List<ProductsVolumeDTO> volumeProducts) {
-        this.volumeProducts = volumeProducts;
+    public void setProductsVolume(List<ProductsVolumeDTO> productsVolume) {
+        this.productsVolume = productsVolume;
     }
 
     public String getPackageType() {

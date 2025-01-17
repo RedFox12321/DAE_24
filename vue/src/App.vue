@@ -2,6 +2,13 @@
   import {useAuthStore} from './stores/auth.js'
   import {ref} from 'vue'
   const storeAuth = useAuthStore();
+
+const links = [
+  { label: "Home", to: "/", render: true },
+  { label: "Packaging", to: "/packaging", render: true },
+  //{ label: "", to: "" },
+]
+
 </script>
 
 <template>
@@ -10,9 +17,9 @@
       <div class="bg-gray-800 text-white">
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
           <ul class="hidden md:flex space-x-6">
-            <li>
-              <RouterLink to="/" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Home
+            <li v-for="link in links" :key="link" class="px-5">
+              <RouterLink :to="link.to" class="text-gray-200 hover:text-gray-100" active-class="text-gray-300">
+                {{ link.label }}
               </RouterLink>
             </li>
             <li>
@@ -40,40 +47,12 @@
               </span>
           </div>
         </nav>
+        <div class="h-2 w-screen bg-gray-900" />
       </div>
     </header>
 
-    <main class="flex-1 p-2">
+    <main class="flex-1 p-2 bg-gray-700">
       <RouterView />
     </main>
   </div>
 </template>
-<style scoped>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-  }
-
-  .min-h-screen {
-    min-height: 100vh; /* Ensure the container takes the full viewport height */
-  }
-
-  .flex {
-    display: flex;
-  }
-
-  .flex-col {
-    flex-direction: column;
-  }
-
-  .flex-1 {
-    flex: 1;
-  }
-
-  /* Ensure the content in the header and main has no unintended spacing */
-  header, main {
-    margin: 0;
-    padding: 0;
-  }
-</style>

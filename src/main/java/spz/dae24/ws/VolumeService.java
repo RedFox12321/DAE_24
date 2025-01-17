@@ -39,7 +39,7 @@ public class VolumeService {
     public Response getVolume(@PathParam("code") long code) {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
        var volumeDTO = VolumeDTO.from(volume);
-       volumeDTO.setVolumeProducts(ProductsVolumeDTO.from(volume.getProductsVolumes()));
+       volumeDTO.setProductsVolume(ProductsVolumeDTO.from(volume.getProductsVolumes()));
 
        return Response.ok(volumeDTO).build();
     }

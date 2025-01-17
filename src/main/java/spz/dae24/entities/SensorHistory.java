@@ -25,7 +25,6 @@ public class SensorHistory extends Versionable implements Serializable {
     @NotNull
     private Sensor sensor;
 
-
     public SensorHistory() {}
 
     public SensorHistory(long timestamp, String value, Sensor sensor) {

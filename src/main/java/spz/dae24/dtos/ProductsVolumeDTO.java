@@ -57,7 +57,6 @@ public class ProductsVolumeDTO {
                 productsVolume.getProduct().getCode(),
                 productsVolume.getVolume().getCode(),
                 productsVolume.getQuantity()
-
         );
     }
 

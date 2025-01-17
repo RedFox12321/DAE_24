@@ -28,17 +28,13 @@ public class ProductsVolume extends Versionable implements Serializable {
     @NotNull
     private Volume volume;
 
-    @Version
-    @Column(name = "version")
-    private int version; 
-
     public ProductsVolume() {
     }
 
-    public ProductsVolume(Product product, int quantity, Volume volume) {
-        this.product = product;
-        this.quantity = quantity;
-        this.volume = volume;
+    public ProductsVolume(Product product, Volume volume, int quantity) {
+            this.product = product;
+            this.volume = volume;
+            this.quantity = quantity;
     }
 
     private int quantity;
@@ -73,13 +69,5 @@ public class ProductsVolume extends Versionable implements Serializable {
 
     public void setVolume(Volume volume) {
         this.volume = volume;
-    }
-
-    public int getVersion() {
-        return version;
-    }
-
-    public void setVersion(int version) {
-        this.version = version;
     }
 }
