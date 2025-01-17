@@ -39,7 +39,7 @@ public class PackageService {
     @Path("client/{username}")
     @RolesAllowed("Admin")
     public Response getPackagesByClient(@PathParam("username") String username) {
-        var client = clientBean.find(username);
+        var client = clientBean.findWithPackages(username);
 
         return Response.ok(PackageDTO.from(client.getPackages())).build();
     }

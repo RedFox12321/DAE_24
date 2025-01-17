@@ -55,7 +55,7 @@ public class VolumeService {
                 volumeDTO.getPackageCode()
         );
 
-        var volume = volumeBean.find(volumeDTO.getCode());
+        var volume = volumeBean.findWithSensorsAndProductsVolumes(volumeDTO.getCode());
 
         return Response.ok(VolumeDTO.from(volume)).build();
     }

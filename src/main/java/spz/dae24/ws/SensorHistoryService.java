@@ -30,7 +30,7 @@ public class SensorHistoryService {
     @GET
     @Path("{id}")
     @Authenticated
-    @RolesAllowed({"Admin", "Client"})
+    @RolesAllowed({"Admin"})
     public Response getSensorHistory(@PathParam("id") long id) {
         var sensorHistory = sensorHistoryBean.find(id);
 

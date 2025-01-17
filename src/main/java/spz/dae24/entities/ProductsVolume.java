@@ -11,6 +11,14 @@ import jakarta.validation.constraints.NotNull;
     @NamedQuery(
         name = "getAllProductsVolume",
         query = "SELECT pv FROM ProductsVolume pv ORDER BY pv.id"
+    ),
+    @NamedQuery(
+        name = "getAllProductsVolumeByProductCode",
+        query = "SELECT pv FROM ProductsVolume pv WHERE pv.product.code=:productCode ORDER BY pv.id"
+    ),
+    @NamedQuery(
+        name = "getAllProductsVolumeByVolumeCode",
+        query = "SELECT pv FROM ProductsVolume pv WHERE pv.volume.code=:volumeCode ORDER BY pv.id"
     )
 })
 @Table(name = "products_volumes")

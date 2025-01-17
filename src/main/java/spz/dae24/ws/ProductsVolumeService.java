@@ -36,6 +36,19 @@ public class ProductsVolumeService {
         return Response.ok(ProductsVolumeDTO.from(productsVolume)).build();
     }
 
+    @GET
+    @Path("product/{productCode}")
+    @RolesAllowed("Admin")
+    public List<ProductsVolumeDTO> getProductsVolumeByProduct(@PathParam("productCode") int productCode) {
+        return ProductsVolumeDTO.from(productsVolumeBean.findByProductCode(productCode));
+    }
+
+    @GET
+    @Path("volume/{volumeCode}")
+    @RolesAllowed("Admin")
+    public List<ProductsVolumeDTO> getProductsVolumeByVolume(@PathParam("volumeCode") long volumeCode) {
+        return ProductsVolumeDTO.from(productsVolumeBean.findByVolumeCode(volumeCode));
+    }
 //    @GET
 //    @Path("/volume/{code}")
 //    public Response getProduct(@PathParam("code") int code) {

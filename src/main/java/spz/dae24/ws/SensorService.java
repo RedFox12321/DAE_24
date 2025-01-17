@@ -30,7 +30,7 @@ public class SensorService {
 
     @GET
     @Path("{id}")
-    @RolesAllowed({"Admin", "Client"})
+    @RolesAllowed({"Admin"})
     public Response getSensor(@PathParam("id") long id) {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorDTO.from(sensor);
@@ -38,16 +38,4 @@ public class SensorService {
 
         return Response.ok(sensorDTO).build();
     }
-
-/*
-    //NOT NEEDED?
-    @PATCH
-    @Path("{id}")
-    public Response disableSensor(@PathParam("id") long id) {
-        sensorBean.disable(id);
-        var sensor = sensorBean.find(id);
-
-        return Response.ok(SensorDTO.from(sensor)).build();
-    }
-*/
 }

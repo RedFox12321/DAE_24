@@ -4,6 +4,7 @@ import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.ProductsVolume;
 import spz.dae24.entities.Volume;
@@ -30,14 +31,40 @@ public class ProductsVolumeBean {
         return productsVolume;
     }
 
+    public List<ProductsVolume> findByProductCode(int productCode) {
+
+        TypedQuery<ProductsVolume> query = em.createNamedQuery("getAllProductsVolumeByProductCode", ProductsVolume.class);
+        query.setParameter("productCode", productCode);
+        List<ProductsVolume> productsVolume = query.getResultList();
+
+        if (productsVolume.isEmpty()) {
+            throw new EntityNotFoundException("No ProductsVolume found for product code " + productCode);
+        }
+
+        return productsVolume;
+    }
+
+    public List<ProductsVolume> findByVolumeCode(long volumeCode) {
+
+        TypedQuery<ProductsVolume> query = em.createNamedQuery("getAllProductsVolumeByVolumeCode", ProductsVolume.class);
+        query.setParameter("volumeCode", volumeCode);
+        List<ProductsVolume> productsVolume = query.getResultList();
+
+        if (productsVolume.isEmpty()) {
+            throw new EntityNotFoundException("No ProductsVolume found for product code " + volumeCode);
+        }
+
+        return productsVolume;
+    }
+
     public void create(int productCode, long volumeCode, int quantity) throws EntityNotFoundException {
         Product product = em.find(Product.class, productCode);
         if (product == null)
-            throw new EntityNotFoundException("Product with code " + productCode + " not found");
+        throw new EntityNotFoundException("Product with code " + productCode + " not found");
 
         Volume volume = em.find(Volume.class, volumeCode);
         if (volume == null)
-            throw new EntityNotFoundException("Volume with code " + volumeCode + " not found");
+        throw new EntityNotFoundException("Volume with code " + volumeCode + " not found");
 
         ProductsVolume productsVolume = new ProductsVolume(product, volume, quantity);
 
