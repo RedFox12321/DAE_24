@@ -1,13 +1,19 @@
 <script setup>
   import {useAuthStore} from './stores/auth.js'
-  import {ref} from 'vue'
+  import {computed, ref, render} from 'vue'
   const storeAuth = useAuthStore();
 
 const links = [
   { label: "Home", to: "/", render: true },
-  { label: "Packaging", to: "/packaging", render: true },
-  //{ label: "", to: "" },
+  { label: "Logistics", to: "/logistics", render: true },
+  { label: "Sensors", to: "/sensors", render: true },
+  { label: "Packages", to: "/packages", render: true },
+  //{ label: "", to: "", render: true },
 ]
+
+const filteredLinks = computed(() => {
+  return links.filter(link => link.render);
+})
 
 </script>
 
@@ -17,24 +23,9 @@ const links = [
       <div class="bg-gray-800 text-white">
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
           <ul class="hidden md:flex space-x-6">
-            <li v-for="link in links" :key="link" class="px-5">
+            <li v-for="link in filteredLinks" :key="link" class="px-5">
               <RouterLink :to="link.to" class="text-gray-200 hover:text-gray-100" active-class="text-gray-300">
                 {{ link.label }}
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/logistics" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Logistics
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/sensors" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Sensors
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/packages" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Packages
               </RouterLink>
             </li>
           </ul>
