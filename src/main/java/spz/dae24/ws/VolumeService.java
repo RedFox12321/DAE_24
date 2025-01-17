@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.Response;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.ProductsVolumeDTO;
 import spz.dae24.dtos.VolumeDTO;
+import spz.dae24.dtos.VolumeWithProductVolumesDTO;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.ejbs.VolumeBean;
 import spz.dae24.security.Authenticated;
@@ -38,7 +39,7 @@ public class VolumeService {
     @RolesAllowed("Admin")
     public Response getVolume(@PathParam("code") long code) {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
-       var volumeDTO = VolumeDTO.from(volume);
+       var volumeDTO = VolumeWithProductVolumesDTO.from(volume);
        volumeDTO.setProductsVolume(ProductsVolumeDTO.from(volume.getProductsVolumes()));
 
        return Response.ok(volumeDTO).build();
