@@ -6,13 +6,24 @@ import {useAuthStore} from './auth.js'
 export const usePackageStore = defineStore('packages', () => {
   const authStore = useAuthStore()
   const packages = ref([])
+  const curPackage = ref({})
   const activePackages = ref([])
 
     const getPackages = async () => {
         try {
             const result = await axios.get('packages')
             packages.value = result.data
-            return packages
+            return packages.value
+        } catch (e) {
+            return false
+        }
+    }
+
+    const getPackage = async (code) => {
+        try {
+            const result = await axios.get('packages/' + code)
+          curPackage.value = result.data
+            return curPackage.value
         } catch (e) {
             return false
         }
@@ -44,6 +55,8 @@ export const usePackageStore = defineStore('packages', () => {
       activePackages,
       getPackages,
       getMyActivePackages,
-      cancelPackage
+      cancelPackage,
+      getPackage,
+      curPackage
     }
 })

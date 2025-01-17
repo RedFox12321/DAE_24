@@ -7,10 +7,12 @@ const storeAuth = useAuthStore()
 const router = useRouter()
 
 const links = [
-  {label: "Home", to: "/", render: true},
-  {label: "Logistics", to: "/logistics", render: true},
-  {label: "Sensors", to: "/sensors", render: true},
-  {label: "Packages", to: "/packages", render: true},
+  { label: "Home", to: "/", render: true },
+  { label: "Logistics", to: "/logistics", render: true },
+  { label: "Sensors", to: "/sensors", render: true },
+  { label: "Packages", to: "/packages", render: true },
+  { label: "Customer Support", to: "/customerSupport", render: true },
+  //{ label: "", to: "", render: true },
 ]
 
 const filteredLinks = computed(() => {
@@ -32,11 +34,6 @@ const handleLogout = () => {
             <li v-for="link in filteredLinks" :key="link.label" class="px-5">
               <RouterLink :to="link.to" class="text-gray-200 hover:text-gray-100" active-class="text-gray-300">
                 {{ link.label }}
-              </RouterLink>
-            </li>
-            <li>
-              <RouterLink to="/customerSupport" class="text-gray-500 hover:text-gray-300" active-class="text-gray-300">
-                Customer Support
               </RouterLink>
             </li>
           </ul>
@@ -71,4 +68,3 @@ const handleLogout = () => {
     </main>
   </div>
 </template>
-

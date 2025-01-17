@@ -1,11 +1,16 @@
 <script setup>
-  import { ref } from "vue";
+  import { ref, onMounted, onActivated } from "vue";
 import { usePackageStore } from "@/stores/packages.js";
 import List from "./Utils/List.vue";
 
 const packageStore = usePackageStore();
-packageStore.getPackages();
-console.log(packageStore.packages);
+
+const setup = () => {
+  packageStore.getPackages();
+}
+
+onMounted(() => setup())
+onActivated(() => setup())
 
 const cancelPackage = (code) => {
   packageStore.cancelPackage(code);
@@ -21,7 +26,9 @@ const cancelPackage = (code) => {
       <template #default="{ item, index }">
         <div class="flex justify-between items-center w-full">
           <div>
-            <h3 class="text-lg font-semibold">Code: {{ item.code }}</h3>
+            <RouterLink :to="`/packages/${item.code}`">
+              <h3 class="text-lg font-semibold">Code: {{ item.code }}</h3>
+            </RouterLink>
             <p class="text-sm text-gray-400">Ordered by: {{
               item.clientUsername }}</p>
             <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
