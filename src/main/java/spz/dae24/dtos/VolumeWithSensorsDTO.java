@@ -5,20 +5,22 @@ import spz.dae24.entities.Volume;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VolumeDTO {
+public class VolumeWithSensorsDTO {
     private long code;
     private int number;
     private String status;
     private long packageCode;
     private String packageType;
+    private List<SensorDTO> sensors;
 
-    public VolumeDTO() {}
+    public VolumeWithSensorsDTO() {}
 
-    public VolumeDTO(long code, int number, String status, long packageCode, String packageType) {
+    public VolumeWithSensorsDTO(long code, int number, String status, long packageCode, List<SensorDTO> sensors, String packageType) {
         this.code = code;
         this.number = number;
         this.status = status;
         this.packageCode = packageCode;
+        this.sensors = sensors;
         this.packageType = packageType;
     }
 
@@ -57,17 +59,25 @@ public class VolumeDTO {
         this.packageType = packageType;
     }
 
-    public static VolumeDTO from(Volume volume) {
-        return new VolumeDTO(
+    public List<SensorDTO> getSensors() {
+        return sensors;
+    }
+    public void setSensors(List<SensorDTO> sensors) {
+        this.sensors = sensors;
+    }
+
+    public static VolumeWithSensorsDTO from(Volume volume) {
+        return new VolumeWithSensorsDTO(
                 volume.getCode(),
                 volume.getNumber(),
                 volume.getStatus().name(),
                 volume.getPackage().getCode(),
+                SensorDTO.from(volume.getSensors()),
                 volume.getPackageType().name()
         );
     }
 
-    public static List<VolumeDTO> from(List<Volume> volumes) {
-        return volumes.stream().map(VolumeDTO::from).collect(Collectors.toList());
+    public static List<VolumeWithSensorsDTO> from(List<Volume> volumes) {
+        return volumes.stream().map(VolumeWithSensorsDTO::from).collect(Collectors.toList());
     }
 }
