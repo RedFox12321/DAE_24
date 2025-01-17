@@ -5,20 +5,24 @@ import spz.dae24.entities.Volume;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VolumeDTO {
+public class VolumeWithSensorsAndProductVolumesDTO {
     private long code;
     private int number;
     private String status;
     private long packageCode;
     private String packageType;
+    private List<ProductsVolumeDTO> productsVolume;
+    private List<SensorDTO> sensors;
 
-    public VolumeDTO() {}
+    public VolumeWithSensorsAndProductVolumesDTO() {}
 
-    public VolumeDTO(long code, int number, String status, long packageCode, String packageType) {
+    public VolumeWithSensorsAndProductVolumesDTO(long code, int number, String status, long packageCode, List<ProductsVolumeDTO> productsVolume, List<SensorDTO> sensors, String packageType) {
         this.code = code;
         this.number = number;
         this.status = status;
         this.packageCode = packageCode;
+        this.productsVolume = productsVolume;
+        this.sensors = sensors;
         this.packageType = packageType;
     }
 
@@ -50,6 +54,13 @@ public class VolumeDTO {
         this.packageCode = packageCode;
     }
 
+    public List<ProductsVolumeDTO> getProductsVolume() {
+        return productsVolume;
+    }
+    public void setProductsVolume(List<ProductsVolumeDTO> productsVolume) {
+        this.productsVolume = productsVolume;
+    }
+
     public String getPackageType() {
         return packageType;
     }
@@ -57,17 +68,26 @@ public class VolumeDTO {
         this.packageType = packageType;
     }
 
-    public static VolumeDTO from(Volume volume) {
-        return new VolumeDTO(
+    public List<SensorDTO> getSensors() {
+        return sensors;
+    }
+    public void setSensors(List<SensorDTO> sensors) {
+        this.sensors = sensors;
+    }
+
+    public static VolumeWithSensorsAndProductVolumesDTO from(Volume volume) {
+        return new VolumeWithSensorsAndProductVolumesDTO(
                 volume.getCode(),
                 volume.getNumber(),
                 volume.getStatus().name(),
                 volume.getPackage().getCode(),
+                ProductsVolumeDTO.from(volume.getProductsVolumes()),
+                SensorDTO.from(volume.getSensors()),
                 volume.getPackageType().name()
         );
     }
 
-    public static List<VolumeDTO> from(List<Volume> volumes) {
-        return volumes.stream().map(VolumeDTO::from).collect(Collectors.toList());
+    public static List<VolumeWithSensorsAndProductVolumesDTO> from(List<Volume> volumes) {
+        return volumes.stream().map(VolumeWithSensorsAndProductVolumesDTO::from).collect(Collectors.toList());
     }
 }

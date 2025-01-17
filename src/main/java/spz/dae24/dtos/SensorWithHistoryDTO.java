@@ -1,24 +1,25 @@
 package spz.dae24.dtos;
 
 import spz.dae24.entities.Sensor;
-import spz.dae24.entities.Volume;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SensorDTO {
+public class SensorWithHistoryDTO {
     private long id;
     private boolean active;
     private String type;
     private long volumeCode;
+    private List<SensorHistoryDTO> history;
 
-    public SensorDTO() {}
+    public SensorWithHistoryDTO() {}
 
-    public SensorDTO(long id, boolean active, String type, long volumeCode) {
+    public SensorWithHistoryDTO(long id, boolean active, String type, long volumeCode, List<SensorHistoryDTO> history) {
         this.id = id;
         this.active = active;
         this.type = type;
         this.volumeCode = volumeCode;
+        this.history = history;
     }
 
     public long getId() {
@@ -49,16 +50,24 @@ public class SensorDTO {
         this.volumeCode = volumeCode;
     }
 
-    public static SensorDTO from(Sensor sensor) {
-        return new SensorDTO(
+    public List<SensorHistoryDTO> getHistory() {
+        return history;
+    }
+    public void setHistory(List<SensorHistoryDTO> history) {
+        this.history = history;
+    }
+
+    public static SensorWithHistoryDTO from(Sensor sensor) {
+        return new SensorWithHistoryDTO(
                 sensor.getId(),
                 sensor.isActive(),
                 sensor.getType().getName(),
-                sensor.getVolume().getCode()
+                sensor.getVolume().getCode(),
+                SensorHistoryDTO.from(sensor.getHistory())
         );
     }
 
-    public static List<SensorDTO> from(List<Sensor> sensors) {
-        return sensors.stream().map(SensorDTO::from).collect(Collectors.toList());
+    public static List<SensorWithHistoryDTO> from(List<Sensor> sensors) {
+        return sensors.stream().map(SensorWithHistoryDTO::from).collect(Collectors.toList());
     }
 }

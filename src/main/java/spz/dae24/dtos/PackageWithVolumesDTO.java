@@ -1,21 +1,23 @@
 package spz.dae24.dtos;
 
+import spz.dae24.entities.Package;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import spz.dae24.entities.Package;
-
-public class PackageDTO {
+public class PackageWithVolumesDTO {
     private long code;
     private String status;
+    private List<VolumeDTO> volumes;
     private String clientUsername;
 
-    public PackageDTO() {
+    public PackageWithVolumesDTO() {
     }
 
-    public PackageDTO(long code, String status, String clientUsername) {
+    public PackageWithVolumesDTO(long code, String status, List<VolumeDTO> volumes, String clientUsername) {
         this.code = code;
         this.status = status;
+        this.volumes = volumes;
         this.clientUsername = clientUsername;
     }
 
@@ -33,6 +35,13 @@ public class PackageDTO {
         this.status = status;
     }
 
+    public List<VolumeDTO> getVolumes() {
+        return volumes;
+    }
+    public void setVolumes(List<VolumeDTO> volumes) {
+        this.volumes = volumes;
+    }
+
     public String getClientUsername() {
         return clientUsername;
     }
@@ -40,15 +49,16 @@ public class PackageDTO {
         this.clientUsername = clientUsername;
     }
 
-    public static PackageDTO from(Package _package) {
-        return new PackageDTO(
+    public static PackageWithVolumesDTO from(Package _package) {
+        return new PackageWithVolumesDTO(
                 _package.getCode(),
                 _package.getStatus().name(),
+                VolumeDTO.from(_package.getVolumes()),
                 _package.getClient().getUsername()
         );
     }
 
-    public static List<PackageDTO> from(List<Package> packages) {
-        return packages.stream().map(PackageDTO::from).collect(Collectors.toList());
+    public static List<PackageWithVolumesDTO> from(List<Package> packages) {
+        return packages.stream().map(PackageWithVolumesDTO::from).collect(Collectors.toList());
     }
 }
