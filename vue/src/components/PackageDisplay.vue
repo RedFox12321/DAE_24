@@ -1,13 +1,11 @@
 <script setup>
   import { ref } from "vue";
 import { usePackageStore } from "@/stores/packages.js";
-import { useVolumeStore } from "@/stores/volumes.js";
 import { useRoute } from "vue-router"
 import List from "./Utils/List.vue";
 
 const code = useRoute().params.code;
 const packageStore = usePackageStore();
-const volumeStore = useVolumeStore();
 
 </script>
 
