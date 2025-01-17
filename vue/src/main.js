@@ -18,6 +18,6 @@ app.use(Vue3Toastify, {
     autoClose: 3000,
 })
 
-axios.defaults.baseURL = `http://${apiDomain}:8080/dae24/api`
+axios.defaults.baseURL = `http://${apiDomain}/dae24/api`
 
 app.mount('#app')

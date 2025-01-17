@@ -1,7 +1,7 @@
 <script setup>
 import {ref} from "vue";
 import {usePackageStore} from "@/stores/packages.js";
-import List from "./Utils/List.vue";
+import List from "../components/Utils/List.vue";
 
 const packageStore = usePackageStore();
 packageStore.getMyActivePackages();

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue"
-import {useAuthStore} from './stores/auth.js'
+import {useAuthStore} from './auth.js'
 
 export const usePackageStore = defineStore('packages', () => {
   const authStore = useAuthStore()
