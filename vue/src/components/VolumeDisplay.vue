@@ -33,7 +33,9 @@ onActivated(() => setup())
       <template #default="{ item, index }">
         <div class="flex justify-between items-center w-full">
           <div>
-            <h3 class="text-lg font-semibold">Sensor #{{ item.id }}</h3>
+            <RouterLink :to="{name: 'sensor', params : {id: item.id}}">
+              <h3 class="text-lg font-semibold">Sensor #{{ item.id }}</h3>
+            </RouterLink>
             <p class="text-sm text-gray-400">{{ item.active ? 'Active' : 'Not active' }}</p>
             <p class="text-sm text-gray-400">{{ item.type }} Sensor</p>
           </div>
