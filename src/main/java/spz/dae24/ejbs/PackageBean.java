@@ -73,13 +73,6 @@ public class PackageBean {
 
         Hibernate.initialize(_package.getVolumes());
 
-        for(Volume volume : _package.getVolumes()) {
-            Hibernate.initialize(volume.getProductsVolumes());
-            Hibernate.initialize(volume.getSensors());
-            for (Sensor sensor : volume.getSensors())
-                Hibernate.initialize(sensor.getHistory());
-        }
-
         return _package;
     }
 

@@ -42,8 +42,6 @@ public class VolumeBean {
 
         Hibernate.initialize(volume.getProductsVolumes());
         Hibernate.initialize(volume.getSensors());
-        for (Sensor sensor : volume.getSensors())
-            Hibernate.initialize(sensor.getHistory());
 
         return volume;
     }
