@@ -9,6 +9,8 @@ import spz.dae24.dtos.SensorDTO;
 import spz.dae24.dtos.SensorHistoryDTO;
 import spz.dae24.ejbs.SensorBean;
 import spz.dae24.security.Authenticated;
+import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.Context;
 
 import java.util.List;
 
@@ -30,11 +32,16 @@ public class SensorService {
 
     @GET
     @Path("{id}")
-    @RolesAllowed({"Admin"})
-    public Response getSensor(@PathParam("id") long id) {
+    @RolesAllowed({"Admin", "Client"})
+    public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorDTO.from(sensor);
-        sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));
+
+        if (securityContext.isUserInRole("Admin")) {
+            sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));
+        } else if (securityContext.isUserInRole("Client")) {
+            sensorDTO.setHistory(SensorHistoryDTO.fromLast(sensor.getHistory()));
+        }
 
         return Response.ok(sensorDTO).build();
     }

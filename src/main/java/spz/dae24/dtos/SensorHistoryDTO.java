@@ -2,6 +2,7 @@ package spz.dae24.dtos;
 
 import spz.dae24.entities.SensorHistory;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,5 +61,13 @@ public class SensorHistoryDTO {
 
     public static List<SensorHistoryDTO> from(List<SensorHistory> sensors) {
         return sensors.stream().map(SensorHistoryDTO::from).collect(Collectors.toList());
+    }
+
+    public static List<SensorHistoryDTO> fromLast(List<SensorHistory> sensors) {
+        if (sensors == null || sensors.isEmpty()) {
+            return Collections.emptyList(); 
+        }
+        SensorHistory lastHistory = sensors.get(sensors.size() - 1); 
+        return Collections.singletonList(from(lastHistory)); 
     }
 }

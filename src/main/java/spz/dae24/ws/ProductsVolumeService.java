@@ -49,10 +49,4 @@ public class ProductsVolumeService {
     public List<ProductsVolumeDTO> getProductsVolumeByVolume(@PathParam("volumeCode") long volumeCode) {
         return ProductsVolumeDTO.from(productsVolumeBean.findByVolumeCode(volumeCode));
     }
-//    @GET
-//    @Path("/volume/{code}")
-//    public Response getProduct(@PathParam("code") int code) {
-//
-//        return Response.ok(productsVolumeDTO).build();
-//    }
 }
