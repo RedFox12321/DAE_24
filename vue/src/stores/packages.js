@@ -15,8 +15,18 @@ export const usePackageStore = defineStore('packages', () => {
         }
     }
 
+  const cancelPackage = async (code) => {
+    try {
+      await axios.patch('packages/' + code)
+      return true
+    } catch(e) {
+      return false
+    }
+  }
+
     return {
       packages,
-        getPackages
+        getPackages,
+      cancelPackage
     }
 })

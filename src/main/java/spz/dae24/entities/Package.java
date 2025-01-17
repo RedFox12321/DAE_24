@@ -13,11 +13,11 @@ import java.util.Locale;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPackages",
-                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p"
+                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p ORDER BY p.code"
         ),
         @NamedQuery(
                 name = "getPackagesByStatus",
-                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p WHERE p.status=:status"
+                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p WHERE p.status=:status ORDER BY p.code"
         )
 })
 @Table(name = "packages")

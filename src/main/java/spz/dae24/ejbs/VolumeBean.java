@@ -61,7 +61,7 @@ public class VolumeBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void deliver(long code) throws EntityNotFoundException {
-        var volume = find(code);
+        var volume = findWithSensorsAndProductsVolumes(code);
 
         volume.setStatus(Status.DELIVERED);
         for(Sensor s : volume.getSensors()){
@@ -73,7 +73,7 @@ public class VolumeBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void cancel(long code) throws EntityNotFoundException {
-        var volume = find(code);
+        var volume = findWithSensorsAndProductsVolumes(code);
 
         volume.setStatus(Status.CANCELLED);
         for(Sensor s : volume.getSensors()){

@@ -100,12 +100,12 @@ public class PackageBean {
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void cancelPackage(long code) throws EntityNotFoundException {
-        Package pkg = find(code);
+        Package pkg = findWithVolumes(code);
 
         pkg.setStatus(Status.CANCELLED);
         for(Volume volume : pkg.getVolumes()) {
-            if(!volume.getStatus().equals(Status.DELIVERED))
-                volumeBean.cancel(volume.getCode());
+          if(!volume.getStatus().equals(Status.DELIVERED))
+            volumeBean.cancel(volume.getCode());
         }
 
         em.merge(pkg);
