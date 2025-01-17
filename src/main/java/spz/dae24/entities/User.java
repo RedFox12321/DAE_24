@@ -3,6 +3,7 @@ package spz.dae24.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.io.Serializable;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -13,7 +14,7 @@ import jakarta.validation.constraints.NotBlank;
         }
 )
 @DiscriminatorColumn(name = "Type", discriminatorType = DiscriminatorType.STRING)
-public class User {
+public class User extends Versionable implements Serializable {
     @Id
     @NotBlank
     private String username;

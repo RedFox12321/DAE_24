@@ -93,11 +93,18 @@ public class ConfigBean {
 
     public void populatePackages(){
         Random random = ThreadLocalRandom.current();
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 10; i++) {
             try{
                 packageBean.create(i, clientUsernames.get(random.nextInt(clientUsernames.size())));
                 populateWithVolumes(i);
-                packageBean.completePackage(i);
+                int status = random.nextInt(3);
+                switch(status){
+                  case 0:
+                    packageBean.completePackage(i);
+                    break;
+                  case 1:
+                    packageBean.cancelPackage(i);
+                }
             }
             catch (Exception e){
                 LOGGER.warning("While creating packages: " + e.getMessage());
@@ -205,7 +212,7 @@ public class ConfigBean {
                 productCodes = populateProductsVolume(currentVolumeCode);
                 populateWithSensors(currentVolumeCode, type, productCodes);
 
-                volumeBean.updateStatus(currentVolumeCode++, Status.DELIVERED.name());
+                volumeBean.deliver(currentVolumeCode++);
             }
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());

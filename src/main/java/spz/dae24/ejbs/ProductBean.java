@@ -7,7 +7,7 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.EntityManager;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Product;
-import spz.dae24.exceptions.SensorTypeNotExistException;
+import spz.dae24.exceptions.TypeNotExistException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class ProductBean {
         return product;
     }
 
-    public void create(int code, String name, List<String> requiredSensors) throws EntityExistsException, SensorTypeNotExistException {
+    public void create(int code, String name, List<String> requiredSensors) throws EntityExistsException, TypeNotExistException {
         if (exists(code))
             throw new EntityExistsException("Product with code " + code + " already exists");
 
@@ -51,7 +51,7 @@ public class ProductBean {
                         msg.append(", ");
                 }
 
-                throw new SensorTypeNotExistException(msg.toString());
+                throw new TypeNotExistException(msg.toString());
             }
         }
 

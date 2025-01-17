@@ -34,10 +34,10 @@ const removeSensor = (index) => {
 <template>
   <div class="min-h-screen bg-gray-900 text-gray-200 p-6">
     <div class="max-w-4xl mx-auto">
-      <h1 class="text-2xl font-bold mb-6">Sensor Manager</h1>
+      <h1 class="text-2xl font-bold mb-6">Sensor History Generator</h1>
 
       <div class="bg-gray-800 rounded-lg shadow p-6 mb-6">
-        <h2 class="text-lg font-bold mb-4">Create New Sensor</h2>
+        <h2 class="text-lg font-bold mb-4">Create New Sensor Tracking</h2>
         <div class="grid grid-cols-3 gap-4 mb-4">
           <div>
             <label for="sensorId" class="block mb-2">Sensor ID:</label>
@@ -82,7 +82,7 @@ const removeSensor = (index) => {
           @click="addSensor"
           class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded shadow"
         >
-          Add Sensor
+          Track Sensor's Values
         </button>
       </div>
 

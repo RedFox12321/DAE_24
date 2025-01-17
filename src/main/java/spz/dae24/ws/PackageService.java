@@ -11,12 +11,14 @@ import spz.dae24.dtos.PackageDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.entities.Client;
+import spz.dae24.security.Authenticated;
 
 import java.util.List;
 
 @Path("packages")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
+@Authenticated
 public class PackageService {
     @EJB
     private PackageBean packageBean;
@@ -28,6 +30,7 @@ public class PackageService {
 
     @GET
     @Path("")
+    @RolesAllowed("Admin")
     public List<PackageDTO> getPackages() {
         return PackageDTO.from(packageBean.findAll());
     }
@@ -43,7 +46,7 @@ public class PackageService {
 
     @GET
     @Path("my/{username}")
-    @RolesAllowed(value = "Client")
+    @RolesAllowed("Client")
     public Response getMyPackages(@PathParam("username") String username) {
         var principal = securityContext.getUserPrincipal();
 
@@ -58,10 +61,27 @@ public class PackageService {
 
     @GET
     @Path("{code}")
-    public Response getVolume(@PathParam("code") long code) {
+    @RolesAllowed({"Client", "Admin"})
+    public Response getPackage(@PathParam("code") long code) {
         var _package = packageBean.findWithVolumes(code);
 
         return Response.ok(PackageDTO.from(_package)).build();
+    }
+
+    @PATCH
+    @Path("{code}")
+    @RolesAllowed({"Admin", "Client"})
+    public Response cancelPackage(@PathParam("code") long code) {
+        packageBean.cancelPackage(code);
+
+        var pck = packageBean.findWithVolumes(code);
+        return Response.ok(PackageDTO.from(pck)).build();
+    }
+    @GET
+    @Path("status/{statusType}")
+    @RolesAllowed("Admin")
+    public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) {
+        return PackageDTO.from(packageBean.findByStatus(statusType));
     }
 
 /*

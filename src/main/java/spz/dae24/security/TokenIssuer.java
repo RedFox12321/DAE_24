@@ -13,8 +13,8 @@ import java.util.Date;
 @ApplicationScoped
 public class TokenIssuer {
     protected static final byte[] SECRET_KEY =
-            "this1s4HabibiPa$$word@academics.dae.ipleiria".getBytes();
-    protected static final String ALGORITHM = "HMACSHA384";
+            "this1s4HabibiPa$$word@academics.dae.ipleiria12345".getBytes();
+    protected static final String ALGORITHM = "HmacSHA384";
 
     public static final long EXPIRY_MINS = 60L;
     public String issue(String username) {

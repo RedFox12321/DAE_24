@@ -13,11 +13,11 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllSensors",
-                query = "SELECT new Sensor(s.id, s.active, s.type) FROM Sensor s ORDER BY s.type"
+                query = "SELECT new Sensor(s.id, s.active, s.type, s.volume) FROM Sensor s ORDER BY s.type"
         )
 })
 @Table(name = "sensors")
-public class Sensor implements Serializable {
+public class Sensor extends Versionable implements Serializable {
     @Id
     private long id;
     private boolean active;
@@ -33,12 +33,6 @@ public class Sensor implements Serializable {
     private final List<SensorHistory> history = new ArrayList<>();
 
     public Sensor() {}
-
-    public Sensor(long id, boolean active, SensorType type) {
-        this.id = id;
-        this.active = active;
-        this.type = type;
-    }
 
     public Sensor(long id, boolean active, SensorType type, Volume volume) {
         this.id = id;

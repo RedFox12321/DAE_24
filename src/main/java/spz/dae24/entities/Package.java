@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import spz.dae24.common.enums.Status;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -12,11 +13,15 @@ import java.util.Locale;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllPackages",
-                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p"
+                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p ORDER BY p.code"
+        ),
+        @NamedQuery(
+                name = "getPackagesByStatus",
+                query = "SELECT new Package(p.code, p.status, p.client) FROM Package p WHERE p.status=:status ORDER BY p.code"
         )
 })
 @Table(name = "packages")
-public class Package {
+public class Package extends Versionable implements Serializable {
     @Id
     private long code;
 

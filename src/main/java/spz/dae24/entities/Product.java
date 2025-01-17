@@ -16,7 +16,7 @@ import java.util.List;
         )
 })
 @Table(name = "products")
-public class Product implements Serializable{
+public class Product extends Versionable implements Serializable{
     
     @Id
     private int code;
