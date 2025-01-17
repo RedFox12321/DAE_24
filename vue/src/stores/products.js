@@ -13,7 +13,7 @@ export const useProductsStore = defineStore('products', () => {
             errorStore.resetErrorMessage()
             const result = await axios.get('products')
             products.value = result.data
-            return products
+            return products.value
         } catch (e) {
             errorStore.setErrorMessage(
                 e.response.status,

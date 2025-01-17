@@ -1,8 +1,12 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
+import { useErrorStore } from "./error";
+import axios from "axios";
 
 
 export const useOrderPackageStore = defineStore('orderPackage', () => {
+    const errorStore = useErrorStore()
+
     const product = {
         productCode: 0,
         quantity: 1
@@ -69,7 +73,18 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
     }
     
     const createOrderPackage = async () => {
-
+        try {
+            errorStore.resetErrorMessage()
+            const result = await axios.post('packages', orderPackage.value)
+            return result.data
+        } catch (e) {
+            errorStore.setErrorMessage(
+                e.response.status,
+                e.response.statusText,
+                " Could not create package order."
+            )
+            return false
+        }
     }
 
     const addVolume = () => {
@@ -95,12 +110,23 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
         orderPackage.value.volumes[volumeIndex].sensors.splice(sensorIndex, 1)
     }
 
+    const resetOrderPackage = () => {
+        orderPackage.value = {
+            code: 0,
+            volumes: [
+                JSON.parse(JSON.stringify(volume))
+            ],
+            clientUsername: ""
+        }
+    }
+
     return {
         orderPackage,
         packageTypes,
         sensorTypes,
         numberOfVolumes,
         numberOfProductsVolumes,
+        resetOrderPackage,
         createOrderPackage,
         addVolume,
         removeVolume,

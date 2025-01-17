@@ -14,7 +14,7 @@ export const useClientStore = defineStore('clients', () =>{
             errorStore.resetErrorMessage()
             const result = await axios.get('clients')
             clients.value = result.data
-            return clients
+            return clients.value
         } catch (e) {
             errorStore.setErrorMessage(
                 e.response.status,

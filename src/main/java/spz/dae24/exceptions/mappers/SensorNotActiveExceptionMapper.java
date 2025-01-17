@@ -14,6 +14,6 @@ public class SensorNotActiveExceptionMapper implements ExceptionMapper<SensorNot
         String msg = e.getMessage();
         LOGGER.warning("WARNING: " + msg);
 
-        return null;
+        return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
     }
 }

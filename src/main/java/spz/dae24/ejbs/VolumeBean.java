@@ -10,13 +10,22 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
+import spz.dae24.common.enums.SensorType;
 import spz.dae24.common.enums.Status;
+import spz.dae24.dtos.PackageDTO;
+import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.entities.Package;
+import spz.dae24.entities.Product;
 import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
+import spz.dae24.exceptions.QuantityLowerThanOneException;
+import spz.dae24.exceptions.SensorInFaultException;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Stateless
 public class VolumeBean {
@@ -24,7 +33,11 @@ public class VolumeBean {
     private EntityManager em;
 
     @EJB
+    private VolumeBean volumeBean;
+    @EJB
     private SensorBean sensorBean;
+    @EJB
+    private ProductsVolumeBean productsVolumeBean;
 
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
@@ -60,6 +73,35 @@ public class VolumeBean {
 
         em.persist(volume);
         pkg.addVolume(volume);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void addVolumeToPackageOrder(VolumeDTO volumeDTO, long packageCode) throws QuantityLowerThanOneException, EntityNotFoundException, EntityExistsException, SensorInFaultException {
+        volumeBean.create(volumeDTO.getCode(), volumeDTO.getPackageType(), packageCode);
+
+        var productsVolumes = volumeDTO.getProductsVolume();
+        if (productsVolumes.isEmpty())
+            throw new QuantityLowerThanOneException("Volume with code " + volumeDTO.getCode() + " needs at least 1 product.");
+
+        Set<SensorType> requiredSensors = EnumSet.noneOf(SensorType.class);
+        for (var productsVolume : productsVolumes) {
+            productsVolumeBean.create(productsVolume.getProductCode(), volumeDTO.getCode(), productsVolume.getQuantity());
+
+            Product product = em.find(Product.class, productsVolume.getProductCode());
+            requiredSensors.addAll(product.getRequiredSensors());
+        }
+
+        for (var sensor : volumeDTO.getSensors()) {
+            sensorBean.create(sensor.getId(), sensor.getType(), volumeDTO.getCode());
+            requiredSensors.remove(SensorType.valueOf(sensor.getType()));
+        }
+
+        if (!requiredSensors.isEmpty())
+            throw new SensorInFaultException("The chosen products, in volume " + volumeDTO.getCode() + ", do not have all required sensors. Sensors in fault ["
+                    + requiredSensors.stream()
+                    .map(SensorType::getName)
+                    .collect(Collectors.joining(", "))
+                    + "]");
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)

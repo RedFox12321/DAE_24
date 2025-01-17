@@ -43,9 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
     errorStore.resetErrorMessage()
   }
 
-  const isLoggedIn = computed(() => {
-    return token.value != ''
-  })
+  const isLoggedIn = computed(() => token.value != '')
 
   return {
     login,

@@ -27,7 +27,7 @@ const itemSelected = (product) => {
     productVolume.value.productCode = product.code
 }
 
-const searchQuery = ref('')
+const searchQuery = ref("")
 
 watch(
     () => productVolume.value.quantity,
@@ -38,8 +38,9 @@ watch(
 )
 
 const resetProducts = async () => {
-    const product0 = await productsStore.getProducts()
-    if(product0) {
+    const products = await productsStore.getProducts()
+    if(products) {
+        const product0 = products[0]
         productVolume.value.productCode = product0.code
         searchQuery.value = product0.name
     }

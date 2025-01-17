@@ -1,15 +1,21 @@
 package spz.dae24.dtos;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import spz.dae24.entities.Volume;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class VolumeDTO {
+    @Min(1)
     private long code;
     private int number;
+    @NotBlank
     private String status;
+    @Min(1)
     private long packageCode;
+    @NotBlank
     private String packageType;
 
     public VolumeDTO() {}

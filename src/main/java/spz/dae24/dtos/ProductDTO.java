@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductDTO {
-
     private int code;
     private String name;
 

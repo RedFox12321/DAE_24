@@ -10,7 +10,10 @@ import jakarta.ws.rs.core.SecurityContext;
 import spz.dae24.dtos.PackageDTO;
 import spz.dae24.ejbs.ClientBean;
 import spz.dae24.ejbs.PackageBean;
+import spz.dae24.ejbs.ProductBean;
+import spz.dae24.ejbs.VolumeBean;
 import spz.dae24.entities.Client;
+import spz.dae24.exceptions.TypeNotExistException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -21,9 +24,13 @@ import java.util.List;
 @Authenticated
 public class PackageService {
     @EJB
+    private ClientBean clientBean;
+    @EJB
     private PackageBean packageBean;
     @EJB
-    private ClientBean clientBean;
+    private VolumeBean volumeBean;
+    @EJB
+    private ProductBean productBean;
 
     @Context
     private SecurityContext securityContext;
@@ -80,30 +87,17 @@ public class PackageService {
     @GET
     @Path("status/{statusType}")
     @RolesAllowed("Admin")
-    public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) {
+    public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) throws TypeNotExistException {
         return PackageDTO.from(packageBean.findByStatus(statusType));
     }
 
-/*
     @POST
     @Path("")
     @RolesAllowed("Logistic")
     public Response createPackage(PackageDTO packageDTO) {
-        if (packageDTO == null)
-            return Response.status(Response.Status.BAD_REQUEST).build();
+        packageBean.makePackageOrder(packageDTO);
 
-        var volumes = packageDTO.getVolumes();
-        if (volumes.isEmpty())
-            return Response.status(422, "Package needs at least 1 volume.").build();
-
-        for (var volume : volumes) {
-            var productsVolumes = volume.getVolumeProducts();
-            if (productsVolumes.isEmpty())
-                return Response.status(422, "One of the volumes does not have products.").build();
-        }
-
-        var _package = packageBean.findWithVolumes(code);
-        return Response.ok(PackageDTO.from(_package)).build();
+        var pck = packageBean.findWithVolumes(packageDTO.getCode());
+        return Response.ok(PackageDTO.from(pck)).build();
     }
-*/
 }

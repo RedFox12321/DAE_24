@@ -9,17 +9,22 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import spz.dae24.entities.Sensor;
+import jakarta.ws.rs.core.Response;
+import spz.dae24.common.enums.SensorType;
+import spz.dae24.dtos.PackageDTO;
+import spz.dae24.entities.*;
+import spz.dae24.entities.Package;
+import spz.dae24.exceptions.QuantityLowerThanOneException;
+import spz.dae24.exceptions.SensorInFaultException;
 import spz.dae24.exceptions.TypeNotExistException;
 
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.Status;
-import spz.dae24.entities.Client;
-import spz.dae24.entities.Package;
-import spz.dae24.entities.Volume;
+import spz.dae24.exceptions.mappers.QuantityLowerThanOneExceptionMapper;
+import spz.dae24.exceptions.mappers.SensorInFaultExceptionMapper;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 public class PackageBean {
@@ -35,7 +40,7 @@ public class PackageBean {
         return em.createNamedQuery("getAllPackages", Package.class).getResultList();
     }
 
-    public List<Package> findByStatus(String status) {
+    public List<Package> findByStatus(String status) throws TypeNotExistException {
         Status statusType = null;
         try {
             statusType = Status.valueOf(status.toUpperCase());
@@ -45,16 +50,15 @@ public class PackageBean {
         }
         TypedQuery<Package> query = (TypedQuery<Package>) em.createNamedQuery("getPackagesByStatus", Package.class);
         query.setParameter("status", statusType);
-        List<Package> packages = query.getResultList();
 
-        return packages;
+        return query.getResultList();
     }
 
     public List<Package> findByClient(long clientId) throws EntityNotFoundException {
         var client = em.find(Client.class, clientId);
 
         if(client == null)
-        throw new EntityNotFoundException("Client with id " + clientId + " not found");
+            throw new EntityNotFoundException("Client with id " + clientId + " not found");
 
         return client.getPackages();
     }
@@ -63,7 +67,7 @@ public class PackageBean {
         var _package = em.find(Package.class, code);
 
         if(_package == null)
-        throw new EntityNotFoundException("Package with code " + code + " not found");
+            throw new EntityNotFoundException("Package with code " + code + " not found");
 
         return _package;
     }
@@ -86,18 +90,34 @@ public class PackageBean {
 
     public void create(long code, String clientUsername) throws EntityNotFoundException, EntityExistsException {
         if (exists(code))
-        throw new EntityExistsException("Package with code " + code + " already exists");
+            throw new EntityExistsException("Package with code " + code + " already exists");
 
         Client client = em.find(Client.class, clientUsername);
 
         if(client == null)
-        throw new EntityNotFoundException("Client with username " + clientUsername + " not found");
+            throw new EntityNotFoundException("Client with username " + clientUsername + " not found");
 
         Package pkg = new Package(code, Status.ACTIVE, client);
 
         em.persist(pkg);
 
         client.addPackage(pkg);
+    }
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public void makePackageOrder(PackageDTO packageDTO) throws QuantityLowerThanOneException, EntityNotFoundException, EntityExistsException, SensorInFaultException {
+        if (clientBean.exists(packageDTO.getClientUsername()))
+            throw new EntityNotFoundException("Client with username " + packageDTO.getClientUsername() + " does not exist.");
+
+        create(packageDTO.getCode(), packageDTO.getClientUsername());
+
+        var volumesDTO = packageDTO.getVolumes();
+        if (volumesDTO.isEmpty())
+            throw new QuantityLowerThanOneException("Package needs at least 1 volume.");
+
+        for (var volumeDTO : volumesDTO) {
+            volumeBean.addVolumeToPackageOrder(volumeDTO, packageDTO.getCode());
+        }
     }
 
     public void completePackage(long code) throws EntityNotFoundException {

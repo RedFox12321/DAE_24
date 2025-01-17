@@ -1,15 +1,18 @@
 package spz.dae24.dtos;
 
+import jakarta.validation.constraints.Min;
 import spz.dae24.entities.ProductsVolume;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProductsVolumeDTO {
-
     private long id;
+    @Min(1)
     private int productCode;
+    @Min(1)
     private long volumeCode;
+    @Min(1)
     private int quantity;
 
     public ProductsVolumeDTO(long id, int productCode, long volumeCode, int quantity){

@@ -3,10 +3,14 @@ package spz.dae24.dtos;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import spz.dae24.entities.Package;
 
 public class PackageDTO {
+    @Min(1)
     private long code;
+    @NotBlank
     private String status;
     private String clientUsername;
 

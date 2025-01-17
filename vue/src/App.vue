@@ -1,23 +1,18 @@
 <script setup>
 import {useAuthStore} from './stores/auth.js'
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useRouter} from 'vue-router'
 
 const storeAuth = useAuthStore()
 const router = useRouter()
 
-const links = [
-  { label: "Home", to: "/", render: true },
-  { label: "Logistics", to: "/logistics", render: true },
-  { label: "Sensors", to: "/sensors", render: true },
-  { label: "Packages", to: "/packages", render: true },
-  { label: "Customer Support", to: "/customerSupport", render: true },
-  //{ label: "", to: "", render: true },
-]
-
-const filteredLinks = computed(() => {
-  return links.filter(link => link.render)
-})
+const links = ref([
+  { label: "Home", to: "/" },
+  { label: "Logistics", to: "/logistics" },
+  { label: "Sensors", to: "/sensors" },
+  { label: "Packages", to: "/packages" },
+  { label: "Customer Support", to: "/customerSupport" },
+])
 
 const handleLogout = () => {
   storeAuth.logout()
@@ -31,7 +26,7 @@ const handleLogout = () => {
       <div class="bg-gray-800 text-white">
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
           <ul class="hidden md:flex space-x-6">
-            <li v-for="link in filteredLinks" :key="link.label" class="px-5">
+            <li v-for="link in links" :key="link" class="px-5">
               <RouterLink :to="link.to" class="text-gray-200 hover:text-gray-100" active-class="text-gray-300">
                 {{ link.label }}
               </RouterLink>

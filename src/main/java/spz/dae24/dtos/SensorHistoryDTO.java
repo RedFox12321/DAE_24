@@ -1,5 +1,7 @@
 package spz.dae24.dtos;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import spz.dae24.entities.SensorHistory;
 
 import java.util.Collections;
@@ -8,8 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SensorHistoryDTO {
+    @Min(1)
     private long sensorId;
     private String sensorType;
+    @NotBlank
     private String value;
     private Date datetime;
 

@@ -1,13 +1,17 @@
 package spz.dae24.dtos;
 
+import jakarta.validation.constraints.NotBlank;
 import spz.dae24.entities.Client;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClientDTO {
+    @NotBlank
     private String username;
+    @NotBlank
     private String name;
+    @NotBlank
     private String email;
 
     public ClientDTO() {}

@@ -72,5 +72,7 @@ public class ProductsVolumeBean {
 
         product.addProductsVolumes(productsVolume);
         volume.addProductsVolume(productsVolume);
+
+        return productsVolume.getId();
     }
 }
