@@ -30,7 +30,7 @@ public class ProductsVolumeBean {
         return productsVolume;
     }
 
-    public void create(int productCode, int quantity, long volumeCode) throws EntityNotFoundException {
+    public void create(int productCode, long volumeCode, int quantity) throws EntityNotFoundException {
         Product product = em.find(Product.class, productCode);
         if (product == null)
             throw new EntityNotFoundException("Product with code " + productCode + " not found");
@@ -39,7 +39,7 @@ public class ProductsVolumeBean {
         if (volume == null)
             throw new EntityNotFoundException("Volume with code " + volumeCode + " not found");
 
-        ProductsVolume productsVolume = new ProductsVolume(product, quantity, volume);
+        ProductsVolume productsVolume = new ProductsVolume(product, volume, quantity);
 
         em.persist(productsVolume);
 

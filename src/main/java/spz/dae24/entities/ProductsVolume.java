@@ -28,10 +28,10 @@ public class ProductsVolume {
         public ProductsVolume() {
         }
 
-        public ProductsVolume(Product product, int quantity, Volume volume) {
+        public ProductsVolume(Product product, Volume volume, int quantity) {
                 this.product = product;
-                this.quantity = quantity;
                 this.volume = volume;
+                this.quantity = quantity;
         }
 
         private int quantity;

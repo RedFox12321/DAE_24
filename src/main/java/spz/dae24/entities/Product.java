@@ -12,7 +12,7 @@ import java.util.List;
 @NamedQueries({
         @NamedQuery(
                 name = "getAllProducts",
-                query = "SELECT new Product(p.code, p.name, p.requiredSensors) FROM Product p ORDER BY p.code"
+                query = "SELECT new Product(p.code, p.name) FROM Product p ORDER BY p.code"
         )
 })
 @Table(name = "products")
@@ -34,6 +34,12 @@ public class Product implements Serializable{
     public Product(){
 
     }
+
+    public Product(int code, String name) {
+        this.code = code;
+        this.name = name;
+    }
+
     public Product(int code, String name, List<SensorType> requiredSensors){
         this.code = code;
         this.name = name;

@@ -9,10 +9,10 @@ public class ProductsVolumeDTO {
 
     private long id;
     private int productCode;
-    private int volumeCode;
+    private long volumeCode;
     private int quantity;
 
-    public ProductsVolumeDTO(long id, int productCode, int quantity){
+    public ProductsVolumeDTO(long id, int productCode, long volumeCode, int quantity){
         this.id = id;
         this.productCode = productCode;
         this.volumeCode = volumeCode;
@@ -35,11 +35,11 @@ public class ProductsVolumeDTO {
         this.productCode = productCode;
     }
 
-    public int getVolumeCode() {
+    public long getVolumeCode() {
          return volumeCode;
     }
 
-    public void setVolumeCode(int volumeCode) {
+    public void setVolumeCode(long volumeCode) {
          this.volumeCode = volumeCode;
     }
 
@@ -55,9 +55,8 @@ public class ProductsVolumeDTO {
         return new ProductsVolumeDTO(
                 productsVolume.getId(),
                 productsVolume.getProduct().getCode(),
-//                productsVolume.getVolume().getCode(),
+                productsVolume.getVolume().getCode(),
                 productsVolume.getQuantity()
-
         );
     }
 

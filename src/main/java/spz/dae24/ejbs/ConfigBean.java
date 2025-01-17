@@ -220,7 +220,7 @@ public class ConfigBean {
         try {
             for (int i = 0; i < minimumNumberOfProducts + random.nextInt(3); i++) {
                 int productCode = random.nextInt(100, 112);
-                productsVolumeBean.create(productCode, random.nextInt(1, 10), volumeCode);
+                productsVolumeBean.create(productCode, volumeCode, random.nextInt(1, 10));
                 products.add(productCode);
             }
         } catch (Exception e) {
