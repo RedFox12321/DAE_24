@@ -30,7 +30,7 @@ public class SensorHistoryBean {
         return sensorHistory;
     }
 
-    public void create(long sensorId, String value) throws EntityExistsException {
+    public long create(long sensorId, String value) throws EntityExistsException {
         var sensor = em.find(Sensor.class, sensorId);
         if (!sensor.isActive())
             throw new SensorNotActiveException("Sensor with id " + sensorId + " is not active anymore.");
@@ -39,6 +39,8 @@ public class SensorHistoryBean {
 
         em.persist(sensorHistory);
         sensor.addHistory(sensorHistory);
+
+        return sensorHistory.getId();
     }
 
 

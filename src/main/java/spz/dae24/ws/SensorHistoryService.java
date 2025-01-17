@@ -41,12 +41,12 @@ public class SensorHistoryService {
     @Path("")
     @Consumes({MediaType.APPLICATION_JSON})
     public Response createSensorHistory(SensorHistoryDTO sensorHistoryDTO) {
-        sensorHistoryBean.create(
+        long sensorHistoryId = sensorHistoryBean.create(
                 sensorHistoryDTO.getSensorId(),
                 sensorHistoryDTO.getValue()
         );
 
-        var sensorHistory = sensorHistoryBean.find(sensorHistoryDTO.getSensorId());
+        var sensorHistory = sensorHistoryBean.find(sensorHistoryId);
 
         return Response.status(Response.Status.CREATED)
                 .entity(SensorHistoryDTO.from(sensorHistory)).build();

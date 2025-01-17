@@ -16,7 +16,7 @@ import java.util.List;
 @Path("sensors")
 @Produces({MediaType.APPLICATION_JSON})
 @Consumes({MediaType.APPLICATION_JSON})
-@Authenticated
+// @Authenticated
 public class SensorService {
     @EJB
     private SensorBean sensorBean;
