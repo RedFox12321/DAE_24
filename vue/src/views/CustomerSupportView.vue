@@ -23,11 +23,10 @@ const cancelPackage = (code) => {
             <div>
               <h3 class="text-lg font-semibold">Code: {{ item.code }}</h3>
               <p class="text-sm text-gray-400">Ordered by: {{
-                  item.clientUsername
+                item.clientUsername
                 }}</p>
               <p class="text-sm text-gray-400">Status: {{ item.status }}</p>
             </div>
-
             <button
               v-if="item.status == 'ACTIVE'"
               @click="cancelPackage(item.code)"

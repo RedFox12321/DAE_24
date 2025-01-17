@@ -54,7 +54,7 @@ public class PackageService {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
 
-        var client = clientBean.find(username);
+        var client = clientBean.findWithPackages(username);
 
         return Response.ok(PackageDTO.from(client.getPackages())).build();
     }
