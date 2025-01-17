@@ -25,6 +25,7 @@ public class ProductsVolume extends Versionable implements Serializable {
     private Product product;
 
     @ManyToOne
+    @NotNull
     private Volume volume;
 
     @Version

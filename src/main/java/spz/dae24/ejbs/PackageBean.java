@@ -9,6 +9,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import spz.dae24.entities.Sensor;
 import spz.dae24.exceptions.TypeNotExistException;
 
 import org.hibernate.Hibernate;
@@ -17,6 +18,7 @@ import spz.dae24.entities.Client;
 import spz.dae24.entities.Package;
 import spz.dae24.entities.Volume;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -70,6 +72,13 @@ public class PackageBean {
         var _package = find(code);
 
         Hibernate.initialize(_package.getVolumes());
+
+        for(Volume volume : _package.getVolumes()) {
+            Hibernate.initialize(volume.getProductsVolumes());
+            Hibernate.initialize(volume.getSensors());
+            for (Sensor sensor : volume.getSensors())
+                Hibernate.initialize(sensor.getHistory());
+        }
 
         return _package;
     }
