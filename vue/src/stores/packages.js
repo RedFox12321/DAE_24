@@ -8,6 +8,7 @@ export const usePackageStore = defineStore('packages', () => {
   const packages = ref([])
   const curPackage = ref({})
   const activePackages = ref([])
+  const packagesByStatus = ref([])
 
     const getPackages = async () => {
         try {
@@ -40,6 +41,15 @@ export const usePackageStore = defineStore('packages', () => {
     }
   };
 
+  const getPackagesByStatus = async (status) =>{
+    try {
+      const result = await axios.get('packages/status/'+ status)
+      packagesByStatus.value = result.data
+      return packagesByStatus
+    } catch (e) {
+      return false
+    }
+  }
 
   const cancelPackage = async (code) => {
     try {
@@ -53,8 +63,10 @@ export const usePackageStore = defineStore('packages', () => {
     return {
       packages,
       activePackages,
+      packagesByStatus,
       getPackages,
       getMyActivePackages,
+      getPackagesByStatus,
       cancelPackage,
       getPackage,
       curPackage

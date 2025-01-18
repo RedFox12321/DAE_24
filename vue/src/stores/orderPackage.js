@@ -3,7 +3,6 @@ import { computed, ref } from "vue";
 import { useErrorStore } from "./error";
 import axios from "axios";
 
-
 export const useOrderPackageStore = defineStore('orderPackage', () => {
     const errorStore = useErrorStore()
 
@@ -16,7 +15,7 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
         id: 0,
         type: "TEMPERATURE"
     }
-    
+
     const volume = {
                 code: 0,
                 packageType: "BOX",
@@ -67,11 +66,11 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
     const numberOfVolumes = computed(() => {
         return orderPackage.value.volumes.length
     })
-    
+
     const numberOfProductsVolumes = (volumeIndex) => {
         return orderPackage.value.volumes[volumeIndex].productsVolume.length
     }
-    
+
     const createOrderPackage = async () => {
         try {
             errorStore.resetErrorMessage()
@@ -97,12 +96,12 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
 
     const addProduct = (volumeIndex) => {
         orderPackage.value.volumes[volumeIndex].productsVolume.push(JSON.parse(JSON.stringify(product)))
-    } 
+    }
     const removeProduct = (volumeIndex, productIndex) => {
         if(numberOfProductsVolumes(volumeIndex) > 1)
             orderPackage.value.volumes[volumeIndex].productsVolume.splice(productIndex, 1)
     }
-    
+
     const addSensor = (volumeIndex) => {
         orderPackage.value.volumes[volumeIndex].sensors.push(JSON.parse(JSON.stringify(sensor)))
     }
