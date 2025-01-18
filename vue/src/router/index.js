@@ -29,7 +29,7 @@ const router = createRouter({
     {
       path: '/logistics',
       name: 'logistics',
-      component: LogisticsView
+      component: LogisticsView,
     },
     {
       path: '/sensors',

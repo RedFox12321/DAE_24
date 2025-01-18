@@ -11,7 +11,7 @@ import spz.dae24.dtos.SensorDTO;
 import spz.dae24.dtos.SensorHistoryDTO;
 import spz.dae24.dtos.SensorWithHistoryDTO;
 import spz.dae24.ejbs.SensorBean;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class SensorService {
     @GET
     @Path("{id}")
     @RolesAllowed({"Admin", "Client"})
-    public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) throws EntityNotFoundException {
+    public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) throws MyEntityNotFoundException {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorWithHistoryDTO.from(sensor);
 

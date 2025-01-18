@@ -1,6 +1,9 @@
 package spz.dae24.common.enums;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum SensorType {
     TEMPERATURE("Temperature"),
     ATMOSPHERIC_PRESSURE("Atmospheric pressure"),
@@ -8,6 +11,7 @@ public enum SensorType {
     GPS("Geographical Location");
 
     private final String description;
+    private static final SensorType[] values = values();
 
     SensorType(String description) {
         this.description = description;
@@ -23,7 +27,6 @@ public enum SensorType {
         } catch(IllegalArgumentException exception) {
             StringBuilder msg = new StringBuilder("Sensor type " + sensorType + " not found. Possible values: ");
 
-            SensorType[] values = SensorType.values();
             int i = 1;
             for (SensorType sensorTypeEnum : values) {
                 msg.append(sensorTypeEnum.name());
@@ -33,5 +36,9 @@ public enum SensorType {
 
             throw new IllegalArgumentException(msg.toString());
         }
+    }
+
+    public static List<SensorType> parse(List<String> sensorTypes) throws IllegalArgumentException {
+        return sensorTypes.stream().map(SensorType::parse).collect(Collectors.toList());
     }
 }

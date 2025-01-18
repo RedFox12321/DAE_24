@@ -1,8 +1,10 @@
 import { defineStore } from 'pinia';
 import { ref, reactive } from 'vue';
 import axios from "axios";
+import { useErrorStore } from './error';
 
 export const useSensorStore = defineStore('sensor', () => {
+  const errorStore = useErrorStore()
   const sensors = ref(JSON.parse(localStorage.getItem('sensors')) || []);
   const curSensor = ref({})
 
@@ -89,10 +91,15 @@ export const useSensorStore = defineStore('sensor', () => {
 
     const getSensor = async (id) => {
         try {
-            const result = await axios.get('sensors/' + id)
+          const result = await axios.get('sensors/' + id)
           curSensor.value = result.data
             return curSensor.value
         } catch (e) {
+            errorStore.setErrorMessage(
+                e.response.status,
+                e.response.statusText,
+                e.response.data
+            )
             return false
         }
     }

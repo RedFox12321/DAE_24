@@ -9,7 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.ProductDTO;
 import spz.dae24.ejbs.ProductBean;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class ProductService {
 
     @GET
     @Path("{code}")
-    public Response getProduct(@PathParam("code") int code) throws EntityNotFoundException {
+    public Response getProduct(@PathParam("code") int code) throws MyEntityNotFoundException {
         var product = productBean.find(code);
         var productDTO = ProductDTO.from(product);
 

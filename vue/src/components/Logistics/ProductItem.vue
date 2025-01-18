@@ -23,8 +23,14 @@ const removeProduct = () => {
     emit('removeProduct', props.index)
 }
 
-const itemSelected = (product) => {
-    productVolume.value.productCode = product.code
+const itemSelected = (input) => {
+    console.log(input)
+    if(input?.code)
+        productVolume.value.productCode = input.code
+    else {
+        const filtered = productsStore.products.filter(product => product.name.toLowerCase().includes(searchQuery.value.toLowerCase()))
+        productVolume.value.productCode = filtered.length > 0 ? filtered[0] : productsStore.products[0]
+    }
 }
 
 const searchQuery = ref("")

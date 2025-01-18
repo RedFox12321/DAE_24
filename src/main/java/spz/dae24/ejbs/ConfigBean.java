@@ -4,12 +4,15 @@ import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 import jakarta.ejb.Startup;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.SensorType;
+import spz.dae24.common.enums.Status;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Logger;
 
@@ -38,7 +41,7 @@ public class ConfigBean {
     private AdminBean adminBean;
 
     // create test objects
-    private List<String> clientUsernames = new ArrayList<>();
+    private final List<String> clientUsernames = new ArrayList<>();
     private int currentVolumeCode = 1;
     private int currentSensorCode = 1;
 
@@ -46,15 +49,19 @@ public class ConfigBean {
     List<PackageType> PACKAGE_VALUES = List.of(PackageType.values());
 
     @PostConstruct
+    @Transactional
     public void populateDB() {
         LOGGER.info("Initiating database seeding");
-        populateProducts();
+
         populateClients();
+        populateProducts();
+
         populatePackages();
 
         LOGGER.info("Database seeding complete");
     }
 
+    @Transactional
     public void populateProducts(){
         List<String> productNames = List.of(
             "Arroz",
@@ -92,25 +99,75 @@ public class ConfigBean {
         }
     }
 
+    @Transactional
+    public void populateClients() {
+
+        List<String[]> clients = List.of(
+                new String[]{"clt1", "João Manuel Silva", "c1@ipleiria.pt"},
+                new String[]{"clt2", "Maria Oliveira", "c2@ipleiria.pt"},
+                new String[]{"clt3", "António Luís Pereira", "c3@ipleiria.pt"},
+                new String[]{"clt4", "José Fernandes", "c4@ipleiria.pt"},
+                new String[]{"clt5", "Ana Beatriz Costa", "c5@ipleiria.pt"},
+                new String[]{"pamartins", "Pedro Afonso Martins", "pedro.martins@example.com"},
+                new String[]{"cssousa", "Catarina Sofia Sousa", "catarina.sousa@example.com"},
+                new String[]{"lgoncalves", "Luís Gonçalves", "luis.goncalves@example.com"},
+                new String[]{"rmendes", "Rita Maria Mendes", "rita.mendes@example.com"},
+                new String[]{"mjrocha", "Manuel Joaquim Rocha", "manuel.rocha@example.com"},
+                new String[]{"salves", "Sofia Alves", "sofia.alves@example.com"},
+                new String[]{"bmsantos", "Bruno Miguel Santos", "bruno.santos@example.com"},
+                new String[]{"iccarvalho", "Inês Catarina Carvalho", "ines.carvalho@example.com"}
+        );
+
+        List<String[]> logistics = List.of(
+                new String[]{"logi1", "Carlos Silva", "logi1@ipleiria.pt"},
+                new String[]{"logi2", "Ana Beatriz", "logi2@ipleiria.pt"},
+                new String[]{"logi3", "Pedro Oliveira", "logi3@ipleiria.pt"},
+                new String[]{"jfernandes", "Joana Fernandes", "joana.fernandes@example.com"},
+                new String[]{"msantos", "Miguel Santos", "miguel.santos@example.com"},
+                new String[]{"afonseca", "Amélia Fonseca", "amelia.fonseca@example.com"}
+        );
+
+        List<String[]> admins = List.of(
+                new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
+                new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
+                new String[]{"apereira", "António Luís Pereira", "antonio.pereira@example.com"},
+                new String[]{"rsmendes", "Rita Sofia Mendes", "rita.mendes@example.com"},
+                new String[]{"mrocha", "Manuel Rocha", "manuel.rocha@example.com"}
+        );
+
+        try {
+            for (String[] admin : admins) {
+                adminBean.create(admin[0], admin[1], admin[2], "123");
+            }
+            for (String[] logi : logistics) {
+                logisticBean.create(logi[0], logi[1], logi[2], "123");
+            }
+            for (String[] client : clients) {
+                clientBean.create(client[0], client[1], client[2], "123");
+                clientUsernames.add(client[0]);
+            }
+        } catch (Exception e) {
+            LOGGER.warning("While creating clients: " + e.getMessage());
+        }
+    }
+
+    @Transactional
     public void populatePackages(){
         Random random = ThreadLocalRandom.current();
+
         for (int i = 1; i < 10; i++) {
             try{
                 packageBean.create(i, clientUsernames.get(random.nextInt(clientUsernames.size())));
-                populateWithVolumes(i);
 
-                switch(random.nextInt(3)){
-                  case 0:
-                    packageBean.completePackage(i);
-                    break;
-                  case 1:
+                Status status = random.nextBoolean() ? Status.DELIVERED : Status.CANCELLED;
+                populateWithVolumes(i, status);
+
+                if (status == Status.CANCELLED)
                     packageBean.cancelPackage(i);
-                }
             }
             catch (Exception e){
                 LOGGER.warning("While creating packages: " + e.getMessage());
             }
-
         }
     }
 
@@ -152,21 +209,21 @@ public class ConfigBean {
                     case 100 -> {
                         sensorBean.create(currentSensorCode, SensorType.ATMOSPHERIC_PRESSURE.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.ATMOSPHERIC_PRESSURE);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                     case 103, 105, 107, 108 -> {
                         sensorBean.create(currentSensorCode, SensorType.TEMPERATURE.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.TEMPERATURE);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                     case 112 -> {
                         sensorBean.create(currentSensorCode, SensorType.ACCELERATION.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.ACCELERATION);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
 
                         sensorBean.create(currentSensorCode, SensorType.GPS.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.GPS);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                 }
             }
@@ -174,7 +231,7 @@ public class ConfigBean {
             if (packageType == PackageType.FREEZER) {
                 sensorBean.create(currentSensorCode, SensorType.TEMPERATURE.name(), volumeCode);
                 populateWithHistory(currentSensorCode, SensorType.TEMPERATURE);
-                sensorBean.disable(currentSensorCode++);
+                currentSensorCode++;
             }
 
             for (int i = 0; i < random.nextInt(2); i++) {
@@ -182,17 +239,17 @@ public class ConfigBean {
                     case 0 -> {
                         sensorBean.create(currentSensorCode, SensorType.GPS.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.GPS);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                     case 1 -> {
                         sensorBean.create(currentSensorCode, SensorType.ACCELERATION.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.ACCELERATION);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                     case 2 -> {
                         sensorBean.create(currentSensorCode, SensorType.ATMOSPHERIC_PRESSURE.name(), volumeCode);
                         populateWithHistory(currentSensorCode, SensorType.ATMOSPHERIC_PRESSURE);
-                        sensorBean.disable(currentSensorCode++);
+                        currentSensorCode++;
                     }
                 }
             }
@@ -201,20 +258,27 @@ public class ConfigBean {
         }
     }
 
-    public void populateWithVolumes(long packageCode) {
+    public void populateWithVolumes(long packageCode, Status status) {
         int minimumNumberOfVolumes = 1;
         Random random = ThreadLocalRandom.current();
         try {
-            List<Integer> productCodes = new ArrayList<>();
-            for (int i = 0; i < minimumNumberOfVolumes + random.nextInt(3); i++) {
+            List<Integer> productCodes = null;
+            int numberOfVolumes = minimumNumberOfVolumes + random.nextInt(3);
+            List<Long> volumesToDeliver = new LinkedList<>();
+            for (int i = 1; i <= numberOfVolumes; i++) {
                 PackageType type = PACKAGE_VALUES.get(random.nextInt(PACKAGE_VALUES.size()));
 
                 volumeBean.create(currentVolumeCode, type.name(), packageCode);
                 productCodes = populateProductsVolume(currentVolumeCode);
                 populateWithSensors(currentVolumeCode, type, productCodes);
 
-                volumeBean.deliver(currentVolumeCode++);
+                volumesToDeliver.add((long) currentVolumeCode);
+                currentVolumeCode++;
             }
+            if (status == Status.DELIVERED)
+                for (long volumeCode : volumesToDeliver)
+                    volumeBean.deliver(volumeCode);
+
         } catch (Exception e) {
             LOGGER.warning("While creating volumes: " + e.getMessage());
         }
@@ -238,54 +302,4 @@ public class ConfigBean {
         return products;
     }
 
-    public void populateClients() {
-
-        List<String[]> clients = List.of(
-            new String[]{"clt1", "João Manuel Silva", "c1@ipleiria.pt"},
-            new String[]{"clt2", "Maria Oliveira", "c2@ipleiria.pt"},
-            new String[]{"clt3", "António Luís Pereira", "c3@ipleiria.pt"},
-            new String[]{"clt4", "José Fernandes", "c4@ipleiria.pt"},
-            new String[]{"clt5", "Ana Beatriz Costa", "c5@ipleiria.pt"},
-            new String[]{"pamartins", "Pedro Afonso Martins", "pedro.martins@example.com"},
-            new String[]{"cssousa", "Catarina Sofia Sousa", "catarina.sousa@example.com"},
-            new String[]{"lgoncalves", "Luís Gonçalves", "luis.goncalves@example.com"},
-            new String[]{"rmendes", "Rita Maria Mendes", "rita.mendes@example.com"},
-            new String[]{"mjrocha", "Manuel Joaquim Rocha", "manuel.rocha@example.com"},
-            new String[]{"salves", "Sofia Alves", "sofia.alves@example.com"},
-            new String[]{"bmsantos", "Bruno Miguel Santos", "bruno.santos@example.com"},
-            new String[]{"iccarvalho", "Inês Catarina Carvalho", "ines.carvalho@example.com"}
-        );
-
-        List<String[]> logistics = List.of(
-            new String[]{"logi1", "Carlos Silva", "logi1@ipleiria.pt"},
-            new String[]{"logi2", "Ana Beatriz", "logi2@ipleiria.pt"},
-            new String[]{"logi3", "Pedro Oliveira", "logi3@ipleiria.pt"},
-            new String[]{"jfernandes", "Joana Fernandes", "joana.fernandes@example.com"},
-            new String[]{"msantos", "Miguel Santos", "miguel.santos@example.com"},
-            new String[]{"afonseca", "Amélia Fonseca", "amelia.fonseca@example.com"}
-        );
-
-        List<String[]> admins = List.of(
-            new String[]{"adm1", "João Manuel Almeida", "a1@ipleiria.pt"},
-            new String[]{"adm2", "Maria Costa", "a2@ipleiria.pt"},
-            new String[]{"apereira", "António Luís Pereira", "antonio.pereira@example.com"},
-            new String[]{"rsmendes", "Rita Sofia Mendes", "rita.mendes@example.com"},
-            new String[]{"mrocha", "Manuel Rocha", "manuel.rocha@example.com"}
-        );
-
-        try {
-            for (String[] admin : admins) {
-                adminBean.create(admin[0], admin[1], admin[2], "123");
-            }
-            for (String[] logi : logistics) {
-                logisticBean.create(logi[0], logi[1], logi[2], "123");
-            }
-            for (String[] client : clients) {
-                clientBean.create(client[0], client[1], client[2], "123");
-                clientUsernames.add(client[0]);
-            }
-        } catch (Exception e) {
-            LOGGER.warning("While creating clients: " + e.getMessage());
-        }
-    }
 }

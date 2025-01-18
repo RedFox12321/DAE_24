@@ -1,37 +1,41 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { toast } from 'vue3-toastify';
-import CustomDanger from "@/components/toast/CustomDanger.vue";
-import 'vue3-toastify/dist/index.css';
+import { defineStore } from "pinia"
+import { ref } from "vue"
+import { toast } from 'vue3-toastify'
+import CustomDanger from "@/components/toast/CustomDanger.vue"
+import 'vue3-toastify/dist/index.css'
 
 export const useErrorStore = defineStore('error', () => {
     const title = ref('')
     const description = ref('')
 
     const setErrorMessage = (statusCode, statusText, message) => {
-        title.value = "Error";
-        description.value = "An unexpected error occurred.";
+        title.value = "Error"
+        description.value = "An unexpected error occurred."
 
         switch (statusCode) {
             case 401:
-                title.value = "Unauthorized";
-                description.value = "You are not authorized to access this resource.";
-                break;
+                title.value = "Unauthorized"
+                description.value = "You are not authorized to access this resource."
+                break
             case 403:
-                title.value = "Forbidden";
-                description.value = "You do not have permission to access this resource.";
-                break;
+                title.value = "Forbidden"
+                description.value = "You do not have permission to access this resource."
+                break
             case 404:
-                title.value = "Not Found";
-                description.value = "The requested resource could not be found.";
-                break;
+                title.value = "Not Found"
+                description.value = message
+                break
+            case 409:
+                title.value = "Conflict"
+                description.value = message
+                break
             case 500:
-                title.value = "Server Error";
-                description.value = "An error occurred on the server. Please try again later.";
-                break;
+                title.value = "Server Error"
+                description.value = "An error occurred on the server. Please try again later."
+                break
             default:
-                title.value = `Error ${statusCode}`;
-                description.value = statusText || message || ` Something went wrong.`;
+                title.value = statusText
+                description.value = message
         }
 
         sendToast()

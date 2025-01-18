@@ -1,8 +1,10 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue"
+import { useErrorStore } from "./error";
 
 export const useVolumeStore = defineStore('volumes', () => {
+  const errorStore = useErrorStore()
   const volumes = ref([])
   const curVolume = ref({})
 
@@ -12,6 +14,11 @@ export const useVolumeStore = defineStore('volumes', () => {
       volumes.value = result.data
       return volumes.value
     } catch (e) {
+      errorStore.setErrorMessage(
+        e.response.status,
+        e.response.statusText,
+        e.response.data
+      )
       return false
     }
   }
@@ -28,6 +35,26 @@ export const useVolumeStore = defineStore('volumes', () => {
       await Promise.all(productPromises);
       return curVolume.value
     } catch (e) {
+      errorStore.setErrorMessage(
+        e.response.status,
+        e.response.statusText,
+        e.response.data
+      )
+      return false
+    }
+  }
+
+  const deliverVolume = async (code) => {
+    try {
+      await axios.patch('volumes/' + code ?? curVolume.value.code)
+      curVolume.value.status = "DELIVERED"
+      return true
+    } catch (e) {
+      errorStore.setErrorMessage(
+        e.response.status,
+        e.response.statusText,
+        e.response.data
+      )
       return false
     }
   }
@@ -35,6 +62,7 @@ export const useVolumeStore = defineStore('volumes', () => {
   return {
     volumes,
     getVolumes,
+    deliverVolume,
     getVolume,
     curVolume
   }

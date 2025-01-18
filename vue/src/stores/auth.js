@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const token = ref('')
   const user = ref({})
+  const refresher = ref(undefined)
 
   const username = computed(() => user.value.username ?? '')
   const userFullname = computed(() => user.value.name ?? '')
@@ -30,15 +31,44 @@ export const useAuthStore = defineStore('auth', () => {
       const result = await axios.get('auth/me')
       user.value = result.data
       
+      setTokenRefresher()
+
       return user.value
     } catch (e) {
       errorStore.setErrorMessage(
-        e.response.status ?? 0,
-        e,
-        " Could not login with credentials"
+        0,
+        e.response.statusText,
+        "Username or password incorrect."
       )
       return false
     }
+  }
+
+  const setTokenRefresher = () => {
+    resetRefresher()
+    setInterval(async () => {
+      try {
+        const tokenResponse = await axios.post('auth/refreshtoken')
+        token.value = tokenResponse.data
+        axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
+        
+        return true
+      } catch (e) {
+        resetRefresher()
+        errorStore.setErrorMessage(
+            e.response.status,
+            e.response.statusText,
+            e.response.data
+        )
+        return false
+      }
+    }, 50 * 60 * 1000) //50min * 60sec * 1000ms = 50 min in ms
+  }
+
+  const resetRefresher = () => {
+    if(refresher.value)
+      clearInterval(refresher.value)
+    refresher.value = undefined
   }
 
   const logout = () => {

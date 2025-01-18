@@ -7,17 +7,17 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
     const errorStore = useErrorStore()
 
     const product = {
-        productCode: 0,
+        productCode: 1,
         quantity: 1
     }
 
     const sensor = {
-        id: 0,
+        id: 1,
         type: "TEMPERATURE"
     }
 
     const volume = {
-                code: 0,
+                code: 1,
                 packageType: "BOX",
                 productsVolume: [
                     JSON.parse(JSON.stringify(product))
@@ -26,7 +26,7 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
     }
 
     const orderPackage = ref({
-        code: 0,
+        code: 1,
         volumes: [
             JSON.parse(JSON.stringify(volume))
         ],
@@ -73,14 +73,13 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
 
     const createOrderPackage = async () => {
         try {
-            errorStore.resetErrorMessage()
             const result = await axios.post('packages', orderPackage.value)
             return result.data
         } catch (e) {
             errorStore.setErrorMessage(
                 e.response.status,
                 e.response.statusText,
-                " Could not create package order."
+                e.response.data
             )
             return false
         }
@@ -111,7 +110,7 @@ export const useOrderPackageStore = defineStore('orderPackage', () => {
 
     const resetOrderPackage = () => {
         orderPackage.value = {
-            code: 0,
+            code: 1,
             volumes: [
                 JSON.parse(JSON.stringify(volume))
             ],

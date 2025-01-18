@@ -22,10 +22,10 @@ const removeSensor = () => {
 
 <template>
     <div class="flex flex-row items-center bg-gray-600 w-full h-min rounded-md p-2 max-w-md space-x-2 justify-between mb-1">
-        <SimpleInput v-model="sensor.id" label="Id:" type="number" :required="true" :in-row="true" class="w-1/4"/>
+        <SimpleInput v-model="sensor.id" label="Id:" type="number" :required="true" :in-row="true" class="w-2/5"/>
 
         <SelectInput v-model="sensor.type" label="Type:" :options="orderPackageStore.sensorTypes" :required="true"
-            :in-row="true" class="w-2/4" />
+            :in-row="true" class="w-1/2" />
 
         <button @click="removeSensor"
             class="flex items-center bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded shadow justify-center">

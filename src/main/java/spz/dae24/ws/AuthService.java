@@ -39,7 +39,7 @@ public class AuthService {
     }
 
     @POST
-    @Path("refreshToken")
+    @Path("refreshtoken")
     @Authenticated
     public Response refreshToken() {
         var principal = securityContext.getUserPrincipal();

@@ -5,14 +5,12 @@ import jakarta.ejb.EJB;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import spz.dae24.dtos.ProductsVolumeDTO;
-import spz.dae24.dtos.SensorDTO;
 import spz.dae24.dtos.VolumeDTO;
 import spz.dae24.dtos.VolumeWithSensorsAndProductVolumesDTO;
 import spz.dae24.ejbs.PackageBean;
 import spz.dae24.ejbs.VolumeBean;
-import spz.dae24.exceptions.EntityExistsException;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityExistsException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -38,7 +36,7 @@ public class VolumeService {
     @GET
     @Path("{code}")
     @RolesAllowed({"Admin", "Logistic"})
-    public Response getVolume(@PathParam("code") long code) throws EntityNotFoundException {
+    public Response getVolume(@PathParam("code") long code) throws MyEntityNotFoundException {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
        var volumeDTO = VolumeWithSensorsAndProductVolumesDTO.from(volume);
 
@@ -49,7 +47,7 @@ public class VolumeService {
     @Path("")
     @RolesAllowed("Logistic")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createVolume(VolumeWithSensorsAndProductVolumesDTO volumeDTO) throws EntityNotFoundException, EntityExistsException {
+    public Response createVolume(VolumeWithSensorsAndProductVolumesDTO volumeDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         volumeBean.addVolumeToPackageOrder(volumeDTO, volumeDTO.getPackageCode());
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(volumeDTO.getCode());
@@ -60,7 +58,7 @@ public class VolumeService {
     @PATCH
     @Path("{code}")
     @RolesAllowed("Logistic")
-    public Response deliverVolume(@PathParam("code") long code) throws EntityNotFoundException {
+    public Response deliverVolume(@PathParam("code") long code) throws MyEntityNotFoundException {
         volumeBean.deliver(code);
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(code);

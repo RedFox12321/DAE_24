@@ -4,7 +4,7 @@ import SelectInput from '../Utils/SelectInput.vue';
 import SimpleInput from '../Utils/SimpleInput.vue';
 import SensorItem from './SensorItem.vue';
 import ProductItem from './ProductItem.vue';
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 
 const orderPackageStore = useOrderPackageStore()
 
@@ -29,13 +29,18 @@ const removeProduct = (productIndex) => {
     orderPackageStore.removeProduct(props.index, productIndex)
 }
 
+const inputChanged = () => {
+    if (isNaN(volume.value.code) || volume.value.code < 1)
+        volume.value.code = 1
+}
+
 </script>
 
 <template>
     <div class="flex flex-col items-center bg-gray-800 w-full h-full rounded-md p-6 max-w-lg">
         <span class="text-gray-200 text-2xl mb-4">Volume {{ index + 1 }}</span>
         <div class="flex flex-col items-center p-6 bg-gray-700 rounded-lg shadow-md w-full space-y-2">
-            <SimpleInput v-model="volume.code" label="Volume code" type="number" :required="true" class="w-full" />
+            <SimpleInput v-model="volume.code" label="Volume code" type="number" :required="true" class="w-full" @input-changed="inputChanged" />
 
             <SelectInput v-model="volume.packageType" label="Package type" :options="orderPackageStore.packageTypes"
                 :required="true" class="w-full" />

@@ -8,7 +8,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import spz.dae24.dtos.SensorHistoryDTO;
 import spz.dae24.ejbs.SensorHistoryBean;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 import spz.dae24.security.Authenticated;
 
 import java.util.List;
@@ -32,7 +32,7 @@ public class SensorHistoryService {
     @Path("{id}")
     @Authenticated
     @RolesAllowed({"Admin"})
-    public Response getSensorHistory(@PathParam("id") long id) throws EntityNotFoundException {
+    public Response getSensorHistory(@PathParam("id") long id) throws MyEntityNotFoundException {
         var sensorHistory = sensorHistoryBean.find(id);
 
         return Response.ok(SensorHistoryDTO.from(sensorHistory)).build();
@@ -41,7 +41,7 @@ public class SensorHistoryService {
     @POST
     @Path("")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createSensorHistory(SensorHistoryDTO sensorHistoryDTO) throws EntityNotFoundException {
+    public Response createSensorHistory(SensorHistoryDTO sensorHistoryDTO) throws MyEntityNotFoundException {
         long sensorHistoryId = sensorHistoryBean.create(
                 sensorHistoryDTO.getSensorId(),
                 sensorHistoryDTO.getValue()

@@ -7,15 +7,14 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-import jakarta.validation.constraints.Min;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.PackageWithAllDTO;
 import spz.dae24.entities.Client;
 import spz.dae24.entities.Package;
 import spz.dae24.entities.Volume;
-import spz.dae24.exceptions.EntityExistsException;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityExistsException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
 
@@ -34,33 +33,33 @@ public class PackageBean {
     }
 
     public List<Package> findByStatus(String status) throws IllegalArgumentException {
-        Status statusType = Status.valueOf(status.toUpperCase());
+        Status statusEnum = Status.parse(status);
 
-        TypedQuery<Package> query = (TypedQuery<Package>) em.createNamedQuery("getPackagesByStatus", Package.class);
-        query.setParameter("status", statusType);
+        TypedQuery<Package> query = em.createNamedQuery("getPackagesByStatus", Package.class);
+        query.setParameter("status", statusEnum);
 
         return query.getResultList();
     }
 
-    public List<Package> findByClient(long clientId) throws EntityNotFoundException {
+    public List<Package> findByClient(long clientId) throws MyEntityNotFoundException {
         var client = em.find(Client.class, clientId);
 
         if(client == null)
-            throw new EntityNotFoundException("Client with id " + clientId + " not found");
+            throw new MyEntityNotFoundException("Client with id " + clientId + " not found");
 
         return client.getPackages();
     }
 
-    public Package find(long code) throws EntityNotFoundException {
+    public Package find(long code) throws MyEntityNotFoundException {
         var _package = em.find(Package.class, code);
 
         if(_package == null)
-            throw new EntityNotFoundException("Package with code " + code + " not found");
+            throw new MyEntityNotFoundException("Package with code " + code + " not found");
 
         return _package;
     }
 
-    public Package findWithVolumes(long code) throws EntityNotFoundException {
+    public Package findWithVolumes(long code) throws MyEntityNotFoundException {
         var _package = find(code);
 
         Hibernate.initialize(_package.getVolumes());
@@ -69,14 +68,17 @@ public class PackageBean {
     }
 
 
-    public void create(@Min(1) long code, String clientUsername) throws EntityNotFoundException, EntityExistsException {
+    public void create(long code, String clientUsername) throws MyEntityNotFoundException, MyEntityExistsException, IllegalArgumentException {
+        if (code < 1)
+            throw new IllegalArgumentException("Package code must be a positive number.");
+
         if (exists(code))
-            throw new EntityExistsException("Package with code " + code + " already exists");
+            throw new MyEntityExistsException("Package with code " + code + " already exists");
 
         Client client = em.find(Client.class, clientUsername);
 
         if(client == null)
-            throw new EntityNotFoundException("Client with username " + clientUsername + " not found");
+            throw new MyEntityNotFoundException("Client with username " + clientUsername + " not found");
 
         Package pkg = new Package(code, Status.ACTIVE, client);
 
@@ -85,37 +87,55 @@ public class PackageBean {
         client.addPackage(pkg);
     }
 
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void makePackageOrder(PackageWithAllDTO packageDTO) throws IllegalArgumentException, EntityNotFoundException, EntityExistsException {
-        create(packageDTO.getCode(), packageDTO.getClientUsername());
-
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void makePackageOrder(PackageWithAllDTO packageDTO) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
         var volumesDTO = packageDTO.getVolumes();
         if (volumesDTO.isEmpty())
             throw new IllegalArgumentException("Package needs at least 1 volume.");
+
+        create(packageDTO.getCode(), packageDTO.getClientUsername());
 
         for (var volumeDTO : volumesDTO) {
             volumeBean.addVolumeToPackageOrder(volumeDTO, packageDTO.getCode());
         }
     }
 
-    public void completePackage(long code) throws EntityNotFoundException {
+    public void completePackage(long code) throws MyEntityNotFoundException {
         Package pkg = find(code);
         pkg.setStatus(Status.DELIVERED);
 
         em.merge(pkg);
     }
 
+    public void tryCompletePackage(long code) throws MyEntityNotFoundException {
+        Package pkg = find(code);
+
+        if (!pkg.getStatus().equals(Status.ACTIVE))
+            throw new IllegalArgumentException("Package with code " + code + " has been " + pkg.getStatus().name() + " already.");
+
+        var activeVolumes = pkg.getVolumes().stream().filter(volume -> volume.getStatus().equals(Status.ACTIVE)).count();
+        if (activeVolumes == 0){
+            pkg.setStatus(Status.DELIVERED);
+
+            em.merge(pkg);
+        }
+    }
+
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void cancelPackage(long code) throws EntityNotFoundException {
+    public void cancelPackage(long code) throws MyEntityNotFoundException {
         Package pkg = findWithVolumes(code);
 
+        if (!pkg.getStatus().equals(Status.ACTIVE))
+            throw new IllegalArgumentException("Package with code " + code + " has been " + pkg.getStatus().name() + " already.");
+
         pkg.setStatus(Status.CANCELLED);
-        for(Volume volume : pkg.getVolumes()) {
-          if(!volume.getStatus().equals(Status.DELIVERED))
-            volumeBean.cancel(volume.getCode());
-        }
 
         em.merge(pkg);
+
+        for(Volume volume : pkg.getVolumes()) {
+            if(volume.getStatus().equals(Status.ACTIVE))
+                volumeBean.cancel(volume.getCode());
+        }
     }
 
     public boolean exists(long code) {

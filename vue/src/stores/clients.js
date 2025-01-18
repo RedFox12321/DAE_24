@@ -19,7 +19,7 @@ export const useClientStore = defineStore('clients', () =>{
             errorStore.setErrorMessage(
                 e.response.status,
                 e.response.statusText,
-                " Could not fetch clients"
+                e.response.data
             )
             return false
         }

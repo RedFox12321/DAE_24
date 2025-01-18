@@ -5,8 +5,8 @@ import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
-import jakarta.validation.constraints.Min;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.SensorType;
@@ -16,8 +16,8 @@ import spz.dae24.entities.Package;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.Sensor;
 import spz.dae24.entities.Volume;
-import spz.dae24.exceptions.EntityExistsException;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityExistsException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -30,6 +30,8 @@ public class VolumeBean {
     private EntityManager em;
 
     @EJB
+    private PackageBean packageBean;
+    @EJB
     private VolumeBean volumeBean;
     @EJB
     private SensorBean sensorBean;
@@ -38,16 +40,16 @@ public class VolumeBean {
 
     public List<Volume> findAll() {return em.createNamedQuery("getAllVolumes", Volume.class).getResultList();}
 
-    public Volume find(long code) throws EntityNotFoundException {
+    public Volume find(long code) throws MyEntityNotFoundException {
         var volume = em.find(Volume.class, code);
 
         if (volume == null)
-            throw new EntityNotFoundException("Volume with code " + code + " not found");
+            throw new MyEntityNotFoundException("Volume with code " + code + " not found");
 
         return volume;
     }
 
-    public Volume findWithSensorsAndProductsVolumes(long code) throws EntityNotFoundException {
+    public Volume findWithSensorsAndProductsVolumes(long code) throws MyEntityNotFoundException {
         Volume volume = find(code);
 
         Hibernate.initialize(volume.getProductsVolumes());
@@ -56,13 +58,16 @@ public class VolumeBean {
         return volume;
     }
 
-    public void create(@Min(1) long code, String packageType, long packageCode) throws EntityExistsException {
+    public void create(long code, String packageType, long packageCode) throws IllegalArgumentException, MyEntityExistsException, MyEntityNotFoundException {
+        if (code < 1)
+            throw new IllegalArgumentException("Volume code must be a positive number.");
+
         if (exists(code))
-            throw new EntityExistsException("Volume with code " + code + " already exists");
+            throw new MyEntityExistsException("Volume with code " + code + " already exists");
 
         Package pkg = em.find(Package.class, packageCode);
         if(pkg == null)
-            throw new EntityExistsException("Package with code " + packageCode + " not found");
+            throw new MyEntityNotFoundException("Package with code " + packageCode + " not found");
 
         Volume volume = new Volume(code, pkg.getVolumeCount() + 1, Status.ACTIVE, PackageType.valueOf(packageType.toUpperCase()), pkg);
 
@@ -71,12 +76,15 @@ public class VolumeBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addVolumeToPackageOrder(VolumeWithSensorsAndProductVolumesDTO volumeDTO, long packageCode) throws IllegalArgumentException, EntityNotFoundException, EntityExistsException {
-        volumeBean.create(volumeDTO.getCode(), volumeDTO.getPackageType(), packageCode);
-
+    public void addVolumeToPackageOrder(VolumeWithSensorsAndProductVolumesDTO volumeDTO, long packageCode) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
         var productsVolumes = volumeDTO.getProductsVolume();
         if (productsVolumes.isEmpty())
             throw new IllegalArgumentException("Volume with code " + volumeDTO.getCode() + " needs at least 1 product.");
+
+        volumeBean.create(volumeDTO.getCode(), volumeDTO.getPackageType(), packageCode);
+        var pkg = em.find(Package.class, packageCode);
+        if (!pkg.getStatus().equals(Status.ACTIVE))
+            throw new IllegalArgumentException("Package with code " + packageCode + " has been " + pkg.getStatus().name() + " already.");
 
         Set<SensorType> requiredSensors = EnumSet.noneOf(SensorType.class);
         for (var productsVolume : productsVolumes) {
@@ -100,27 +108,35 @@ public class VolumeBean {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void deliver(long code) throws EntityNotFoundException {
-        var volume = findWithSensorsAndProductsVolumes(code);
+    public void deliver(long code) throws MyEntityNotFoundException, IllegalArgumentException {
+        var volume = find(code);
+
+        if (!volume.getStatus().equals(Status.ACTIVE))
+            throw new IllegalArgumentException("Volume with code " + code + " has been " + volume.getPackage().getStatus().name() + " already.");
 
         volume.setStatus(Status.DELIVERED);
+        em.merge(volume);
+
         for(Sensor s : volume.getSensors()){
             sensorBean.disable(s.getId());
         }
 
-        em.merge(volume);
+        packageBean.tryCompletePackage(volume.getPackage().getCode());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void cancel(long code) throws EntityNotFoundException {
-        var volume = findWithSensorsAndProductsVolumes(code);
+    public void cancel(long code) throws MyEntityNotFoundException {
+        var volume = find(code);
+
+        if (!volume.getStatus().equals(Status.ACTIVE))
+            throw new IllegalArgumentException("Volume with code " + code + " has been " + volume.getPackage().getStatus().name() + " already.");
 
         volume.setStatus(Status.CANCELLED);
+        em.merge(volume);
+
         for(Sensor s : volume.getSensors()){
             sensorBean.disable(s.getId());
         }
-
-        em.merge(volume);
     }
 
     public boolean exists(long code) {return em.find(Volume.class, code) != null;}

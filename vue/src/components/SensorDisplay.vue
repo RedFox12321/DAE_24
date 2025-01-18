@@ -1,9 +1,10 @@
 <script setup>
-  import { ref, onMounted, onActivated } from "vue";
+import { ref, onMounted, onActivated } from "vue";
 import { useSensorStore } from "@/stores/sensor.js";
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import List from "./Utils/List.vue";
 
+const router = useRouter()
 const id = useRoute().params.id;
 const sensorStore = useSensorStore();
 
@@ -20,6 +21,10 @@ console.log(sensorStore.curSensor)
 
 <template>
   <div class="min-h-screen text-gray-200 p-6">
+    <button @click.prevent="router.back()"
+      class="flex h-fit w-fit items-center bg-red-500 hover:bg-red-400 text-white px-3 py-2 rounded shadow">
+      Go back
+    </button>
     <div class="max-w-4xl mx-auto">
       <h1 class="text-2xl font-bold">Sensor #{{id}}</h1>
       <p class="text-m">{{ sensorStore.curSensor.active ? 'Active' : 'Not active' }}</p>

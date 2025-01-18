@@ -7,7 +7,7 @@ import jakarta.persistence.TypedQuery;
 import spz.dae24.entities.Product;
 import spz.dae24.entities.ProductsVolume;
 import spz.dae24.entities.Volume;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 
 import java.util.List;
 
@@ -22,49 +22,52 @@ public class ProductsVolumeBean {
     }
 
 
-    public ProductsVolume find(long id) throws EntityNotFoundException {
+    public ProductsVolume find(long id) throws MyEntityNotFoundException {
         var productsVolume = em.find(ProductsVolume.class, id);
 
         if (productsVolume == null)
-            throw new EntityNotFoundException("ProductsVolume with id " + id + " not found");
+            throw new MyEntityNotFoundException("ProductsVolume with id " + id + " not found");
 
         return productsVolume;
     }
 
-    public List<ProductsVolume> findByProductCode(int productCode) throws EntityNotFoundException {
+    public List<ProductsVolume> findByProductCode(int productCode) throws MyEntityNotFoundException {
 
         TypedQuery<ProductsVolume> query = em.createNamedQuery("getAllProductsVolumeByProductCode", ProductsVolume.class);
         query.setParameter("productCode", productCode);
         List<ProductsVolume> productsVolume = query.getResultList();
 
         if (productsVolume.isEmpty()) {
-            throw new EntityNotFoundException("No ProductsVolume found for product code " + productCode);
+            throw new MyEntityNotFoundException("No ProductsVolume found for product code " + productCode);
         }
 
         return productsVolume;
     }
 
-    public List<ProductsVolume> findByVolumeCode(long volumeCode) throws EntityNotFoundException {
+    public List<ProductsVolume> findByVolumeCode(long volumeCode) throws MyEntityNotFoundException {
 
         TypedQuery<ProductsVolume> query = em.createNamedQuery("getAllProductsVolumeByVolumeCode", ProductsVolume.class);
         query.setParameter("volumeCode", volumeCode);
         List<ProductsVolume> productsVolume = query.getResultList();
 
         if (productsVolume.isEmpty()) {
-            throw new EntityNotFoundException("No ProductsVolume found for volume code " + volumeCode);
+            throw new MyEntityNotFoundException("No ProductsVolume found for volume code " + volumeCode);
         }
 
         return productsVolume;
     }
 
-    public long create(int productCode, long volumeCode, int quantity) throws EntityNotFoundException {
+    public long create(int productCode, long volumeCode, int quantity) throws MyEntityNotFoundException, IllegalArgumentException {
+        if (quantity < 1)
+            throw new IllegalArgumentException("The quantity of products needs to be greater than 0.");
+
         Product product = em.find(Product.class, productCode);
         if (product == null)
-            throw new EntityNotFoundException("Product with code " + productCode + " not found");
+            throw new MyEntityNotFoundException("Product with code " + productCode + " not found");
 
         Volume volume = em.find(Volume.class, volumeCode);
         if (volume == null)
-            throw new EntityNotFoundException("Volume with code " + volumeCode + " not found");
+            throw new MyEntityNotFoundException("Volume with code " + volumeCode + " not found");
 
         ProductsVolume productsVolume = new ProductsVolume(product, volume, quantity);
 

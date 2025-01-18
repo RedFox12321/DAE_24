@@ -14,8 +14,9 @@ const orderPackageStore = useOrderPackageStore();
 const searchQuery = ref("")
 
 
-const itemSelected = (client) => {
-  orderPackageStore.orderPackage.clientUsername = client.username;
+const itemSelected = (input) => {
+  if(input?.username)
+    orderPackageStore.orderPackage.clientUsername = input.username;
 }
 
 const resetClients = async () => {
@@ -28,11 +29,16 @@ const resetClients = async () => {
 }
 
 const sendPackageOrder = async () => {
-  console.log(orderPackageStore.orderPackage)
   const result = await orderPackageStore.createOrderPackage()
   if (result) {
     toast.info("Order/Package created successfully.")
+    orderPackageStore.resetOrderPackage()
   }
+}
+
+const inputChanged = () => {
+    if (isNaN(orderPackageStore.orderPackage.code) || orderPackageStore.orderPackage.code < 1)
+        orderPackageStore.orderPackage.code = 1
 }
 
 onMounted(() => {
@@ -48,17 +54,17 @@ onActivated(() => {
 
 <template>
     <div class="w-full h-full flex flex-col justify-between items-center">
-        <h2 class="text-2xl text-gray-200 font-semibold mb-4">Create an Order/Package</h2>
+        <h2 class="text-2xl text-gray-200 font-semibold mb-4">Create an Order/Package</h2>  
         <button @click.prevent="sendPackageOrder"
                 class="w-max p-3 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
           Create Order/Package
         </button>
         <div class="flex flex-row space-x-10">
-          <SimpleInput v-model="orderPackageStore.orderPackage.code" label="Order/package code:" type="number"
+          <SimpleInput v-model="orderPackageStore.orderPackage.code" @input-changed="inputChanged" label="Order/Package code:" type="number"
                        :required="true" class="w-1/2" />
           <div class="w-1/2">
             <span class="block text-gray-400 font-semibold m-2">Client username:</span>
-            <QuerySearch v-model="searchQuery" :items="clientStore.clients" filter-key="username" @item-selected="itemSelected"
+            <QuerySearch v-model="orderPackageStore.orderPackage.clientUsername" :items="clientStore.clients" filter-key="username" @item-selected="itemSelected"
                          class="w-full">
               <template v-slot="client">
                 <span class="text-gray-300 font-semibold text-lg p-2 w-full text-center">{{ client?.item.username ?? 'unknown' }}</span>

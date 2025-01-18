@@ -10,7 +10,6 @@ export const useProductsStore = defineStore('products', () => {
 
     const getProducts = async () => {
         try {
-            errorStore.resetErrorMessage()
             const result = await axios.get('products')
             products.value = result.data
             return products.value
@@ -18,7 +17,7 @@ export const useProductsStore = defineStore('products', () => {
             errorStore.setErrorMessage(
                 e.response.status,
                 e.response.statusText,
-                " Could not fetch products"
+                e.response.data
             )
             return false
         }
@@ -30,9 +29,9 @@ export const useProductsStore = defineStore('products', () => {
             return result.data
         } catch (e) {
             errorStore.setErrorMessage(
-                0,//e.response.status,
-                e,//e.response.statusText,
-                " Could not fetch product with code " + code
+                e.response.status,
+                e.response.statusText,
+                e.response.data
             )
             return false
         }

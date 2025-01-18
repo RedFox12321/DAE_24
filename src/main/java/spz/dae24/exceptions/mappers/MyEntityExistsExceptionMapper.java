@@ -1,18 +1,21 @@
 package spz.dae24.exceptions.mappers;
 
+import jakarta.annotation.Priority;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
-import spz.dae24.exceptions.EntityExistsException;
+import spz.dae24.exceptions.MyEntityExistsException;
 
 import java.util.logging.Logger;
 
+
+@Priority(0)
 @Provider
-public class EntityExistsExceptionMapper implements ExceptionMapper<EntityExistsException> {
-    private static final Logger LOGGER = Logger.getLogger(EntityExistsExceptionMapper.class.getCanonicalName());
+public class MyEntityExistsExceptionMapper implements ExceptionMapper<MyEntityExistsException> {
+    private static final Logger LOGGER = Logger.getLogger(MyEntityExistsExceptionMapper.class.getCanonicalName());
 
     @Override
-    public Response toResponse(EntityExistsException e) {
+    public Response toResponse(MyEntityExistsException e) {
         String msg = e.getMessage();
         LOGGER.warning("WARNING: " + msg);
 

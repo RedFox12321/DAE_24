@@ -1,13 +1,12 @@
 package spz.dae24.exceptions.mappers;
 
-import jakarta.annotation.Priority;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.Provider;
+import jakarta.ws.rs.ext.ExceptionMapper;
 
 import java.util.logging.Logger;
 
-public class ExceptionMapper implements jakarta.ws.rs.ext.ExceptionMapper<Exception> {
-    private static final Logger LOGGER = Logger.getLogger(ExceptionMapper.class.getCanonicalName());
+public class BasicExceptionMapper implements ExceptionMapper<Exception> {
+    private static final Logger LOGGER = Logger.getLogger(BasicExceptionMapper.class.getCanonicalName());
 
     @Override
     public Response toResponse(Exception e) {

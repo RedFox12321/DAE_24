@@ -3,11 +3,10 @@ package spz.dae24.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.validation.constraints.Min;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Product;
-import spz.dae24.exceptions.EntityExistsException;
-import spz.dae24.exceptions.EntityNotFoundException;
+import spz.dae24.exceptions.MyEntityExistsException;
+import spz.dae24.exceptions.MyEntityNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,25 +21,23 @@ public class ProductBean {
         return em.createNamedQuery("getAllProducts", Product.class).getResultList();
     }
 
-    public Product find(int code) throws EntityNotFoundException {
+    public Product find(int code) throws MyEntityNotFoundException {
         var product = em.find(Product.class, code);
 
         if (product == null)
-            throw new EntityNotFoundException("Product with code " + code + " not found");
+            throw new MyEntityNotFoundException("Product with code " + code + " not found");
 
         return product;
     }
 
-    public void create(@Min(1) int code, String name, List<String> requiredSensors) throws EntityExistsException, IllegalArgumentException {
+    public void create(int code, String name, List<String> requiredSensors) throws MyEntityExistsException, IllegalArgumentException {
+        if (code < 1)
+            throw new IllegalArgumentException("Product code must be a positive number.");
+
         if (exists(code))
-            throw new EntityExistsException("Product with code " + code + " already exists");
+            throw new MyEntityExistsException("Product with code " + code + " already exists");
 
-        List<SensorType> sensorTypes = new ArrayList<>();
-        for (String sensor : requiredSensors) {
-            SensorType.parse(sensor);
-        }
-
-        em.persist(new Product(code, name, sensorTypes));
+        em.persist(new Product(code, name, SensorType.parse(requiredSensors)));
     }
 
     public boolean exists(int code) {

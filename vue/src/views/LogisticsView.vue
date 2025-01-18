@@ -3,11 +3,11 @@ import PackageList from '@/components/Logistics/PackageList.vue';
 import PackageMaker from '@/components/Logistics/PackageMaker.vue';
 import { onActivated, ref } from 'vue';
 
-const inCreatorMode = ref(true)
+const inCreatorMode = ref(false)
 
 const changeInCreatorMode = () => inCreatorMode.value = !inCreatorMode.value
 
-onActivated(() => inCreatorMode.value = true)
+onActivated(() => inCreatorMode.value = false)
 </script>
 
 <template>
