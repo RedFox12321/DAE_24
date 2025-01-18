@@ -15,6 +15,6 @@ public class IllegalArgumentExceptionMapper implements ExceptionMapper<IllegalAr
         String msg = e.getMessage();
         LOGGER.warning("WARNING: " + msg);
 
-        return Response.status(Response.Status.NOT_FOUND).entity(msg).build();
+        return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
     }
 }

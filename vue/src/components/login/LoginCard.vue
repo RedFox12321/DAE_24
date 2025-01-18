@@ -17,7 +17,6 @@ const error = ref(false)
 
 const submit = async () => {
     const result = await storeAuth.login(user.value)
-  console.log(result)
     if (result)
         router.push('/')
     else

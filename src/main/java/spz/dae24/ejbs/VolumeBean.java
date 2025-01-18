@@ -6,6 +6,7 @@ import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.constraints.Min;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.PackageType;
 import spz.dae24.common.enums.SensorType;
@@ -55,7 +56,7 @@ public class VolumeBean {
         return volume;
     }
 
-    public void create(long code, String packageType, long packageCode) throws EntityExistsException {
+    public void create(@Min(1) long code, String packageType, long packageCode) throws EntityExistsException {
         if (exists(code))
             throw new EntityExistsException("Volume with code " + code + " already exists");
 

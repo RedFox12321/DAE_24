@@ -38,11 +38,8 @@ public class SensorService {
     public Response getSensor(@PathParam("id") long id, @Context SecurityContext securityContext) throws EntityNotFoundException {
         var sensor = sensorBean.findWithHistory(id);
         var sensorDTO = SensorWithHistoryDTO.from(sensor);
-        sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));
 
-        if (securityContext.isUserInRole("Admin")) {
-            sensorDTO.setHistory(SensorHistoryDTO.from(sensor.getHistory()));
-        } else if (securityContext.isUserInRole("Client")) {
+        if (securityContext.isUserInRole("Client")) {
             sensorDTO.setHistory(SensorHistoryDTO.fromLast(sensor.getHistory()));
         }
 

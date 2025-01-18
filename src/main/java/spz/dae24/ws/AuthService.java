@@ -38,14 +38,26 @@ public class AuthService {
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
 
+    @POST
+    @Path("refreshToken")
+    @Authenticated
+    public Response refreshToken() {
+        var principal = securityContext.getUserPrincipal();
+        String token = issuer.issue(principal.getName());
+
+        return Response.ok(token).build();
+    }
+
     @GET
     @Path("me")
     @Authenticated
     public Response userInfo() {
         var principal = securityContext.getUserPrincipal();
         User user = userBean.findOrFail(principal.getName());
+
         UserDTO userDTO = UserDTO.from(user);
         userDTO.setType(userBean.findUserType(principal.getName()));
+
         return Response.ok(userDTO).build();
     }
 }

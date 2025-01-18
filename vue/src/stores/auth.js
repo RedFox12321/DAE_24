@@ -3,12 +3,19 @@ import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useErrorStore } from "./error";
 
-
 export const useAuthStore = defineStore('auth', () => {
   const errorStore = useErrorStore()
 
   const token = ref('')
-  const username = ref('')
+  const user = ref({})
+
+  const username = computed(() => user.value.username ?? '')
+  const userFullname = computed(() => user.value.name ?? '')
+  const userEmail = computed(() => user.value.email ?? '')
+  const userType = computed(() => user.value.type ?? '')
+
+  const isLoggedIn = computed(() => token.value != '')
+
 
   const login = async (credentials) => {
     try {
@@ -19,14 +26,14 @@ export const useAuthStore = defineStore('auth', () => {
       })
       token.value = tokenResponse.data
       axios.defaults.headers.common.Authorization = 'Bearer ' + token.value
-      username.value = credentials.username
 
-      return true
+      const result = await axios.get('auth/me')
+      user.value = result.data
+      
+      return user.value
     } catch (e) {
       errorStore.setErrorMessage(
-        //e.response.status,
-        0,
-        //e.response.statusText,
+        e.response.status ?? 0,
         e,
         " Could not login with credentials"
       )
@@ -36,19 +43,21 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = () => {
     token.value = ''
-    username.value = ''
+    user.value = {}
 
     axios.defaults.headers.common.Authorization = ''
 
     errorStore.resetErrorMessage()
   }
 
-  const isLoggedIn = computed(() => token.value != '')
-
   return {
     login,
     logout,
+    user,
     username,
+    userFullname,
+    userEmail,
+    userType,
     isLoggedIn
   }
 })

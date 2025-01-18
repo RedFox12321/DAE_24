@@ -16,6 +16,6 @@ public class EntityExistsExceptionMapper implements ExceptionMapper<EntityExists
         String msg = e.getMessage();
         LOGGER.warning("WARNING: " + msg);
 
-        return Response.status(Response.Status.BAD_REQUEST).entity(msg).build();
+        return Response.status(Response.Status.CONFLICT).entity(msg).build();
     }
 }

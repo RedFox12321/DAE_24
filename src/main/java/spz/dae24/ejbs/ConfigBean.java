@@ -98,8 +98,8 @@ public class ConfigBean {
             try{
                 packageBean.create(i, clientUsernames.get(random.nextInt(clientUsernames.size())));
                 populateWithVolumes(i);
-                int status = random.nextInt(3);
-                switch(status){
+
+                switch(random.nextInt(3)){
                   case 0:
                     packageBean.completePackage(i);
                     break;

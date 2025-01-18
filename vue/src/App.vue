@@ -1,6 +1,6 @@
 <script setup>
 import {useAuthStore} from './stores/auth.js'
-import {computed, ref} from 'vue'
+import {computed, ref, render} from 'vue'
 import {useRouter} from 'vue-router'
 
 const storeAuth = useAuthStore()
@@ -8,11 +8,13 @@ const router = useRouter()
 
 const links = ref([
   { label: "Home", to: "/" },
-  { label: "Logistics", to: "/logistics" },
   { label: "Sensors", to: "/sensors" },
-  { label: "Packages", to: "/packages" },
-  { label: "Customer Support", to: "/customerSupport" },
+  { label: "Logistics", to: "/logistics", roles: ["Logistic"] },
+  { label: "Packages", to: "/packages", roles: ["Admin"] },
+  { label: "Customer Support", to: "/customerSupport", roles: ["Client"] },
 ])
+
+const filteredLinks = computed(() => links.value.filter(link => !link.roles || link.roles.includes(storeAuth.userType)))
 
 const handleLogout = () => {
   storeAuth.logout()
@@ -26,7 +28,7 @@ const handleLogout = () => {
       <div class="bg-gray-800 text-white">
         <nav class="container mx-auto px-4 py-4 flex justify-between items-center">
           <ul class="hidden md:flex space-x-6">
-            <li v-for="link in links" :key="link" class="px-5">
+            <li v-for="link in filteredLinks" :key="link" class="px-5">
               <RouterLink :to="link.to" class="text-gray-200 hover:text-gray-100" active-class="text-gray-300">
                 {{ link.label }}
               </RouterLink>
@@ -39,15 +41,13 @@ const handleLogout = () => {
             </RouterLink>
             <div v-else class="relative group">
               <div class="flex items-center text-gray-500 cursor-pointer group-hover:text-gray-300">
-                {{ storeAuth.username }}
+                {{ storeAuth.userFullname }}
               </div>
               <div
-                class="absolute left-0 mt-2 bg-gray-700 border border-gray-600 rounded shadow-md w-28 opacity-0 group-hover:opacity-100 group-hover:block transition-opacity"
-              >
+                class="absolute left-0 mt-2 bg-gray-700 border border-gray-600 rounded shadow-md w-28 opacity-0 group-hover:opacity-100 group-hover:block transition-opacity">
                 <button
                   @click="handleLogout"
-                  class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white w-full text-left"
-                >
+                  class="px-4 py-2 text-sm text-gray-300 hover:bg-gray-600 hover:text-white w-full text-left">
                   Logout
                 </button>
               </div>

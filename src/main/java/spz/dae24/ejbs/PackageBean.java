@@ -7,6 +7,7 @@ import jakarta.ejb.TransactionAttributeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.validation.constraints.Min;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.Status;
 import spz.dae24.dtos.PackageWithAllDTO;
@@ -68,7 +69,7 @@ public class PackageBean {
     }
 
 
-    public void create(long code, String clientUsername) throws EntityNotFoundException, EntityExistsException {
+    public void create(@Min(1) long code, String clientUsername) throws EntityNotFoundException, EntityExistsException {
         if (exists(code))
             throw new EntityExistsException("Package with code " + code + " already exists");
 

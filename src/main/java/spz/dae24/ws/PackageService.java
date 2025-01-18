@@ -50,7 +50,7 @@ public class PackageService {
     public Response getPackagesByClient(@PathParam("username") String username) throws EntityNotFoundException {
         var client = clientBean.findWithPackages(username);
 
-        return Response.ok(PackageWithVolumesDTO.from(client.getPackages())).build();
+        return Response.ok(PackageDTO.from(client.getPackages())).build();
     }
 
     @GET
@@ -65,7 +65,7 @@ public class PackageService {
 
         var client = clientBean.findWithPackages(username);
 
-        return Response.ok(PackageWithVolumesDTO.from(client.getPackages())).build();
+        return Response.ok(PackageDTO.from(client.getPackages())).build();
     }
 
     @GET
@@ -74,12 +74,16 @@ public class PackageService {
     public Response getPackage(@PathParam("code") long code) throws EntityNotFoundException {
         var _package = packageBean.findWithVolumes(code);
 
+        if (securityContext.isUserInRole("Client") && !securityContext.getUserPrincipal().getName().equals(_package.getClient().getName())) {
+            return Response.status(Response.Status.FORBIDDEN).build();
+        }
+
         return Response.ok(PackageWithVolumesDTO.from(_package)).build();
     }
 
     @PATCH
     @Path("{code}")
-    @RolesAllowed({"Admin", "Client"})
+    @RolesAllowed({"Logistic", "Client"})
     public Response cancelPackage(@PathParam("code") long code) throws EntityNotFoundException, EntityExistsException {
         packageBean.cancelPackage(code);
 

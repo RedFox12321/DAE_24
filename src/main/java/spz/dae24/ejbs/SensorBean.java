@@ -3,6 +3,7 @@ package spz.dae24.ejbs;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.validation.constraints.Min;
 import org.hibernate.Hibernate;
 import spz.dae24.common.enums.SensorType;
 import spz.dae24.entities.Sensor;
@@ -29,15 +30,8 @@ public class SensorBean {
 
     public Sensor findWithHistory(long id) throws EntityNotFoundException {
         var sensor = find(id);
-        Hibernate.initialize(sensor.getHistory());
 
-        return sensor;
-    }
-
-    public Sensor findWithHistoryAndVolume(long id) throws EntityNotFoundException {
-        var sensor = find(id);
         Hibernate.initialize(sensor.getHistory());
-        Hibernate.initialize(sensor.getVolume());
 
         return sensor;
     }
@@ -46,7 +40,7 @@ public class SensorBean {
         return em.createNamedQuery("getAllSensors", Sensor.class).getResultList();
     }
 
-    public void create(long id, String type, long volumeCode) throws EntityNotFoundException, EntityExistsException, IllegalArgumentException {
+    public void create(@Min(1) long id, String type, long volumeCode) throws EntityNotFoundException, EntityExistsException, IllegalArgumentException {
         if (exists(id))
             throw new EntityExistsException("Sensor with id " + id + " already exists");
 

@@ -41,8 +41,6 @@ public class VolumeService {
     public Response getVolume(@PathParam("code") long code) throws EntityNotFoundException {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
        var volumeDTO = VolumeWithSensorsAndProductVolumesDTO.from(volume);
-       volumeDTO.setProductsVolume(ProductsVolumeDTO.from(volume.getProductsVolumes()));
-       volumeDTO.setSensors(SensorDTO.from(volume.getSensors()));
 
        return Response.ok(volumeDTO).build();
     }
