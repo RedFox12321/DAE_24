@@ -10,7 +10,6 @@ public class ProductsVolumeDTO {
     private long id;
     @Min(1)
     private int productCode;
-    @Min(1)
     private long volumeCode;
     @Min(1)
     private int quantity;

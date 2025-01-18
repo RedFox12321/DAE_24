@@ -4,6 +4,7 @@ import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
 import jakarta.ejb.TransactionAttribute;
 import jakarta.ejb.TransactionAttributeType;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
@@ -103,7 +104,7 @@ public class PackageService {
     @POST
     @Path("")
     @RolesAllowed("Logistic")
-    public Response createPackage(PackageWithAllDTO packageDTO) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
+    public Response createPackage(@Valid PackageWithAllDTO packageDTO) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
         packageBean.makePackageOrder(packageDTO);
 
         var pck = packageBean.findWithVolumes(packageDTO.getCode());

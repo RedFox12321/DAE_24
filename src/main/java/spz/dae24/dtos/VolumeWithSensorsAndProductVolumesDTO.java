@@ -2,6 +2,8 @@ package spz.dae24.dtos;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import spz.dae24.entities.Volume;
 
 import java.util.List;
@@ -11,12 +13,12 @@ public class VolumeWithSensorsAndProductVolumesDTO {
     @Min(1)
     private long code;
     private int number;
-    @NotBlank
     private String status;
     @Min(1)
     private long packageCode;
     @NotBlank
     private String packageType;
+    @NotEmpty
     private List<ProductsVolumeDTO> productsVolume;
     private List<SensorDTO> sensors;
 

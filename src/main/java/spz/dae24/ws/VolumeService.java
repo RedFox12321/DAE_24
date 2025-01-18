@@ -2,6 +2,7 @@ package spz.dae24.ws;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ejb.EJB;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -47,7 +48,7 @@ public class VolumeService {
     @Path("")
     @RolesAllowed("Logistic")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createVolume(VolumeWithSensorsAndProductVolumesDTO volumeDTO) throws MyEntityNotFoundException, MyEntityExistsException {
+    public Response createVolume(@Valid VolumeWithSensorsAndProductVolumesDTO volumeDTO) throws MyEntityNotFoundException, MyEntityExistsException {
         volumeBean.addVolumeToPackageOrder(volumeDTO, volumeDTO.getPackageCode());
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(volumeDTO.getCode());
