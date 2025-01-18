@@ -90,7 +90,7 @@ public class PackageBean {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void makePackageOrder(PackageWithAllDTO packageDTO) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
         var volumesDTO = packageDTO.getVolumes();
-        if (volumesDTO.isEmpty())
+        if (volumesDTO == null || volumesDTO.isEmpty())
             throw new IllegalArgumentException("Package needs at least 1 volume.");
 
         create(packageDTO.getCode(), packageDTO.getClientUsername());

@@ -78,7 +78,7 @@ public class VolumeBean {
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addVolumeToPackageOrder(VolumeWithSensorsAndProductVolumesDTO volumeDTO, long packageCode) throws IllegalArgumentException, MyEntityNotFoundException, MyEntityExistsException {
         var productsVolumes = volumeDTO.getProductsVolume();
-        if (productsVolumes.isEmpty())
+        if (productsVolumes == null || productsVolumes.isEmpty())
             throw new IllegalArgumentException("Volume with code " + volumeDTO.getCode() + " needs at least 1 product.");
 
         volumeBean.create(volumeDTO.getCode(), volumeDTO.getPackageType(), packageCode);
@@ -94,10 +94,11 @@ public class VolumeBean {
             requiredSensors.addAll(product.getRequiredSensors());
         }
 
-        for (var sensor : volumeDTO.getSensors()) {
-            sensorBean.create(sensor.getId(), sensor.getType(), volumeDTO.getCode());
-            requiredSensors.remove(SensorType.valueOf(sensor.getType()));
-        }
+        if (volumeDTO.getSensors() != null)
+            for (var sensor : volumeDTO.getSensors()) {
+                sensorBean.create(sensor.getId(), sensor.getType(), volumeDTO.getCode());
+                requiredSensors.remove(SensorType.valueOf(sensor.getType()));
+            }
 
         if (!requiredSensors.isEmpty())
             throw new IllegalArgumentException("The chosen products, in volume " + volumeDTO.getCode() + ", do not have all required sensors. Sensors in fault ["
