@@ -69,7 +69,7 @@ public class VolumeBean {
         if(pkg == null)
             throw new MyEntityNotFoundException("Package with code " + packageCode + " not found");
 
-        Volume volume = new Volume(code, pkg.getVolumeCount() + 1, Status.ACTIVE, PackageType.valueOf(packageType.toUpperCase()), pkg);
+        Volume volume = new Volume(code, pkg.getVolumeCount() + 1, Status.ACTIVE, PackageType.parse(packageType), pkg);
 
         em.persist(volume);
         pkg.addVolume(volume);
