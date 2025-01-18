@@ -8,7 +8,6 @@ import spz.dae24.entities.Product;
 import spz.dae24.exceptions.MyEntityExistsException;
 import spz.dae24.exceptions.MyEntityNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
