@@ -1,20 +1,20 @@
 <script setup>
 import {useAuthStore} from './stores/auth.js'
-import {computed, ref, render} from 'vue'
+import {computed} from 'vue'
 import {useRouter} from 'vue-router'
 
 const storeAuth = useAuthStore()
 const router = useRouter()
 
-const links = ref([
+const links = [
   { label: "Home", to: "/" },
   { label: "Sensors", to: "/sensors" },
   { label: "Logistics", to: "/logistics", roles: ["Logistic"] },
   { label: "Packages", to: "/packages", roles: ["Admin"] },
   { label: "Customer Support", to: "/customerSupport", roles: ["Client"] },
-])
+]
 
-const filteredLinks = computed(() => links.value.filter(link => !link.roles || link.roles.includes(storeAuth.userType)))
+const filteredLinks = computed(() => links.filter(link => !link.roles || link.roles.includes(storeAuth.userType)))
 
 const handleLogout = () => {
   storeAuth.logout()

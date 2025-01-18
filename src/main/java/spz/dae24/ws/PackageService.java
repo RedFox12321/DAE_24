@@ -29,10 +29,6 @@ public class PackageService {
     private ClientBean clientBean;
     @EJB
     private PackageBean packageBean;
-    @EJB
-    private VolumeBean volumeBean;
-    @EJB
-    private ProductBean productBean;
 
     @Context
     private SecurityContext securityContext;
@@ -74,10 +70,8 @@ public class PackageService {
     public Response getPackage(@PathParam("code") long code) throws EntityNotFoundException {
         var _package = packageBean.findWithVolumes(code);
 
-        //TODO Este está a dar forbidden quando tento usar o SAC
-        if (securityContext.isUserInRole("Client") && !securityContext.getUserPrincipal().getName().equals(_package.getClient().getName())) {
+        if (securityContext.isUserInRole("Client") && !securityContext.getUserPrincipal().getName().equals(_package.getClient().getUsername()))
             return Response.status(Response.Status.FORBIDDEN).build();
-        }
 
         return Response.ok(PackageWithVolumesDTO.from(_package)).build();
     }
@@ -92,10 +86,9 @@ public class PackageService {
         return Response.ok(PackageWithVolumesDTO.from(pck)).build();
     }
 
-    //TODO Este está a dar forbidden quando tento usar o OP
     @GET
     @Path("status/{statusType}")
-    @RolesAllowed("{Admin,Logistic}")
+    @RolesAllowed({"Admin","Logistic"})
     public List<PackageDTO> getPackagesByStatus(@PathParam("statusType") String statusType) throws IllegalArgumentException {
         return PackageDTO.from(packageBean.findByStatus(statusType));
     }

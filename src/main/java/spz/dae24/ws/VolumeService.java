@@ -37,7 +37,7 @@ public class VolumeService {
 
     @GET
     @Path("{code}")
-    @RolesAllowed("Admin")
+    @RolesAllowed({"Admin", "Logistic"})
     public Response getVolume(@PathParam("code") long code) throws EntityNotFoundException {
        var volume = volumeBean.findWithSensorsAndProductsVolumes(code);
        var volumeDTO = VolumeWithSensorsAndProductVolumesDTO.from(volume);
@@ -47,14 +47,10 @@ public class VolumeService {
 
     @POST
     @Path("")
-    @RolesAllowed("Admin")
+    @RolesAllowed("Logistic")
     @Consumes({MediaType.APPLICATION_JSON})
-    public Response createVolume(VolumeDTO volumeDTO) throws EntityNotFoundException, EntityExistsException {
-        volumeBean.create(
-                volumeDTO.getCode(),
-                volumeDTO.getPackageType(),
-                volumeDTO.getPackageCode()
-        );
+    public Response createVolume(VolumeWithSensorsAndProductVolumesDTO volumeDTO) throws EntityNotFoundException, EntityExistsException {
+        volumeBean.addVolumeToPackageOrder(volumeDTO, volumeDTO.getPackageCode());
 
         var volume = volumeBean.findWithSensorsAndProductsVolumes(volumeDTO.getCode());
 
@@ -63,6 +59,7 @@ public class VolumeService {
 
     @PATCH
     @Path("{code}")
+    @RolesAllowed("Logistic")
     public Response deliverVolume(@PathParam("code") long code) throws EntityNotFoundException {
         volumeBean.deliver(code);
 

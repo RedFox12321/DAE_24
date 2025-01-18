@@ -15,12 +15,19 @@ public class UserBean {
     @Inject
     private Hasher hasher;
     public User findOrFail(String username) {
-        var user = em.getReference(User.class, username);
-        Hibernate.initialize(user);
-        return user;
+        try {
+            var user = em.find(User.class, username);
+
+            Hibernate.initialize(user);
+
+            return user;
+        } catch (Exception e) {
+            return null;
+        }
     }
     public boolean canLogin(String username, String password) {
         var user = findOrFail(username);
+
         return user != null && user.getPassword().equals(hasher.hash(password));
     }
 
