@@ -24,7 +24,7 @@ const packageStore = usePackageStore();
         <template #default="{ item, index }">
           <div class="flex justify-between items-center w-full">
             <div>
-              <RouterLink :to="{name : 'volume', params : {code: code}}">
+              <RouterLink :to="{name : 'volume', params : {code: item.code}}">
                 <h3 class="text-lg font-semibold">Volume #{{ item.code }}</h3>
               </RouterLink>
               <p class="text-sm text-gray-400">Number: {{ item.number }}</p>
